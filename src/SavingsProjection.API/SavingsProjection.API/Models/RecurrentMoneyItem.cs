@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SavingsProjection.API.Models
 {
-    public class MoneyItem
+    public class RecurrentMoneyItem
     {
         public long ID { get; set; }
         public DateTime StartDate { get; set; }
@@ -12,22 +13,23 @@ namespace SavingsProjection.API.Models
         public RecurrencyType RecurrencyType { get; set; }
         public string Note { get; set; }
         public MoneyType Type { get; set; }
-        public bool Accumulate { get; set; }
         public MoneyCategory Category { get; set; }
+        public virtual IEnumerable<RecurrentMoneyItem> AssociatedItems { get; set; }
+        public bool Root { get; set; }
+        public short TimelineWeight { get; set; }
+        public IEnumerable<RecurrencyAdjustement> Adjustements { get; set; }
     }
 
 
     public enum MoneyType
     {
         InstallmentPayment,
-        PeriodicFixedAmount,
-        Ordinary
+        PeriodicBudget,
+        Others
     }
-
 
     public enum RecurrencyType
     {
-        Fixed,
         Day,
         Week,
         Month

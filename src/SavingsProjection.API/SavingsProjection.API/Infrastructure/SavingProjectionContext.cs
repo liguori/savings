@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SavingsProjection.API.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SavingsProjection.API.Infrastructure
 {
@@ -18,9 +14,12 @@ namespace SavingsProjection.API.Infrastructure
         }
 
         public DbSet<MaterializedMoneyItem> MaterializedMoneyItems { get; set; }
-
+        public DbSet<Configuration> Configurations { get; set; }
         public DbSet<MoneyCategory> MoneyCategories { get; set; }
-        public DbSet<MoneyItem> MoneyItems { get; set; }
+        public DbSet<RecurrentMoneyItem> RecurrentMoneyItems { get; set; }
+        public DbSet<FixedMoneyItem> FixedMoneyItems { get; set; }
+        public DbSet<Configuration> Configuration { get; set; }
+        public DbSet<RecurrencyAdjustement> RecurrencyAdjustements { get; set; }
 
     }
 }
