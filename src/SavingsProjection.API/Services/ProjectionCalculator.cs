@@ -18,10 +18,10 @@ namespace SavingsProjection.API.Services
             this.context = context;
         }
 
-        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime to)
+        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to)
         {
             var res = new List<MaterializedMoneyItem>();
-            var fromDate = from ?? context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault()?.Date ?? throw new Exception("Unable to define the starting time");
+            var fromDate = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault()?.Date ?? throw new Exception("Unable to define the starting time");
             var periodStart = fromDate;
             var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
             DateTime periodEnd;
@@ -29,7 +29,7 @@ namespace SavingsProjection.API.Services
             {
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
                 var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Include(x=>x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.Root).ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.Root).ToListAsync();
 
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
@@ -47,14 +47,17 @@ namespace SavingsProjection.API.Services
 
 
                 //Fixed items to accumulate for budget
-                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "Accumulator > ", TimelineWeight = 5 };
+                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "Accumulator", TimelineWeight = 5 };
                 foreach (var accumulateItem in fixedItemsAccumulate)
                 {
                     accumulateMaterializedItem.Category = null;
                     accumulateMaterializedItem.Amount += accumulateItem.Amount;
                     accumulateMaterializedItem.EndPeriod = false;
-                    accumulateMaterializedItem.Note += ";" + accumulateItem.Note;
                     accumulateMaterializedItem.Type = MoneyType.Others;
+                }
+                if (fixedItemsAccumulate.Count > 0)
+                {
+                    accumulateMaterializedItem.Note += ": " + string.Join(',', fixedItemsAccumulate.Select(x => x.Note).ToArray());
                 }
                 res.Add(accumulateMaterializedItem);
 
@@ -82,15 +85,21 @@ namespace SavingsProjection.API.Services
                         //Check if there are child items
                         if (recurrentItem.AssociatedItems != null)
                         {
+                            var lstNoteAssociatedItems = new List<string>();
                             foreach (var associatedItem in recurrentItem.AssociatedItems.Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate))
                             {
                                 var associatedIteminstallment = CalculateInstallmentInPeriod(associatedItem, installment, installment);
                                 if (associatedIteminstallment.Count() > 0)
                                 {
                                     currentInstallmentAmount += associatedItem.Amount;
-                                    currentInstallmentNote += ";" + associatedItem.Note;
+                                    lstNoteAssociatedItems.Add(associatedItem.Note);
                                 }
                             }
+                            if (lstNoteAssociatedItems.Count > 0)
+                            {
+                                currentInstallmentNote += ": " + string.Join(',', lstNoteAssociatedItems.ToArray());
+                            }
+
                         }
 
                         res.Add(new MaterializedMoneyItem
@@ -106,7 +115,7 @@ namespace SavingsProjection.API.Services
                     }
                 }
 
-                res.Add(new MaterializedMoneyItem { Amount = 0, Note = "##################################################", Date = periodEnd, EndPeriod = true });
+                res.Add(new MaterializedMoneyItem { Amount = 0, Note = string.Empty, Date = periodEnd, EndPeriod = true });
                 periodStart = periodEnd.AddDays(1);
             }
             //Calculate the projection
@@ -118,6 +127,7 @@ namespace SavingsProjection.API.Services
                 lastProjectionValue = resItem.Projection;
             }
             res.RemoveAll(x => x.Amount == 0 && !x.EndPeriod);
+            if (from.HasValue) res.RemoveAll(x => x.Date <= from);
             return res;
         }
 

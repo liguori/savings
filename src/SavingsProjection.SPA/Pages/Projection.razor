@@ -6,9 +6,14 @@
 }
 else
 {
-        <table class="table">
+    <span>From:</span>
+    <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
+    <span>To:</span>
+    <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+    <table class="table-sm">
         <thead>
             <tr>
+                <th></th>
                 <th>Date</th>
                 <th>Amount</th>
                 <th>Projection</th>
@@ -18,10 +23,16 @@ else
         <tbody>
             @foreach (var item in materializedMoneyItems)
             {
-                <tr>
-                    <td>@item.Date.ToShortDateString()</td>
-                    <td>@item.Amount.ToString()</td>
-                    <td>@item.Projection.ToString()</td>
+                <tr class="@(item.EndPeriod ? "end-period" : "")">
+                    <th>
+                        @if (item.Date <= DateTime.Now)
+                        {
+                            <span class="oi oi-check done-item" aria-hidden="true"></span>
+                        }
+                    </th>
+                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                    <td class="text-right">@item.Amount.ToString("N")</td>
+                    <td class="@(item.Date <= DateTime.Now ? "text-right done-projection" : "text-right")">@item.Projection.ToString("N")</td>
                     <td>@item.Note</td>
                 </tr>
             }

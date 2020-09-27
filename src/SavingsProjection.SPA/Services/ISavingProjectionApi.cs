@@ -9,6 +9,6 @@ namespace SavingsProjection.SPA.Services
     {
 
         [Get("/api/SavingsProjection")]
-        Task<MaterializedMoneyItem[]> GetSavingsProjection(DateTime? from, DateTime to);
+        Task<MaterializedMoneyItem[]> GetSavingsProjection(DateTime? from, DateTime? to);
     }
 }

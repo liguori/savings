@@ -10,17 +10,30 @@ namespace SavingsProjection.SPA.Pages
     {
 
         [Inject]
-        public ISavingProjectionApi savingProjectionAPI{ get; set; }
+        public ISavingProjectionApi savingProjectionAPI { get; set; }
 
         private MaterializedMoneyItem[] materializedMoneyItems;
 
-        public DateTime FilterDateFrom { get; set; }
+        public DateTime? FilterDateFrom { get; set; }
+
+        public DateTime? FilterDateTo { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            materializedMoneyItems = await savingProjectionAPI.GetSavingsProjection(null, new DateTime(2020, 12, 29));
+            FilterDateTo = DateTime.Now.AddYears(1);
+            await InitializeList();
         }
 
-       
+        async void Change(DateTime? value, string name)
+        {
+            await InitializeList();
+            StateHasChanged();
+        }
+
+
+        async Task InitializeList()
+        {
+            materializedMoneyItems = await savingProjectionAPI.GetSavingsProjection(FilterDateFrom, FilterDateTo);
+        }
     }
 }
