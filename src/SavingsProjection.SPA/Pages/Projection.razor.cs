@@ -14,6 +14,8 @@ namespace SavingsProjection.SPA.Pages
 
         private MaterializedMoneyItem[] materializedMoneyItems;
 
+        public DateTime FilterDateFrom { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             materializedMoneyItems = await savingProjectionAPI.GetSavingsProjection(null, new DateTime(2020, 12, 29));

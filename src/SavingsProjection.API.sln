@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavingsProjection.API", "SavingsProjection.API\SavingsProjection.API.csproj", "{6F4532FF-75D8-4CEC-B823-3F89EE6D1798}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SavingsProjection.SPA", "SavingsProjection.SPA\SavingsProjection.SPA.csproj", "{1AE24631-2F52-43A6-8B79-00AA59AF6FCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavingsProjection.SPA", "SavingsProjection.SPA\SavingsProjection.SPA.csproj", "{1AE24631-2F52-43A6-8B79-00AA59AF6FCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SavingsProjection.Model", "SavingsProjection.Model\SavingsProjection.Model.csproj", "{B86FCE4C-2B8D-4F13-91DE-AD512D99D108}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavingsProjection.Model", "SavingsProjection.Model\SavingsProjection.Model.csproj", "{B86FCE4C-2B8D-4F13-91DE-AD512D99D108}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
