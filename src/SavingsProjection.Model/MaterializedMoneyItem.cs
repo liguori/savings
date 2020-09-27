@@ -12,6 +12,6 @@ namespace SavingsProjection.Model
         public string Note { get; set; }
         public decimal Projection { get; set; }
         public bool EndPeriod { get; set; }
-        public short TimelineWeight { get; set; }
+        public int TimelineWeight { get; set; }
     }
 }

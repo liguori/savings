@@ -14,6 +14,6 @@ namespace SavingsProjection.Model
         public MoneyCategory Category { get; set; }
         public bool AccumulateForBudget { get; set; }
 
-        public short TimelineWeight { get; set; }
+        public int TimelineWeight { get; set; }
     }
 }

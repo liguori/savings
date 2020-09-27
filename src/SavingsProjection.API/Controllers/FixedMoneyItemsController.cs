@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SavingsProjection.API.Infrastructure;
 using SavingsProjection.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,9 +22,12 @@ namespace SavingsProjection.API.Controllers
 
         // GET: api/FixedMoneyItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems()
+        public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems(DateTime? from, DateTime? to)
         {
-            return await _context.FixedMoneyItems.ToListAsync();
+            var result = _context.FixedMoneyItems.AsQueryable();
+            if (from.HasValue) result = result.Where(x => x.Date >= from);
+            if (to.HasValue) result = result.Where(x => x.Date <= to);
+            return await result.OrderByDescending(x=>x.Date).ToListAsync();
         }
 
         // GET: api/FixedMoneyItems/5

@@ -1,6 +1,52 @@
 ﻿@page "/fixed-items"
-<h3>FixedItems</h3>
 
-@code {
 
+<h1>Fixed Items</h1>
+@if (fixedMoneyItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <span>From:</span>
+    <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
+    <span>To:</span>
+    <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+    <br>
+    <button class="btn btn-success" @onclick="@(() => AddNew())">
+        <span class="oi oi-plus" aria-hidden="true"></span>ADD
+    </button>
+    <table class="table-sm">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Note</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in fixedMoneyItems)
+            {
+                <tr>
+                    <th>
+                        @if (item.Date <= DateTime.Now)
+                        {
+                            <span class="oi oi-check done-item" aria-hidden="true"></span>
+                        }
+                    </th>
+                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                    <td class="text-right">@item.Amount.ToString("N")</td>
+                    <td>@item.Note</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(item.ID))"><span class="oi oi-trash" aria-hidden="true"></span></button>
+                        <button class="btn btn-success" @onclick="@(() => Edit(item))">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }

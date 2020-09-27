@@ -1,0 +1,54 @@
+﻿<EditForm Model="@fixedItemToEdit" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Date :</label>
+        <div>
+            <RadzenDatePicker @bind-Value="fixedItemToEdit.Date" DateFormat="dd/MM/yyyy" />
+            <ValidationMessage For="@(() => fixedItemToEdit.Date)" />
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Amount:</label>
+            <div>
+                <InputNumber @bind-Value="@fixedItemToEdit.Amount" @bind-Value:format="F2" class="form-control" />
+                <ValidationMessage For="@(() => fixedItemToEdit.Amount)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Accumulate:</label>
+            <div>
+                <InputCheckbox @bind-Value="@fixedItemToEdit.AccumulateForBudget" class="form-control"/>
+                <ValidationMessage For="@(() => fixedItemToEdit.AccumulateForBudget)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Note:</label>
+            <div>
+                <InputText @bind-Value="@fixedItemToEdit.Note" class="form-control"/>
+                <ValidationMessage For="@(() => fixedItemToEdit.Note)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Timeline weight:</label>
+            <div>
+                <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control"/>
+                <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-success">
+            <span class="oi oi-circle-check" aria-hidden="true"></span>SAVE
+        </button>
+        <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })">
+            <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
+        </button>
+    </div>
+</EditForm>

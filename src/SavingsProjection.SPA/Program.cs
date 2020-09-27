@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Radzen;
 using Refit;
 using SavingsProjection.SPA.Services;
 using System;
@@ -16,7 +17,7 @@ namespace SavingsProjection.SPA
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+            builder.Services.AddScoped<DialogService>();
             builder.Services.AddRefitClient<ISavingProjectionApi>().ConfigureHttpClient(c =>
             {
                 c.BaseAddress = new Uri(builder.Configuration["SavingProjectionApiServiceUrl"]);
