@@ -17,7 +17,7 @@ namespace SavingsProjection.Model
         public virtual IEnumerable<RecurrentMoneyItem> AssociatedItems { get; set; }
         public bool Root { get; set; }
         public short TimelineWeight { get; set; }
-        public IEnumerable<RecurrencyAdjustement> Adjustements { get; set; }
+        public virtual IEnumerable<RecurrencyAdjustement> Adjustements { get; set; }
     }
 
 

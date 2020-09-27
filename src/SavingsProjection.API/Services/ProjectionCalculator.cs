@@ -29,7 +29,7 @@ namespace SavingsProjection.API.Services
             {
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
                 var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.Root).ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems.Include(x=>x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.Root).ToListAsync();
 
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
