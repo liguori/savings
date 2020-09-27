@@ -1,0 +1,30 @@
+{
+  "name": "savings-projection-app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "asar": false,
+    "appId": "savings-projection",
+    "directories": {
+      "output": "../dist"
+    },
+    "win": {
+      "icon": "savings.ico"
+    }
+  },
+  "private": true,
+  "devDependencies": {
+    "electron": "10.1.1",
+    "electron-builder": "^22.8.0",
+    "gulp": "^4.0.2",
+    "gulp-replace": "^1.0.0"
+  },
+  "dependencies": {
+    "custom-electron-titlebar": "^3.2.4",
+    "http-server": "^0.12.3"
+  }
+}
