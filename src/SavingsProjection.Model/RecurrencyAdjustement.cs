@@ -9,5 +9,6 @@ namespace SavingsProjection.Model
         public DateTime? RecurrencyNewDate { get; set; }
         public decimal? RecurrencyNewAmount { get; set; }
         public string Note { get; set; }
+        public long RecurrentMoneyItemID { get; set; }
     }
 }

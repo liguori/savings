@@ -11,3 +11,8 @@
 .done-projection {
     font-weight: bold;
 }
+
+
+.edit-adjustment {
+    cursor: pointer;
+}

@@ -21,7 +21,7 @@ namespace SavingsProjection.SPA.Services
         Task<FixedMoneyItem> InsertFixedMoneyItem(FixedMoneyItem fixedMoneyItem);
 
         [Put("/api/FixedMoneyItems/{id}")]
-        Task<FixedMoneyItem>EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
+        Task<FixedMoneyItem> EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
 
         [Get("/api/RecurrentMoneyItems")]
         Task<RecurrentMoneyItem[]> GetRecurrentMoneyItems(long? parentItemID);
@@ -34,5 +34,9 @@ namespace SavingsProjection.SPA.Services
 
         [Put("/api/RecurrentMoneyItems/{id}")]
         Task<RecurrentMoneyItem> EditRecurrentMoneyItem(long id, RecurrentMoneyItem fixedMoneyItem);
+
+        [Get("/api/RecurrencyAdjustements/ByIDRecurrency/{idRecurrency}")]
+        Task<RecurrencyAdjustement> GetRecurrencyAdjustementByIDRecurrency(long idRecurrency);
+
     }
 }

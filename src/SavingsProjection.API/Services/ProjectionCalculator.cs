@@ -41,13 +41,14 @@ namespace SavingsProjection.API.Services
                         EndPeriod = false,
                         Note = fixedItem.Note,
                         Type = MoneyType.Others,
-                        TimelineWeight = fixedItem.TimelineWeight
+                        TimelineWeight = fixedItem.TimelineWeight,
+                        IsRecurrent = false
                     });
                 }
 
 
                 //Fixed items to accumulate for budget
-                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "Accumulator", TimelineWeight = 5 };
+                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "Accumulator", TimelineWeight = 5, IsRecurrent = false };
                 foreach (var accumulateItem in fixedItemsAccumulate)
                 {
                     accumulateMaterializedItem.Category = null;
@@ -110,12 +111,14 @@ namespace SavingsProjection.API.Services
                             EndPeriod = false,
                             Note = currentInstallmentNote,
                             Type = recurrentItem.Type,
-                            TimelineWeight = recurrentItem.TimelineWeight
+                            TimelineWeight = recurrentItem.TimelineWeight,
+                            IsRecurrent = true,
+                            RecurrentMoneyItemID = recurrentItem.ID
                         });
                     }
                 }
 
-                res.Add(new MaterializedMoneyItem { Amount = 0, Note = string.Empty, Date = periodEnd, EndPeriod = true });
+                res.Add(new MaterializedMoneyItem { Amount = 0, Note = string.Empty, Date = periodEnd, EndPeriod = true, IsRecurrent = false });
                 periodStart = periodEnd.AddDays(1);
             }
             //Calculate the projection
@@ -130,7 +133,6 @@ namespace SavingsProjection.API.Services
             if (from.HasValue) res.RemoveAll(x => x.Date <= from);
             return res;
         }
-
 
         IEnumerable<DateTime> CalculateInstallmentInPeriod(RecurrentMoneyItem item, DateTime periodStart, DateTime periodEnd)
         {

@@ -26,6 +26,14 @@ namespace SavingsProjection.API.Controllers
             return await _context.RecurrencyAdjustements.ToListAsync();
         }
 
+
+        // GET: api/RecurrencyAdjustements/ByIDRecurrency/5
+        [HttpGet("ByIDRecurrency/{idRecurrency}", Name = "ByIDRecurrency")]
+        public async Task<ActionResult<RecurrencyAdjustement>> GetByIDRecurrency(long idRecurrency)
+        {
+            return await _context.RecurrencyAdjustements.Where(x => x.RecurrentMoneyItemID == idRecurrency).FirstOrDefaultAsync();
+        }
+
         // GET: api/RecurrencyAdjustements/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RecurrencyAdjustement>> GetRecurrencyAdjustement(long id)

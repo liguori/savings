@@ -3,6 +3,8 @@ using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
 using System;
 using System.Threading.Tasks;
+using Radzen;
+using System.Collections.Generic;
 
 namespace SavingsProjection.SPA.Pages
 {
@@ -14,6 +16,8 @@ namespace SavingsProjection.SPA.Pages
 
         private MaterializedMoneyItem[] materializedMoneyItems;
 
+        [Inject]
+        public DialogService dialogService { get; set; }
         public DateTime? FilterDateFrom { get; set; }
 
         public DateTime? FilterDateTo { get; set; }
@@ -34,6 +38,15 @@ namespace SavingsProjection.SPA.Pages
         async Task InitializeList()
         {
             materializedMoneyItems = await savingProjectionAPI.GetSavingsProjection(FilterDateFrom, FilterDateTo);
+        }
+
+        async Task AdjustRecurrency(MaterializedMoneyItem item)
+        {
+            var res = await dialogService.OpenAsync<RecurrencyAdjustment>($"Recurrency Adjustment",
+                            new Dictionary<string, object>() { { "materializedItem", item } },
+                            new DialogOptions() { Width = "600px", Height = "300px" });
+            await InitializeList();
+            StateHasChanged();
         }
     }
 }

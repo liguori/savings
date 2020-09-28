@@ -1,0 +1,27 @@
+﻿<EditForm Model="@adjustement" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>New date :</label>
+        <div>
+            <RadzenDatePicker @bind-Value="adjustement.RecurrencyNewDate" DateFormat="dd/MM/yyyy" />
+            <ValidationMessage For="@(() => adjustement.RecurrencyNewDate)" />
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>New amount:</label>
+            <div>
+                <InputNumber @bind-Value="@adjustement.RecurrencyNewAmount" @bind-Value:format="F2" class="form-control" />
+                <ValidationMessage For="@(() => adjustement.RecurrencyNewAmount)" />
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-success">
+            <span class="oi oi-circle-check" aria-hidden="true"></span>SAVE
+        </button>
+        <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })">
+            <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
+        </button>
+    </div>
+</EditForm>

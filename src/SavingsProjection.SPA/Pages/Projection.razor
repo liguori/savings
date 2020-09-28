@@ -18,6 +18,7 @@ else
                 <th class="text-right">Amount</th>
                 <th class="text-right">Projection</th>
                 <th>Note</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,16 @@ else
                     <td class="text-right">@item.Amount.ToString("N")</td>
                     <td class="@(item.Date <= DateTime.Now ? "text-right done-projection" : "text-right")">@item.Projection.ToString("N")</td>
                     <td>@item.Note</td>
+                    <td>
+                        @if (item.IsRecurrent)
+                        {
+                            <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent" @onclick="@(()=>AdjustRecurrency(item))"></span>
+                        }
+                        else
+                        {
+                            <span class="oi oi-list-rich" aria-hidden="true" title="Fixed"></span>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
