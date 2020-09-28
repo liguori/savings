@@ -30,18 +30,25 @@ namespace SavingsProjection.SPA.Pages
             }
         }
 
-        private void OnValidSubmit()
+        private async void OnValidSubmit()
         {
-            if (isNew)
+            try
             {
-                savingProjectionAPI.InsertFixedMoneyItem(fixedItemToEdit);
+                if (isNew)
+                {
+                    await savingProjectionAPI.InsertFixedMoneyItem(fixedItemToEdit);
+                }
+                else
+                {
+                    await savingProjectionAPI.EditFixedMoneyItem(fixedItemToEdit.ID, fixedItemToEdit);
+                }
+                this.dialogService.Close(true);
             }
-            else
+            catch (Exception ex)
             {
-                savingProjectionAPI.EditFixedMoneyItem(fixedItemToEdit.ID, fixedItemToEdit);
+                throw ex;
             }
-
-            this.dialogService.Close(true);
+          
         }
 
     }
