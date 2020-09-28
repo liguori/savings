@@ -22,5 +22,17 @@ namespace SavingsProjection.SPA.Services
 
         [Put("/api/FixedMoneyItems/{id}")]
         Task<FixedMoneyItem>EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
+
+        [Get("/api/RecurrentMoneyItems")]
+        Task<RecurrentMoneyItem[]> GetRecurrentMoneyItems(bool isRoot);
+
+        [Delete("/api/RecurrentMoneyItems/{id}")]
+        Task<RecurrentMoneyItem> DeleteRecurrentMoneyItem(long id);
+
+        [Post("/api/RecurrentMoneyItems")]
+        Task<RecurrentMoneyItem> InsertRecurrentMoneyItem(RecurrentMoneyItem fixedMoneyItem);
+
+        [Put("/api/RecurrentMoneyItems/{id}")]
+        Task<RecurrentMoneyItem> EditRecurrentMoneyItem(long id, RecurrentMoneyItem fixedMoneyItem);
     }
 }

@@ -1,12 +1,13 @@
-﻿.end-period{
+﻿.end-period {
     font-weight: bold;
-    background-color: #84b2d6
+    background-color: #60368e;
+    color: white;
 }
 
-.done-item{
+.done-item {
     color: #35aa17;
 }
 
-.done-projection{
+.done-projection {
     font-weight: bold;
 }

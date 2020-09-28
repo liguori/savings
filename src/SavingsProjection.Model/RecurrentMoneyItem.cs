@@ -9,13 +9,13 @@ namespace SavingsProjection.Model
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Amount { get; set; }
-        public short RecurrencyInterval { get; set; }
+        public int RecurrencyInterval { get; set; }
         public RecurrencyType RecurrencyType { get; set; }
         public string Note { get; set; }
         public MoneyType Type { get; set; }
         public MoneyCategory Category { get; set; }
         public virtual IEnumerable<RecurrentMoneyItem> AssociatedItems { get; set; }
-        public bool Root { get; set; }
+        public bool Root { get; set; } = true;
         public int TimelineWeight { get; set; }
         public virtual IEnumerable<RecurrencyAdjustement> Adjustements { get; set; }
     }

@@ -1,0 +1,89 @@
+﻿<EditForm Model="@recurrentItemToEdit" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Start date :</label>
+        <div>
+            <RadzenDatePicker @bind-Value="recurrentItemToEdit.StartDate" DateFormat="dd/MM/yyyy" />
+            <ValidationMessage For="@(() => recurrentItemToEdit.StartDate)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>End date :</label>
+        <div>
+            <RadzenDatePicker @bind-Value="recurrentItemToEdit.EndDate" DateFormat="dd/MM/yyyy" />
+            <ValidationMessage For="@(() => recurrentItemToEdit.EndDate)" />
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Amount:</label>
+            <div>
+                <InputNumber @bind-Value="@recurrentItemToEdit.Amount" @bind-Value:format="F2" class="form-control" />
+                <ValidationMessage For="@(() => recurrentItemToEdit.Amount)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Note:</label>
+            <div>
+                <InputText @bind-Value="@recurrentItemToEdit.Note" class="form-control" />
+                <ValidationMessage For="@(() => recurrentItemToEdit.Note)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Recurrency:</label>
+            <div>
+                <InputSelect @bind-Value="recurrentItemToEdit.RecurrencyType" class="form-control">
+                    @foreach (var value in Enum.GetValues(typeof(SavingsProjection.Model.RecurrencyType)))
+                    {
+                        <option>@value</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => recurrentItemToEdit.RecurrencyType)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Interval:</label>
+            <div>
+                <InputNumber @bind-Value="@recurrentItemToEdit.RecurrencyInterval" class="form-control" />
+                <ValidationMessage For="@(() => recurrentItemToEdit.RecurrencyInterval)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Type:</label>
+            <div>
+                <InputSelect @bind-Value="recurrentItemToEdit.Type" class="form-control">
+                    @foreach (var value in Enum.GetValues(typeof(SavingsProjection.Model.MoneyType)))
+                    {
+                        <option>@value</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => recurrentItemToEdit.Type)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Timeline weight:</label>
+            <div>
+                <InputNumber @bind-Value="@recurrentItemToEdit.TimelineWeight" class="form-control" />
+                <ValidationMessage For="@(() => recurrentItemToEdit.TimelineWeight)" />
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-success">
+            <span class="oi oi-circle-check" aria-hidden="true"></span>SAVE
+        </button>
+        <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })">
+            <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
+        </button>
+    </div>
+</EditForm>

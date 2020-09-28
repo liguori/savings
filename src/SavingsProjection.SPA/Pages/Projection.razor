@@ -10,8 +10,8 @@ else
     <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
     <span>To:</span>
     <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
-    <table class="table-sm">
-        <thead>
+    <table class="table table-sm table-striped table-hover">
+        <thead class="thead-dark">
             <tr>
                 <th></th>
                 <th>Date</th>

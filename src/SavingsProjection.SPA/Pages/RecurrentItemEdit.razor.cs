@@ -3,13 +3,11 @@ using Radzen;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
 using System;
-using System.Threading.Tasks;
 
 namespace SavingsProjection.SPA.Pages
 {
-    public partial class FixedItemEdit : ComponentBase
+    public partial class RecurrentItemEdit : ComponentBase
     {
-
         [Inject]
         public ISavingProjectionApi savingProjectionAPI { get; set; }
 
@@ -17,16 +15,16 @@ namespace SavingsProjection.SPA.Pages
         DialogService dialogService { get; set; }
 
         [Parameter]
-        public FixedMoneyItem fixedItemToEdit { get; set; }
+        public RecurrentMoneyItem recurrentItemToEdit { get; set; }
 
         [Parameter]
         public bool isNew { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             if (isNew)
             {
-                this.fixedItemToEdit.Date = DateTime.Now;
+                this.recurrentItemToEdit.StartDate = DateTime.Now;
             }
         }
 
@@ -36,11 +34,11 @@ namespace SavingsProjection.SPA.Pages
             {
                 if (isNew)
                 {
-                    await savingProjectionAPI.InsertFixedMoneyItem(fixedItemToEdit);
+                    await savingProjectionAPI.InsertRecurrentMoneyItem(recurrentItemToEdit);
                 }
                 else
                 {
-                    await savingProjectionAPI.EditFixedMoneyItem(fixedItemToEdit.ID, fixedItemToEdit);
+                    await savingProjectionAPI.EditRecurrentMoneyItem(recurrentItemToEdit.ID, recurrentItemToEdit);
                 }
                 this.dialogService.Close(true);
             }
@@ -48,8 +46,7 @@ namespace SavingsProjection.SPA.Pages
             {
                 throw ex;
             }
-          
-        }
 
+        }
     }
 }

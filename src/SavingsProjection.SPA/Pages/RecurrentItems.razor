@@ -1,6 +1,50 @@
 ﻿@page "/recurrent-items"
 <h1>Recurrent Items</h1>
 
-@code {
+@if (recurrentMoneyItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 
+    <button class="btn btn-success" @onclick="@(() => AddNew())">
+        <span class="oi oi-plus" aria-hidden="true"></span>ADD
+    </button>
+    <table class="table table-sm table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Amount</th>
+                <th>Note</th>
+                <th>Recurrency</th>
+                <th>Interval</th>
+                <th>Type</th>
+                <th>Items</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in recurrentMoneyItems)
+            {
+                <tr>
+                    <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td class="text-right">@item.Amount.ToString("N")</td>
+                    <td>@item.Note</td>
+                    <td>@item.RecurrencyType.ToString()</td>
+                    <td>@item.RecurrencyInterval</td>
+                    <td>@item.Type.ToString()</td>
+                    <td>@item.AssociatedItems.Count()</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(item.ID))"><span class="oi oi-trash" aria-hidden="true"></span></button>
+                        <button class="btn btn-success" @onclick="@(() => Edit(item))">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }

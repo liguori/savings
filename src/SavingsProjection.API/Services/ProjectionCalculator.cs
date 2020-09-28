@@ -148,7 +148,7 @@ namespace SavingsProjection.API.Services
             return lstInstallmentsDate;
         }
 
-        DateTime CalculateNextReccurrency(DateTime currentEndPeriod, RecurrencyType recurrType, short recurrIterval)
+        DateTime CalculateNextReccurrency(DateTime currentEndPeriod, RecurrencyType recurrType, int recurrIterval)
         {
             DateTime nextEndPeriod = currentEndPeriod;
             switch (recurrType)

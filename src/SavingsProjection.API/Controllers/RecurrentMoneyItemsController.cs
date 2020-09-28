@@ -21,9 +21,9 @@ namespace SavingsProjection.API.Controllers
 
         // GET: api/RecurrentMoneyItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems()
+        public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems(bool isRoot)
         {
-            return await _context.RecurrentMoneyItems.ToListAsync();
+            return await _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).Where(x => x.Root == isRoot).OrderBy(x => x.EndDate).ToListAsync();
         }
 
         // GET: api/RecurrentMoneyItems/5
