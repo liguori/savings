@@ -15,9 +15,9 @@ namespace SavingsProjection.Model
         public MoneyType Type { get; set; }
         public MoneyCategory Category { get; set; }
         public virtual IEnumerable<RecurrentMoneyItem> AssociatedItems { get; set; }
-        public bool Root { get; set; } = true;
         public int TimelineWeight { get; set; }
         public virtual IEnumerable<RecurrencyAdjustement> Adjustements { get; set; }
+        public long? RecurrentMoneyItemID { get; set; }
     }
 
 

@@ -20,12 +20,16 @@ namespace SavingsProjection.SPA.Pages
         [Parameter]
         public bool isNew { get; set; }
 
+        [ParameterAttribute]
+        public long? parentItemID { get; set; } = null;
+
         protected override void OnInitialized()
         {
             if (isNew)
             {
                 this.recurrentItemToEdit.StartDate = DateTime.Now;
             }
+            recurrentItemToEdit.RecurrentMoneyItemID = parentItemID;
         }
 
         private async void OnValidSubmit()

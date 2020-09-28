@@ -1,5 +1,8 @@
 ﻿@page "/recurrent-items"
-<h1>Recurrent Items</h1>
+@if (!parentItemID.HasValue)
+{
+    <h1>Recurrent Items</h1>
+}
 
 @if (recurrentMoneyItems == null)
 {
@@ -7,7 +10,6 @@
 }
 else
 {
-
     <button class="btn btn-success" @onclick="@(() => AddNew())">
         <span class="oi oi-plus" aria-hidden="true"></span>ADD
     </button>
@@ -21,7 +23,10 @@ else
                 <th>Recurrency</th>
                 <th>Interval</th>
                 <th>Type</th>
-                <th>Items</th>
+                @if (!parentItemID.HasValue)
+                {
+                    <th>Items</th>
+                }
                 <th></th>
             </tr>
         </thead>
@@ -36,12 +41,17 @@ else
                     <td>@item.RecurrencyType.ToString()</td>
                     <td>@item.RecurrencyInterval</td>
                     <td>@item.Type.ToString()</td>
-                    <td>@item.AssociatedItems.Count()</td>
+                    @if (!parentItemID.HasValue)
+                    {
+                        <td>@item.AssociatedItems.Count()</td>
+                    }
                     <td>
                         <button class="btn btn-danger" @onclick="@(()=>Delete(item.ID))"><span class="oi oi-trash" aria-hidden="true"></span></button>
-                        <button class="btn btn-success" @onclick="@(() => Edit(item))">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </button>
+                        <button class="btn btn-success" @onclick="@(() => Edit(item))"><span class="oi oi-pencil" aria-hidden="true"></span></button>
+                        @if (!parentItemID.HasValue)
+                        {
+                            <button class="btn btn-warning" @onclick="@(() => ViewChild(item))"><span class="oi oi-grid-three-up" aria-hidden="true"></span></button>
+                        }
                     </td>
                 </tr>
             }

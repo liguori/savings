@@ -18,6 +18,7 @@ namespace SavingsProjection.SPA
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<DialogService>();
+            builder.Services.AddScoped<NotificationService>();
             builder.Services.AddRefitClient<ISavingProjectionApi>().ConfigureHttpClient(c =>
             {
                 c.BaseAddress = new Uri(builder.Configuration["SavingProjectionApiServiceUrl"]);

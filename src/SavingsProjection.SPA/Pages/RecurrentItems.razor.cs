@@ -17,7 +17,14 @@ namespace SavingsProjection.SPA.Pages
         [Inject]
         public DialogService dialogService { get; set; }
 
+        [Inject]
+        public NotificationService notificationService { get; set; }
+
+
         private RecurrentMoneyItem[] recurrentMoneyItems;
+
+        [ParameterAttribute]
+        public long? parentItemID { get; set; } = null;
 
         protected override async Task OnInitializedAsync()
         {
@@ -26,23 +33,30 @@ namespace SavingsProjection.SPA.Pages
 
         async Task InitializeList()
         {
-            recurrentMoneyItems = await savingProjectionAPI.GetRecurrentMoneyItems(true);
+            recurrentMoneyItems = await savingProjectionAPI.GetRecurrentMoneyItems(parentItemID);
         }
 
         async Task Delete(long itemID)
         {
-            var res = await dialogService.Confirm("Are you sure you want delete?", "Delete recurrent item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-            if (res.HasValue && res.Value)
+            try
             {
-                var deletedItem = await savingProjectionAPI.DeleteRecurrentMoneyItem(itemID);
-                await InitializeList();
+                var res = await dialogService.Confirm("Are you sure you want delete?", "Delete recurrent item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+                if (res.HasValue && res.Value)
+                {
+                    var deletedItem = await savingProjectionAPI.DeleteRecurrentMoneyItem(itemID);
+                    await InitializeList();
+                }
+            }
+            catch (Exception ex)
+            {
+                notificationService.Notify(NotificationSeverity.Error, "Error", ex.Message);
             }
         }
 
         async Task AddNew()
         {
             var res = await dialogService.OpenAsync<RecurrentItemEdit>($"Add new",
-                        new Dictionary<string, object>() { { "recurrentItemToEdit", new SavingsProjection.Model.RecurrentMoneyItem() }, { "isNew", true } },
+                        new Dictionary<string, object>() { { "recurrentItemToEdit", new SavingsProjection.Model.RecurrentMoneyItem() }, { "isNew", true }, { "parentItemID", parentItemID } },
                         new DialogOptions() { Width = "600px", Height = "530px" });
             if (Convert.ToBoolean(res))
             {
@@ -51,18 +65,26 @@ namespace SavingsProjection.SPA.Pages
             }
         }
 
-
-
         async Task Edit(RecurrentMoneyItem item)
         {
             var res = await dialogService.OpenAsync<RecurrentItemEdit>($"Edit item",
-                             new Dictionary<string, object>() { { "recurrentItemToEdit", item }, { "isNew", false } },
+                             new Dictionary<string, object>() { { "recurrentItemToEdit", item }, { "isNew", false }, { "parentItemID", parentItemID } },
                              new DialogOptions() { Width = "600px", Height = "530px" });
             if (Convert.ToBoolean(res))
             {
                 await InitializeList();
                 StateHasChanged();
             }
+        }
+
+
+        async Task ViewChild(RecurrentMoneyItem item)
+        {
+            var res = await dialogService.OpenAsync<RecurrentItems>($"Associated Items",
+                            new Dictionary<string, object>() { { "parentItemID", item.ID } },
+                             new DialogOptions() { Width = "800px", Height = "600px" });
+            await InitializeList();
+            StateHasChanged();
         }
 
     }

@@ -21,9 +21,18 @@ namespace SavingsProjection.API.Controllers
 
         // GET: api/RecurrentMoneyItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems(bool isRoot)
+        public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems(long? parentItemID)
         {
-            return await _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).Where(x => x.Root == isRoot).OrderBy(x => x.EndDate).ToListAsync();
+            var res = _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).AsQueryable();
+            if (parentItemID.HasValue)
+            {
+                res = res.Where(x => x.RecurrentMoneyItemID == parentItemID.Value);
+            }
+            else
+            {
+                res = res.Where(x => x.RecurrentMoneyItemID == null);
+            }
+            return await res.OrderBy(x => x.EndDate).ToListAsync();
         }
 
         // GET: api/RecurrentMoneyItems/5
