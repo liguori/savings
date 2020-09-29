@@ -85,6 +85,10 @@ else
                                 <span class="oi oi-pin" aria-hidden="true" title="Fixed"></span>
                             }
                         }
+                        else
+                        {
+                            <span class="oi oi-delete text-danger materialize-history-delete" aria-hidden="true" title="Delete materialized history" @onclick="@(()=>DeleteMaterializedHistory(item))"></span>
+                        }
                     </td>
                 </tr>
             }

@@ -5,6 +5,7 @@ using SavingsProjection.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 
 namespace SavingsProjection.API.Controllers
@@ -102,6 +103,25 @@ namespace SavingsProjection.API.Controllers
             await _context.SaveChangesAsync();
 
             return materializedMoneyItem;
+        }
+
+
+        // DELETE: api/MaterializedMoneyItems/ToHistory/5
+        [HttpDelete("ToHistory/{id}")]
+        public async Task<ActionResult> DeleteMaterializedMoneyItemToHistory(long id)
+        {
+            var materializedMoneyItem = await _context.MaterializedMoneyItems.FindAsync(id);
+            if (materializedMoneyItem == null)
+            {
+                return NotFound();
+            }
+            var previous = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod && x.Date < materializedMoneyItem.Date).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
+            if (previous != null)
+            {
+                _context.MaterializedMoneyItems.RemoveRange(await _context.MaterializedMoneyItems.Where(x => x.Date > previous.Date).ToListAsync());
+                await _context.SaveChangesAsync();
+            }
+            return Ok();
         }
 
         private bool MaterializedMoneyItemExists(long id)

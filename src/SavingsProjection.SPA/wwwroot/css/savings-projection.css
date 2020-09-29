@@ -29,3 +29,8 @@
 .materialize-history{
     cursor: pointer;
 }
+
+
+.materialize-history-delete {
+    cursor: pointer;
+}

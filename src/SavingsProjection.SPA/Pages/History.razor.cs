@@ -39,14 +39,12 @@ namespace SavingsProjection.SPA.Pages
             materializedMoneyItems = await savingProjectionAPI.GetMaterializedMoneyItems(FilterDateFrom, FilterDateTo);
         }
 
-       
-
-        async Task SaveMaterializedHistory()
+        async Task DeleteMaterializedHistory(MaterializedMoneyItem item)
         {
-            var res = await dialogService.Confirm("Do you want to save the projection to the history?", "Save the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+            var res = await dialogService.Confirm($"Do you want to delete the projection to the history until {item.Date.ToShortDateString()}?", "Delete the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
             if (res.HasValue && res.Value)
             {
-                await savingProjectionAPI.PostSavingsProjectionToHistory();
+                await savingProjectionAPI.DeleteMaterializedMoneyItemToHistory(item.ID);
                 await InitializeList();
             }
         }
