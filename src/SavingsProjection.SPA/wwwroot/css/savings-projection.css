@@ -16,3 +16,7 @@
 .edit-adjustment {
     cursor: pointer;
 }
+
+.text-none {
+    color: #0159cc;
+}
