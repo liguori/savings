@@ -7,7 +7,6 @@ namespace SavingsProjection.SPA.Services
 {
     public interface ISavingProjectionApi
     {
-
         [Get("/api/SavingsProjection")]
         Task<MaterializedMoneyItem[]> GetSavingsProjection(DateTime? from, DateTime? to);
 
@@ -38,5 +37,13 @@ namespace SavingsProjection.SPA.Services
         [Get("/api/RecurrencyAdjustements/ByIDRecurrency/{idRecurrency}")]
         Task<RecurrencyAdjustement> GetRecurrencyAdjustementByIDRecurrency(long idRecurrency);
 
+        [Post("/api/RecurrencyAdjustements")]
+        Task<RecurrencyAdjustement> InsertRecurrencyAdjustment(RecurrencyAdjustement recurrencyAdjustement);
+
+        [Put("/api/RecurrencyAdjustements/{id}")]
+        Task<RecurrencyAdjustement> EditRecurrencyAdjustment(long id, RecurrencyAdjustement recurrencyAdjustement);
+
+        [Delete("/api/RecurrencyAdjustements/{id}")]
+        Task<RecurrencyAdjustement> DeleteRecurrencyAdjustment(long id);
     }
 }
