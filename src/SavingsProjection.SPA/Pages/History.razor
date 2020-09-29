@@ -1,0 +1,93 @@
+﻿@page "/history"
+<h1>History</h1>
+@if (materializedMoneyItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <span>From:</span>
+    <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
+    <span>To:</span>
+    <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+    <table class="table table-sm table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date</th>
+                <th class="text-right">Amount</th>
+                <th></th>
+                <th class="text-right">Projection</th>
+                <th>Note</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in materializedMoneyItems)
+            {
+                <tr class="@(item.EndPeriod ? "end-period" : "")">
+                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                    <td class="text-right">@item.Amount.ToString("N")</td>
+                    <td class="text-center">
+                        @{
+                            var iconToUse = "";
+                            var classToUse = "";
+                            if (!item.EndPeriod)
+                            {
+                                if (item.Amount > 0)
+                                {
+                                    iconToUse = "arrow-thick-top";
+                                    classToUse = "text-success";
+                                }
+                                else if (item.Amount < 0)
+                                {
+                                    iconToUse = "arrow-thick-bottom";
+                                    classToUse = "text-danger";
+                                }
+                                else
+                                {
+                                    iconToUse = "ellipses";
+                                    classToUse = "text-none";
+                                }
+                            }
+                            else
+                            {
+                                if (item.Amount >= 0)
+                                {
+                                    iconToUse = "circle-check";
+                                    classToUse = "text-success";
+                                }
+                                else
+                                {
+                                    iconToUse = "circle-x";
+                                    classToUse = "text-danger";
+                                }
+                            }
+                        }
+                        <span class="oi oi-@iconToUse @classToUse" aria-hidden="true" title="Fixed"></span>
+                    </td>
+                    @{
+                        var projectionStyle = "text-right";
+                        if (item.EndPeriod) projectionStyle += " important-amount";
+                    }
+                    <td class="@projectionStyle">
+                        @item.Projection.ToString("N")
+                    </td>
+                    <td>@item.Note</td>
+                    <td>
+                        @if (!item.EndPeriod)
+                        {
+                            if (item.IsRecurrent)
+                            {
+                                <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent"></span>
+                            }
+                            else
+                            {
+                                <span class="oi oi-pin" aria-hidden="true" title="Fixed"></span>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

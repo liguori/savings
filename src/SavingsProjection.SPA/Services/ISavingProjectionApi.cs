@@ -48,5 +48,8 @@ namespace SavingsProjection.SPA.Services
 
         [Post("/api/SavingsProjection/ToHistory")]
         Task PostSavingsProjectionToHistory();
+
+        [Get("/api/MaterializedMoneyItems")]
+        Task<MaterializedMoneyItem[]> GetMaterializedMoneyItems(DateTime? from, DateTime? to);
     }
 }
