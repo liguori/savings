@@ -129,7 +129,6 @@ namespace SavingsProjection.API.Services
                 resItem.Projection = lastProjectionValue + resItem.Amount;
                 lastProjectionValue = resItem.Projection;
             }
-            res.RemoveAll(x => x.Amount == 0 && !x.EndPeriod);
             if (from.HasValue) res.RemoveAll(x => x.Date <= from);
             return res;
         }

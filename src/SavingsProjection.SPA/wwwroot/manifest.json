@@ -1,6 +1,6 @@
 {
-  "name": "SavingsProjection.SPA",
-  "short_name": "SavingsProjection.SPA",
+  "name": "Savings Projection",
+  "short_name": "Savings Projection",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
