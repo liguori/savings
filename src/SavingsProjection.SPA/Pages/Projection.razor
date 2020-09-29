@@ -26,14 +26,14 @@ else
             {
                 <tr class="@(item.EndPeriod ? "end-period" : "")">
                     <th>
-                        @if (item.Date <= DateTime.Now)
+                        @if (item.Date <= DateTime.Now.Date)
                         {
                             <span class="oi oi-check done-item" aria-hidden="true"></span>
                         }
                     </th>
                     <td>@item.Date.ToString("dd/MM/yyyy")</td>
                     <td class="text-right">@item.Amount.ToString("N")</td>
-                    <td class="@(item.Date <= DateTime.Now ? "text-right done-projection" : "text-right")">@item.Projection.ToString("N")</td>
+                    <td class="@(item.Date <= DateTime.Now.Date ? "text-right done-projection" : "text-right")">@item.Projection.ToString("N")</td>
                     <td>@item.Note</td>
                     <td>
                         @if (item.IsRecurrent)
@@ -42,7 +42,7 @@ else
                         }
                         else
                         {
-                            <span class="oi oi-list-rich" aria-hidden="true" title="Fixed"></span>
+                            <span class="oi oi-pin" aria-hidden="true" title="Fixed"></span>
                         }
                     </td>
                 </tr>

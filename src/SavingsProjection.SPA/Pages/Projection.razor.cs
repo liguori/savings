@@ -24,7 +24,7 @@ namespace SavingsProjection.SPA.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            FilterDateTo = DateTime.Now.AddYears(1);
+            FilterDateTo = DateTime.Now.Date.AddYears(1);
             await InitializeList();
         }
 

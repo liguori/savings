@@ -31,7 +31,7 @@ else
             {
                 <tr>
                     <th>
-                        @if (item.Date <= DateTime.Now)
+                        @if (item.Date <= DateTime.Now.Date)
                         {
                             <span class="oi oi-check done-item" aria-hidden="true"></span>
                         }

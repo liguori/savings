@@ -27,7 +27,7 @@ namespace SavingsProjection.SPA.Pages
         {
             if (isNew)
             {
-                this.recurrentItemToEdit.StartDate = DateTime.Now;
+                this.recurrentItemToEdit.StartDate = DateTime.Now.Date;
             }
             recurrentItemToEdit.RecurrentMoneyItemID = parentItemID;
         }

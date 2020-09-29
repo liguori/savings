@@ -25,8 +25,8 @@ namespace SavingsProjection.SPA.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            FilterDateFrom = DateTime.Now.AddMonths(-2);
-            FilterDateTo = DateTime.Now;
+            FilterDateFrom = DateTime.Now.Date.AddMonths(-2);
+            FilterDateTo = DateTime.Now.Date;
             await InitializeList();
         }
 
@@ -54,19 +54,20 @@ namespace SavingsProjection.SPA.Pages
 
         async Task AddNew()
         {
-            var res = (bool)await dialogService.OpenAsync<FixedItemEdit>($"Add new",
+            bool res = await dialogService.OpenAsync<FixedItemEdit>($"Add new",
                          new Dictionary<string, object>() { { "fixedItemToEdit", new SavingsProjection.Model.FixedMoneyItem() }, { "isNew", true } },
                          new DialogOptions() { Width = "600px", Height = "530px" });
-            if (res) {
-                await InitializeList(); 
-                StateHasChanged(); 
+            if (res)
+            {
+                await InitializeList();
+                StateHasChanged();
             }
         }
 
 
         async Task Edit(FixedMoneyItem item)
         {
-            var res = (bool)await dialogService.OpenAsync<FixedItemEdit>($"Edit item",
+            bool res = await dialogService.OpenAsync<FixedItemEdit>($"Edit item",
                              new Dictionary<string, object>() { { "fixedItemToEdit", item }, { "isNew", false } },
                              new DialogOptions() { Width = "600px", Height = "530px" });
             if (res)

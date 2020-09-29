@@ -25,7 +25,7 @@ namespace SavingsProjection.SPA.Pages
         {
             if (isNew)
             {
-                this.fixedItemToEdit.Date = DateTime.Now;
+                this.fixedItemToEdit.Date = DateTime.Now.Date;
             }
         }
 
