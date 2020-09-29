@@ -48,5 +48,15 @@ namespace SavingsProjection.SPA.Pages
             await InitializeList();
             StateHasChanged();
         }
+
+        async Task SaveMaterializedHistory()
+        {
+            var res = await dialogService.Confirm("Do you want to save the projection to the history?", "Save the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+            if (res.HasValue && res.Value)
+            {
+                await savingProjectionAPI.PostSavingsProjectionToHistory();
+                await InitializeList();
+            }
+        }
     }
 }

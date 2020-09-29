@@ -25,3 +25,7 @@
 .important-amount {
     border: 2px solid #ff9613 !important;
 }
+
+.materialize-history{
+    cursor: pointer;
+}

@@ -26,7 +26,7 @@ namespace SavingsProjection.SPA.Pages
         protected override async Task OnInitializedAsync()
         {
             FilterDateFrom = DateTime.Now.Date.AddMonths(-2);
-            FilterDateTo = DateTime.Now.Date;
+            FilterDateTo = DateTime.Now.Date.AddDays(15);
             await InitializeList();
         }
 

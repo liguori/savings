@@ -27,5 +27,12 @@ namespace SavingsProjection.API.Controllers
         }
 
 
+        [HttpPost("ToHistory")]
+        public async Task<ActionResult> PostSavingsProjectionToHistory()
+        {
+            await calculator.SaveProjectionToHistory();
+            return Ok();
+        }
+
     }
 }

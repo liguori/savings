@@ -1,5 +1,6 @@
 @page "/"
 <h1>Projection</h1>
+@{ var saveHistoryShown = false; }
 @if (materializedMoneyItems == null)
 {
     <p><em>Loading...</em></p>
@@ -78,7 +79,7 @@ else
                         if (item.EndPeriod) projectionStyle += " important-amount";
                     }
                     <td class="@projectionStyle">
-                         @item.Projection.ToString("N")
+                        @item.Projection.ToString("N")
                     </td>
                     <td>@item.Note</td>
                     <td>
@@ -91,6 +92,14 @@ else
                             else
                             {
                                 <span class="oi oi-pin" aria-hidden="true" title="Fixed"></span>
+                            }
+                        }
+                        else
+                        {
+                            if (!saveHistoryShown)
+                            {
+                                saveHistoryShown = true;
+                                <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="@(()=>SaveMaterializedHistory())"></span>
                             }
                         }
                     </td>

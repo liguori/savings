@@ -18,19 +18,27 @@ namespace SavingsProjection.API.Services
             this.context = context;
         }
 
-        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to)
+        public async Task SaveProjectionToHistory()
+        {
+            var projectionItems = await CalculateAsync(null, null, true);
+            await this.context.MaterializedMoneyItems.AddRangeAsync(projectionItems);
+            await this.context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false)
         {
             var res = new List<MaterializedMoneyItem>();
             var fromDate = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault()?.Date ?? throw new Exception("Unable to define the starting time");
-            var periodStart = fromDate;
+            var periodStart = fromDate.AddDays(1);
             var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
             DateTime periodEnd;
-            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= to)
+            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= (to ?? new DateTime(9999,12,31)))
             {
+                if (!to.HasValue) breakFirstEndPeriod = true;
                 int accumulatorStartingIndex = res.Count;
-                var fixedItemsNotAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
-                var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
+                var fixedItemsNotAccumulate = await context.FixedMoneyItems.Where(x => x.Date > periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
+                var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date > periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart < x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
 
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
@@ -121,6 +129,7 @@ namespace SavingsProjection.API.Services
 
                 res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = string.Empty, Date = periodEnd, EndPeriod = true, IsRecurrent = false });
                 periodStart = periodEnd.AddDays(1);
+                if (breakFirstEndPeriod) break;
             }
             //Calculate the projection
             var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).FirstOrDefault().Projection;

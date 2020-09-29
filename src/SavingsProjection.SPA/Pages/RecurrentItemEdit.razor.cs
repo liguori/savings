@@ -14,6 +14,9 @@ namespace SavingsProjection.SPA.Pages
         [Inject]
         DialogService dialogService { get; set; }
 
+        [Inject]
+        public NotificationService notificationService { get; set; }
+
         [Parameter]
         public RecurrentMoneyItem recurrentItemToEdit { get; set; }
 
@@ -32,10 +35,21 @@ namespace SavingsProjection.SPA.Pages
             recurrentItemToEdit.RecurrentMoneyItemID = parentItemID;
         }
 
+
+        bool ValidateData()
+        {
+            if(recurrentItemToEdit.Amount>0 && recurrentItemToEdit.Type== MoneyType.PeriodicBudget)
+            {
+                notificationService.Notify(NotificationSeverity.Error, "Attention", "The amount for the periodic budget must be negative");
+            }
+            return true;
+        }
+
         private async void OnValidSubmit()
         {
             try
             {
+                if (!ValidateData()) return;
                 if (isNew)
                 {
                     await savingProjectionAPI.InsertRecurrentMoneyItem(recurrentItemToEdit);
