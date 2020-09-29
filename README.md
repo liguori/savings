@@ -10,3 +10,13 @@
 - SQLite
 - Electron
 
+
+
+## Screenshots
+
+**Savings Projection**
+![Full fixed lenght file example](docs/SavingsProjection.png)
+
+
+**Recurrent Items**
+![Full fixed lenght file example](docs/RecurrentItems.png)
