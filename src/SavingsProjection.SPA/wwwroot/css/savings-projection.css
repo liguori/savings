@@ -20,3 +20,8 @@
 .text-none {
     color: #0159cc;
 }
+
+
+.important-amount {
+    border: 2px solid #ff9613 !important;
+}

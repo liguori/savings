@@ -38,37 +38,60 @@ else
                         @{
                             var iconToUse = "";
                             var classToUse = "";
-                            if (item.Amount > 0)
+                            if (!item.EndPeriod)
                             {
-                                iconToUse = "arrow-thick-top";
-                                classToUse = "text-success";
-                            }
-                            else if (item.Amount < 0)
-                            {
-                                iconToUse = "arrow-thick-bottom";
-                                classToUse = "text-danger";
+                                if (item.Amount > 0)
+                                {
+                                    iconToUse = "arrow-thick-top";
+                                    classToUse = "text-success";
+                                }
+                                else if (item.Amount < 0)
+                                {
+                                    iconToUse = "arrow-thick-bottom";
+                                    classToUse = "text-danger";
+                                }
+                                else
+                                {
+                                    iconToUse = "ellipses";
+                                    classToUse = "text-none";
+                                }
                             }
                             else
                             {
-                                iconToUse = "ellipses";
-                                classToUse = "text-none";
+                                if (item.Amount >= 0)
+                                {
+                                    iconToUse = "circle-check";
+                                    classToUse = "text-success";
+                                }
+                                else
+                                {
+                                    iconToUse = "circle-x";
+                                    classToUse = "text-danger";
+                                }
                             }
                         }
-                        @if (!item.EndPeriod)
-                        {
-                            <span class="oi oi-@iconToUse @classToUse" aria-hidden="true" title="Fixed"></span>
-                        }
+                        <span class="oi oi-@iconToUse @classToUse" aria-hidden="true" title="Fixed"></span>
                     </td>
-                    <td class="@(item.Date <= DateTime.Now.Date ? "text-right done-projection" : "text-right")">@item.Projection.ToString("N")</td>
+                    @{
+                        var projectionStyle = "text-right";
+                        projectionStyle += item.Date <= DateTime.Now.Date ? " done-projection" : "";
+                        if (item.EndPeriod) projectionStyle += " important-amount";
+                    }
+                    <td class="@projectionStyle">
+                         @item.Projection.ToString("N")
+                    </td>
                     <td>@item.Note</td>
                     <td>
-                        @if (item.IsRecurrent)
+                        @if (!item.EndPeriod)
                         {
-                            <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent" @onclick="@(()=>AdjustRecurrency(item))"></span>
-                        }
-                        else
-                        {
-                            <span class="oi oi-pin" aria-hidden="true" title="Fixed"></span>
+                            if (item.IsRecurrent)
+                            {
+                                <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent" @onclick="@(()=>AdjustRecurrency(item))"></span>
+                            }
+                            else
+                            {
+                                <span class="oi oi-pin" aria-hidden="true" title="Fixed"></span>
+                            }
                         }
                     </td>
                 </tr>

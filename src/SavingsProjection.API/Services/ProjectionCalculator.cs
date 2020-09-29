@@ -27,6 +27,7 @@ namespace SavingsProjection.API.Services
             DateTime periodEnd;
             while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= to)
             {
+                int accumulatorStartingIndex = res.Count;
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
                 var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
                 var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
@@ -118,7 +119,7 @@ namespace SavingsProjection.API.Services
                     }
                 }
 
-                res.Add(new MaterializedMoneyItem { Amount = 0, Note = string.Empty, Date = periodEnd, EndPeriod = true, IsRecurrent = false });
+                res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = string.Empty, Date = periodEnd, EndPeriod = true, IsRecurrent = false });
                 periodStart = periodEnd.AddDays(1);
             }
             //Calculate the projection
@@ -126,7 +127,7 @@ namespace SavingsProjection.API.Services
             res = res.OrderBy(x => x.Date).ThenByDescending(x => x.TimelineWeight).ToList();
             foreach (var resItem in res)
             {
-                resItem.Projection = lastProjectionValue + resItem.Amount;
+                resItem.Projection = lastProjectionValue + (resItem.EndPeriod ? 0 : resItem.Amount);
                 lastProjectionValue = resItem.Projection;
             }
             if (from.HasValue) res.RemoveAll(x => x.Date <= from);
