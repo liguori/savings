@@ -8,6 +8,8 @@ trigger:
     include:
     - master
   paths:
+    include:
+    - src/SavingsProjection.API/*
     exclude:
     - pipelines/*
 pool:
