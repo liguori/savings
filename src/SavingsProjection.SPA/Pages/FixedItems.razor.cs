@@ -54,10 +54,10 @@ namespace SavingsProjection.SPA.Pages
 
         async Task AddNew()
         {
-            bool res = await dialogService.OpenAsync<FixedItemEdit>($"Add new",
+            bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Add new",
                          new Dictionary<string, object>() { { "fixedItemToEdit", new SavingsProjection.Model.FixedMoneyItem() }, { "isNew", true } },
-                         new DialogOptions() { Width = "600px", Height = "530px" });
-            if (res)
+                         new DialogOptions() { Width = "600px", Height = "450px" });
+            if (res.HasValue && res.Value)
             {
                 await InitializeList();
                 StateHasChanged();
@@ -67,10 +67,10 @@ namespace SavingsProjection.SPA.Pages
 
         async Task Edit(FixedMoneyItem item)
         {
-            bool res = await dialogService.OpenAsync<FixedItemEdit>($"Edit item",
+            bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Edit item",
                              new Dictionary<string, object>() { { "fixedItemToEdit", item }, { "isNew", false } },
-                             new DialogOptions() { Width = "600px", Height = "530px" });
-            if (res)
+                             new DialogOptions() { Width = "600px", Height = "450px" });
+            if (res.HasValue && res.Value)
             {
                 await InitializeList();
                 StateHasChanged();

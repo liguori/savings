@@ -13,7 +13,7 @@ namespace SavingsProjection.Model
         public string Note { get; set; }
         public MoneyCategory Category { get; set; }
         public bool AccumulateForBudget { get; set; }
-
         public int TimelineWeight { get; set; }
+        public long? CategoryID { get; set; }
     }
 }

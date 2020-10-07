@@ -3,6 +3,7 @@ using Radzen;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
 using System;
+using System.Threading.Tasks;
 
 namespace SavingsProjection.SPA.Pages
 {
@@ -21,12 +22,19 @@ namespace SavingsProjection.SPA.Pages
         [Parameter]
         public bool isNew { get; set; }
 
+        public MoneyCategory[] Categories { get; set; }
+
         protected override void OnInitialized()
         {
             if (isNew)
             {
                 this.fixedItemToEdit.Date = DateTime.Now.Date;
             }
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            Categories = await savingProjectionAPI.GetMoneyCategories();
         }
 
         private async void OnValidSubmit()
@@ -47,7 +55,7 @@ namespace SavingsProjection.SPA.Pages
             {
                 throw ex;
             }
-          
+
         }
 
     }

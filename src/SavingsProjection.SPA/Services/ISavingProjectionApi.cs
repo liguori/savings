@@ -54,5 +54,8 @@ namespace SavingsProjection.SPA.Services
 
         [Delete("/api/MaterializedMoneyItems/ToHistory/{id}")]
         Task DeleteMaterializedMoneyItemToHistory(long id);
+
+        [Get("/api/MoneyCategories")]
+        Task<MoneyCategory[]> GetMoneyCategories();
     }
 }

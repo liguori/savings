@@ -3,6 +3,7 @@ using Radzen;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
 using System;
+using System.Threading.Tasks;
 
 namespace SavingsProjection.SPA.Pages
 {
@@ -20,6 +21,8 @@ namespace SavingsProjection.SPA.Pages
         [Parameter]
         public RecurrentMoneyItem recurrentItemToEdit { get; set; }
 
+        public MoneyCategory[] Categories { get; set; }
+
         [Parameter]
         public bool isNew { get; set; }
 
@@ -35,6 +38,10 @@ namespace SavingsProjection.SPA.Pages
             recurrentItemToEdit.RecurrentMoneyItemID = parentItemID;
         }
 
+        protected override async Task OnInitializedAsync()
+        {
+            Categories = await savingProjectionAPI.GetMoneyCategories();
+        }
 
         bool ValidateData()
         {

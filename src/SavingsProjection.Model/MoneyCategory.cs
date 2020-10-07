@@ -9,6 +9,6 @@ namespace SavingsProjection.Model
     {
         public long ID { get; set; }
 
-        public long Description { get; set; }
+        public string Description { get; set; }
     }
 }
