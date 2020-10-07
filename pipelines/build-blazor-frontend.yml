@@ -15,7 +15,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: './src/SavingsProjection.SPA/SavingsProjection.SPA.csproj'
-    arguments: '-o $(Pipeline.Workspace)/output -c ''Release'''
+    arguments: '-o "$(Pipeline.Workspace)/output" -c "Release"'
     modifyOutputPath: false
 
 - task: PublishPipelineArtifact@1
