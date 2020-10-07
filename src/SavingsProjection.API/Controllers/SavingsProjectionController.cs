@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SavingsProjection.API.Services.Abstract;
 using SavingsProjection.Model;
 using System;
@@ -8,15 +9,19 @@ using System.Threading.Tasks;
 namespace SavingsProjection.API.Controllers
 {
 
+
     [Route("api/[controller]")]
     [ApiController]
     public class SavingsProjectionController : ControllerBase
     {
         private readonly IProjectionCalculator calculator;
+        public readonly IConfiguration configuration;
 
-        public SavingsProjectionController(IProjectionCalculator calculator)
+
+        public SavingsProjectionController(IProjectionCalculator calculator, IConfiguration configuration)
         {
             this.calculator = calculator;
+            this.configuration = configuration;
         }
 
         // GET: api/SavingsProjection
@@ -32,6 +37,12 @@ namespace SavingsProjection.API.Controllers
         {
             await calculator.SaveProjectionToHistory();
             return Ok();
+        }
+
+        [HttpGet("Backup")]
+        public async Task<ActionResult> GetBackup()
+        {
+            return File(await System.IO.File.ReadAllBytesAsync(configuration["DatabasePath"]), "application/octet-stream", "Database.db");
         }
 
     }
