@@ -1,3 +1,2 @@
-/src/dist/*
-/src/.vs/SavingsProjection.API
-/src/.vs/SavingsProjection
+/.vs
+/src/.vs

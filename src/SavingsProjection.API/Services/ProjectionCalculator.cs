@@ -32,7 +32,7 @@ namespace SavingsProjection.API.Services
             var periodStart = fromDate.AddDays(1);
             var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
             DateTime periodEnd;
-            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= (to ?? new DateTime(9999,12,31)))
+            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= (to ?? new DateTime(9999, 12, 31)))
             {
                 if (!to.HasValue) breakFirstEndPeriod = true;
                 int accumulatorStartingIndex = res.Count;
@@ -101,7 +101,10 @@ namespace SavingsProjection.API.Services
                                 var associatedIteminstallment = CalculateInstallmentInPeriod(associatedItem, installment, installment);
                                 if (associatedIteminstallment.Count() > 0)
                                 {
-                                    currentInstallmentAmount += associatedItem.Amount;
+                                    if (currentAdjustment?.RecurrencyNewAmount == null)
+                                    {
+                                        currentInstallmentAmount += associatedItem.Amount;
+                                    }
                                     lstNoteAssociatedItems.Add(associatedItem.Note);
                                 }
                             }
