@@ -9,18 +9,13 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-
 steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     publishWebProjects: false
     projects: './src/SavingsProjection.SPA/SavingsProjection.SPA.csproj'
-    arguments: '--output $(Pipeline.Workspace)/output'
+    arguments: '-o $(Pipeline.Workspace)/output -c ''Release'''
     modifyOutputPath: false
 
 - task: PublishPipelineArtifact@1
