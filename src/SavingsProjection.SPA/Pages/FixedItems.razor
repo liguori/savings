@@ -8,45 +8,52 @@
 }
 else
 {
-    <span>From:</span>
-    <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
-    <span>To:</span>
-    <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
-    <br>
+    <div class="form-row">
+        <div class="col-md-2 col">
+            <span>From:</span><br />
+            <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
+        </div>
+        <div class="col-md-10 col">
+            <span>To:</span><br />
+            <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+        </div>
+    </div>
     <button class="btn btn-success" @onclick="@(() => AddNew())">
         <span class="oi oi-plus" aria-hidden="true"></span>ADD
     </button>
-    <table class="table table-sm table-striped table-hover">
-        <thead class="thead-dark">
-            <tr>
-                <th></th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Note</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in fixedMoneyItems)
-            {
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-striped table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <th>
-                        @if (item.Date <= DateTime.Now.Date)
-                        {
-                            <span class="oi oi-check done-item" aria-hidden="true"></span>
-                        }
-                    </th>
-                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                    <td class="text-right">@item.Amount.ToString("N")</td>
-                    <td>@item.Note</td>
-                    <td>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete(item.ID))"><span class="oi oi-trash" aria-hidden="true"></span></button>
-                        <button class="btn btn-success" @onclick="@(() => Edit(item))">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </button>
-                    </td>
+                    <th></th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Note</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in fixedMoneyItems)
+                {
+                    <tr>
+                        <th>
+                            @if (item.Date <= DateTime.Now.Date)
+                            {
+                                <span class="oi oi-check done-item" aria-hidden="true"></span>
+                            }
+                        </th>
+                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                        <td class="text-right">@item.Amount.ToString("N")</td>
+                        <td>@item.Note</td>
+                        <td>
+                            <button class="btn btn-danger" @onclick="@(()=>Delete(item.ID))"><span class="oi oi-trash" aria-hidden="true"></span></button>
+                            <button class="btn btn-success" @onclick="@(() => Edit(item))">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }

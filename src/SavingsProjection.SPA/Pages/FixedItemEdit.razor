@@ -1,24 +1,24 @@
 ﻿<EditForm Model="@fixedItemToEdit" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
     <div class="form-row">
-        <div class="form-group col-md-6">
+        <div class="form-group col">
             <label>Date :</label><br />
             <RadzenDatePicker @bind-Value="fixedItemToEdit.Date" DateFormat="dd/MM/yyyy" />
             <ValidationMessage For="@(() => fixedItemToEdit.Date)" />
         </div>
-        <div class="form-group col-md-6">
+        <div class="form-group col">
             <label>Amount:</label>
             <InputNumber @bind-Value="@fixedItemToEdit.Amount" @bind-Value:format="F2" class="form-control" />
             <ValidationMessage For="@(() => fixedItemToEdit.Amount)" />
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-6">
+        <div class="form-group col">
             <label>Accumulate:</label><br />
             <InputCheckbox @bind-Value="@fixedItemToEdit.AccumulateForBudget" />
             <ValidationMessage For="@(() => fixedItemToEdit.AccumulateForBudget)" />
         </div>
-        <div class="form-group col-md-6">
+        <div class="form-group col">
             <label>Timeline weight:</label>
             <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control" />
             <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />

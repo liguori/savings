@@ -57,7 +57,7 @@ namespace SavingsProjection.SPA.Pages
         {
             bool? res = await dialogService.OpenAsync<RecurrentItemEdit>($"Add new",
                         new Dictionary<string, object>() { { "recurrentItemToEdit", new SavingsProjection.Model.RecurrentMoneyItem() }, { "isNew", true }, { "parentItemID", parentItemID } },
-                        new DialogOptions() { Width = "600px", Height = "530px" });
+                        new DialogOptions() { Width = "600px"});
             if (res.HasValue && res.Value)
             {
                 await InitializeList();
@@ -69,7 +69,7 @@ namespace SavingsProjection.SPA.Pages
         {
             bool? res =  await dialogService.OpenAsync<RecurrentItemEdit>($"Edit item",
                              new Dictionary<string, object>() { { "recurrentItemToEdit", item }, { "isNew", false }, { "parentItemID", parentItemID } },
-                             new DialogOptions() { Width = "600px", Height = "530px" });
+                             new DialogOptions() { Width = "600px" });
             if (res.HasValue && res.Value)
             {
                 await InitializeList();
