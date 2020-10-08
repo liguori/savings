@@ -26,7 +26,7 @@
     border: 2px solid #ff9613 !important;
 }
 
-.materialize-history{
+.materialize-history {
     cursor: pointer;
 }
 
@@ -34,3 +34,17 @@
 .materialize-history-delete {
     cursor: pointer;
 }
+
+
+.table tbody td.ellipses {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+    .table tbody td.ellipses:hover {
+        text-overflow: clip;
+        white-space: normal;
+        word-break: break-all;
+    }
