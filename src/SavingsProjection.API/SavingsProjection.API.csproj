@@ -22,4 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SavingsProjection.Model\SavingsProjection.Model.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Authentication\" />
+  </ItemGroup>
 </Project>

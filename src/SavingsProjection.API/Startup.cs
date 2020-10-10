@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SavingsProjection.API.Authentication;
 using SavingsProjection.API.Infrastructure;
 using SavingsProjection.API.Services;
 using SavingsProjection.API.Services.Abstract;
@@ -31,6 +32,31 @@ namespace SavingsProjection.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Savings Projection", Version = "v1" });
+                //Add API Key Informations
+                c.AddSecurityDefinition(ApiKeyAuthOptions.ApiKeySchemaName, new OpenApiSecurityScheme
+                {
+                    Description = "Api key needed to access the endpoints. " + ApiKeyAuthOptions.HeaderName + ": My_API_Key",
+                    In = ParameterLocation.Header,
+                    Name = ApiKeyAuthOptions.HeaderName,
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Name = ApiKeyAuthOptions.HeaderName,
+                            Type = SecuritySchemeType.ApiKey,
+                            In = ParameterLocation.Header,
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = ApiKeyAuthOptions.ApiKeySchemaName
+                            },
+                         },
+                         new string[] {}
+                     }
+                });
             });
 
             services.AddDbContext<SavingProjectionContext>(
@@ -50,12 +76,14 @@ namespace SavingsProjection.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,SavingProjectionContext context)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            context.Database.EnsureCreated();
 
             app.UseCors("AllowAllOrigin");
 
@@ -71,6 +99,8 @@ namespace SavingsProjection.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
