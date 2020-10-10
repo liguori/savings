@@ -22,6 +22,7 @@ namespace SavingsProjection.SPA
             builder.Services.AddRefitClient<ISavingProjectionApi>().ConfigureHttpClient(c =>
             {
                 c.BaseAddress = new Uri(builder.Configuration["SavingProjectionApiServiceUrl"]);
+                c.DefaultRequestHeaders.Add("X-API-Key", builder.Configuration["SavingProjectionApiKey"]);
             });
 
             await builder.Build().RunAsync();

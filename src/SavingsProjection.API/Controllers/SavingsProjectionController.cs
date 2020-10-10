@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using SavingsProjection.API.Services.Abstract;
 using SavingsProjection.Model;
@@ -8,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace SavingsProjection.API.Controllers
 {
-
-
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SavingsProjectionController : ControllerBase

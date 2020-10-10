@@ -15,6 +15,8 @@ namespace SavingsProjection.API
 {
     public class Startup
     {
+        const string ApiKeys = "ApiKeys";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,6 +28,15 @@ namespace SavingsProjection.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // Add the ApiKey Authentication
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = ApiKeyAuthOptions.ApiKeySchemaName;
+                options.DefaultChallengeScheme = ApiKeyAuthOptions.ApiKeySchemaName;
+            })
+            .AddApiKeyAuth(options => options.AuthKeys = Configuration[ApiKeys].Split(","));
+
             services.AddTransient<IProjectionCalculator, ProjectionCalculator>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
