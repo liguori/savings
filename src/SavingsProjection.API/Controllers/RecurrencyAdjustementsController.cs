@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SavingsProjection.API.Infrastructure;
 using SavingsProjection.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,11 +30,11 @@ namespace SavingsProjection.API.Controllers
         }
 
 
-        // GET: api/RecurrencyAdjustements/ByIDRecurrency/5
-        [HttpGet("ByIDRecurrency/{idRecurrency}", Name = "ByIDRecurrency")]
-        public async Task<ActionResult<RecurrencyAdjustement>> GetByIDRecurrency(long idRecurrency)
+        // GET: api/RecurrencyAdjustements/ByIDRecurrencyAndDate
+        [HttpGet("ByIDRecurrencyAndDate", Name = "ByIDRecurrencyAndDate")]
+        public async Task<ActionResult<RecurrencyAdjustement>> GetByIDRecurrency(long idRecurrency, DateTime date)
         {
-            return await _context.RecurrencyAdjustements.Where(x => x.RecurrentMoneyItemID == idRecurrency).FirstOrDefaultAsync();
+            return await _context.RecurrencyAdjustements.Where(x => x.RecurrentMoneyItemID == idRecurrency && x.RecurrencyNewDate == date).FirstOrDefaultAsync();
         }
 
         // GET: api/RecurrencyAdjustements/5

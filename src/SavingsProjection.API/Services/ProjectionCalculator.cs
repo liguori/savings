@@ -151,15 +151,28 @@ namespace SavingsProjection.API.Services
             var lstInstallmentsDate = new List<DateTime>();
             if (item.StartDate <= periodEnd && periodStart <= item.EndDate)
             {
-                var currentInstallmentDate = item.StartDate;
+                var currentInstallmentOriginal = item.StartDate;
+                var currentInstallmentDate = CalculateActualInstallmentDate(item, currentInstallmentOriginal);
                 while (currentInstallmentDate <= periodEnd)
                 {
                     if (currentInstallmentDate >= periodStart) lstInstallmentsDate.Add(currentInstallmentDate);
                     if (item.RecurrencyInterval == 0) break;
-                    currentInstallmentDate = CalculateNextReccurrency(currentInstallmentDate, item.RecurrencyType, item.RecurrencyInterval);
+                    currentInstallmentOriginal = CalculateNextReccurrency(currentInstallmentOriginal, item.RecurrencyType, item.RecurrencyInterval);
+                    currentInstallmentDate = CalculateActualInstallmentDate(item, currentInstallmentOriginal);
                 }
             }
             return lstInstallmentsDate;
+        }
+
+        private static DateTime CalculateActualInstallmentDate(RecurrentMoneyItem item, DateTime currentInstallmentOriginal)
+        {
+            DateTime currentInstallmentDate;
+            var adjustment = item.Adjustements?.Where(x => x.RecurrencyDate == currentInstallmentOriginal && x.RecurrencyNewDate.HasValue).FirstOrDefault();
+            if (adjustment != null)
+                currentInstallmentDate = adjustment.RecurrencyNewDate.Value;
+            else
+                currentInstallmentDate = currentInstallmentOriginal;
+            return currentInstallmentDate;
         }
 
         DateTime CalculateNextReccurrency(DateTime currentEndPeriod, RecurrencyType recurrType, int recurrIterval)

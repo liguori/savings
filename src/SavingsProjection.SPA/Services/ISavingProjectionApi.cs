@@ -34,8 +34,8 @@ namespace SavingsProjection.SPA.Services
         [Put("/api/RecurrentMoneyItems/{id}")]
         Task<RecurrentMoneyItem> EditRecurrentMoneyItem(long id, RecurrentMoneyItem fixedMoneyItem);
 
-        [Get("/api/RecurrencyAdjustements/ByIDRecurrency/{idRecurrency}")]
-        Task<RecurrencyAdjustement> GetRecurrencyAdjustementByIDRecurrency(long idRecurrency);
+        [Get("/api/RecurrencyAdjustements/ByIDRecurrencyAndDate")]
+        Task<RecurrencyAdjustement> GetRecurrencyAdjustementByIDRecurrencyAndDate(long idRecurrency, DateTime date);
 
         [Post("/api/RecurrencyAdjustements")]
         Task<RecurrencyAdjustement> InsertRecurrencyAdjustment(RecurrencyAdjustement recurrencyAdjustement);
