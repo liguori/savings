@@ -79,8 +79,8 @@ namespace SavingsProjection.API.Services
                     foreach (var installment in installments)
                     {
                         //Check the adjustements
-                        var currentAdjustment = recurrentItem.Adjustements?.Where(x => x.RecurrencyDate == installment).FirstOrDefault();
-                        var currentInstallmentDate = currentAdjustment?.RecurrencyNewDate ?? installment;
+                        var currentAdjustment = recurrentItem.Adjustements?.Where(x => x.RecurrencyDate == installment.currentDate || x.RecurrencyNewDate.HasValue && x.RecurrencyNewDate == installment.currentDate).FirstOrDefault();
+                        var currentInstallmentDate = currentAdjustment?.RecurrencyNewDate ?? installment.original;
                         var currentInstallmentAmount = currentAdjustment?.RecurrencyNewAmount ?? recurrentItem.Amount;
                         var currentInstallmentNote = recurrentItem.Note;
 
@@ -98,7 +98,7 @@ namespace SavingsProjection.API.Services
                             var lstNoteAssociatedItems = new List<string>();
                             foreach (var associatedItem in recurrentItem.AssociatedItems.Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate))
                             {
-                                var associatedIteminstallment = CalculateInstallmentInPeriod(associatedItem, installment, installment);
+                                var associatedIteminstallment = CalculateInstallmentInPeriod(associatedItem, installment.original, installment.original);
                                 if (associatedIteminstallment.Count() > 0)
                                 {
                                     if (currentAdjustment?.RecurrencyNewAmount == null)
@@ -146,16 +146,16 @@ namespace SavingsProjection.API.Services
             return res;
         }
 
-        IEnumerable<DateTime> CalculateInstallmentInPeriod(RecurrentMoneyItem item, DateTime periodStart, DateTime periodEnd)
+        IEnumerable<(DateTime original, DateTime currentDate)> CalculateInstallmentInPeriod(RecurrentMoneyItem item, DateTime periodStart, DateTime periodEnd)
         {
-            var lstInstallmentsDate = new List<DateTime>();
+            var lstInstallmentsDate = new List<(DateTime original, DateTime currentDate)>();
             if (item.StartDate <= periodEnd && periodStart <= item.EndDate)
             {
                 var currentInstallmentOriginal = item.StartDate;
                 var currentInstallmentDate = CalculateActualInstallmentDate(item, currentInstallmentOriginal);
                 while (currentInstallmentDate <= periodEnd)
                 {
-                    if (currentInstallmentDate >= periodStart) lstInstallmentsDate.Add(currentInstallmentDate);
+                    if (currentInstallmentDate >= periodStart) lstInstallmentsDate.Add((currentInstallmentOriginal, currentInstallmentDate));
                     if (item.RecurrencyInterval == 0) break;
                     currentInstallmentOriginal = CalculateNextReccurrency(currentInstallmentOriginal, item.RecurrencyType, item.RecurrencyInterval);
                     currentInstallmentDate = CalculateActualInstallmentDate(item, currentInstallmentOriginal);

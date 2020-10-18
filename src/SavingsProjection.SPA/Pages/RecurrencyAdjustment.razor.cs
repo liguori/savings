@@ -25,7 +25,7 @@ namespace SavingsProjection.SPA.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var existentAdjustment = await this.savingProjectionAPI.GetRecurrencyAdjustementByIDRecurrencyAndDate(materializedItem.RecurrentMoneyItemID.Value, materializedItem.Date);
+            var existentAdjustment = await this.savingProjectionAPI.GetRecurrencyAdjustementByIDRecurrencyAndDate(materializedItem.RecurrentMoneyItemID.Value, materializedItem.Date.Date);
             if (existentAdjustment != null)
             {
                 this.adjustement = existentAdjustment;
