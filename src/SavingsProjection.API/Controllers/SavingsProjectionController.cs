@@ -6,6 +6,7 @@ using SavingsProjection.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace SavingsProjection.API.Controllers
 {
@@ -26,9 +27,9 @@ namespace SavingsProjection.API.Controllers
 
         // GET: api/SavingsProjection
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MaterializedMoneyItem>>> GetSavingsProjection(DateTime? from, DateTime? to)
+        public async Task<ActionResult<IEnumerable<MaterializedMoneyItem>>> GetSavingsProjection(DateTime? from, DateTime? to, bool onlyInstallment = false)
         {
-            return (List<MaterializedMoneyItem>)await calculator.CalculateAsync(from, to);
+            return (List<MaterializedMoneyItem>)await calculator.CalculateAsync(from, to, false, onlyInstallment);
         }
 
 

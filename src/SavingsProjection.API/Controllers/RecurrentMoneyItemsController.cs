@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SavingsProjection.API.Infrastructure;
 using SavingsProjection.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,9 +24,10 @@ namespace SavingsProjection.API.Controllers
 
         // GET: api/RecurrentMoneyItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems(long? parentItemID)
+        public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems(long? parentItemID,bool onlyActive)
         {
             var res = _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).AsQueryable();
+            if (onlyActive) res = res.Where(x => x.EndDate >= DateTime.Now.Date);
             if (parentItemID.HasValue)
             {
                 res = res.Where(x => x.RecurrentMoneyItemID == parentItemID.Value);

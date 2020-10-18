@@ -8,7 +8,7 @@ namespace SavingsProjection.SPA.Services
     public interface ISavingProjectionApi
     {
         [Get("/api/SavingsProjection")]
-        Task<MaterializedMoneyItem[]> GetSavingsProjection(DateTime? from, DateTime? to);
+        Task<MaterializedMoneyItem[]> GetSavingsProjection(DateTime? from, DateTime? to, bool onlyInstallment = false);
 
         [Get("/api/FixedMoneyItems")]
         Task<FixedMoneyItem[]> GetFixedMoneyItems(DateTime? from, DateTime? to);
@@ -23,7 +23,7 @@ namespace SavingsProjection.SPA.Services
         Task<FixedMoneyItem> EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
 
         [Get("/api/RecurrentMoneyItems")]
-        Task<RecurrentMoneyItem[]> GetRecurrentMoneyItems(long? parentItemID);
+        Task<RecurrentMoneyItem[]> GetRecurrentMoneyItems(long? parentItemID, bool onlyActive);
 
         [Delete("/api/RecurrentMoneyItems/{id}")]
         Task<RecurrentMoneyItem> DeleteRecurrentMoneyItem(long id);

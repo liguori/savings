@@ -1,2 +1,46 @@
 ﻿@page "/reports"
 <h1>Reports</h1>
+@if (RecurrentItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h2>Installments Resume</h2>
+    <div class="row">
+        @for (int i = 0; i < RecurrentItems.Length; i++)
+        {
+            <div class="col-md-3">
+                <b>@RecurrentItems[i].Note</b>
+
+                @{
+                    var currentItemProjection = Projections.Where(x => x.RecurrentMoneyItemID == RecurrentItems[i].ID);
+                }
+                <table class="table table-sm table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in currentItemProjection)
+                        {
+                            <tr>
+                                <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                                <td class="text-right">@item.Amount.ToString("N")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th scope="row">Totals</th>
+                            <td class="text-right">@currentItemProjection.Sum(x => x.Amount).ToString("N")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </div>
+    <div><b>TOTAL: @Projections.Sum(x => x.Amount).ToString("N")</b></div>
+}

@@ -25,7 +25,7 @@ namespace SavingsProjection.API.Services
             await this.context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false)
+        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false)
         {
             var res = new List<MaterializedMoneyItem>();
             var fromDate = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault()?.Date ?? throw new Exception("Unable to define the starting time");
@@ -39,6 +39,8 @@ namespace SavingsProjection.API.Services
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
                 var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
                 var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
+
+                if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
@@ -96,7 +98,9 @@ namespace SavingsProjection.API.Services
                         if (recurrentItem.AssociatedItems != null)
                         {
                             var lstNoteAssociatedItems = new List<string>();
-                            foreach (var associatedItem in recurrentItem.AssociatedItems.Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate))
+                            var associatedItemsToCalculate = recurrentItem.AssociatedItems.Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate);
+                            if (onlyInstallment) associatedItemsToCalculate = associatedItemsToCalculate.Where(x => x.Type == MoneyType.InstallmentPayment);
+                            foreach (var associatedItem in associatedItemsToCalculate)
                             {
                                 var associatedIteminstallment = CalculateInstallmentInPeriod(associatedItem, installment.original, installment.original);
                                 if (associatedIteminstallment.Count() > 0)
