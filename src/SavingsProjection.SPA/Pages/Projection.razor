@@ -8,13 +8,19 @@
 else
 {
     <div class="form-row">
-        <div class="col-md-2 col">
+        <div class="col-md-2 col-5">
             <span>From:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
         </div>
-        <div class="col-md-10 col">
+        <div class="col-md-2 col-5">
             <span>To:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+        </div>
+        <div class="col-md-8 col-2">
+            <br />
+            <button class="btn-sm btn-success" @onclick="@(() => AddNew())">
+                <span class="oi oi-plus" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
     <div class="table-responsive-sm">
