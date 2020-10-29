@@ -16,6 +16,9 @@ namespace SavingsProjection.SPA.Services
         [Delete("/api/FixedMoneyItems/{id}")]
         Task<FixedMoneyItem> DeleteFixedMoneyItem(long id);
 
+        [Get("/api/FixedMoneyItems/{id}")]
+        Task<FixedMoneyItem> GetixedMoneyItem(long id);
+
         [Post("/api/FixedMoneyItems")]
         Task<FixedMoneyItem> InsertFixedMoneyItem(FixedMoneyItem fixedMoneyItem);
 

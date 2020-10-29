@@ -49,6 +49,20 @@ namespace SavingsProjection.SPA.Pages
             StateHasChanged();
         }
 
+        async Task AdjustFixedItem(MaterializedMoneyItem item)
+        {
+            if (!item.FixedMoneyItemID.HasValue) return;
+            var itemToEdit = await savingProjectionAPI.GetixedMoneyItem(item.FixedMoneyItemID.Value);
+            bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Edit item",
+                             new Dictionary<string, object>() { { "fixedItemToEdit", itemToEdit }, { "isNew", false } },
+                             new DialogOptions() { Width = "600px" });
+            if (res.HasValue && res.Value)
+            {
+                await InitializeList();
+                StateHasChanged();
+            }
+        }
+
         async Task SaveMaterializedHistory()
         {
             var res = await dialogService.Confirm("Do you want to save the projection to the history?", "Save the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });

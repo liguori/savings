@@ -53,7 +53,8 @@ namespace SavingsProjection.API.Services
                         Note = fixedItem.Note,
                         Type = MoneyType.Others,
                         TimelineWeight = fixedItem.TimelineWeight,
-                        IsRecurrent = false
+                        IsRecurrent = false,
+                        FixedMoneyItemID= fixedItem.ID
                     });
                 }
 

@@ -15,5 +15,6 @@ namespace SavingsProjection.Model
         public int TimelineWeight { get; set; }
         public bool IsRecurrent{ get; set; }
         public long? RecurrentMoneyItemID { get; set; }
+        public long? FixedMoneyItemID { get; set; }
     }
 }
