@@ -27,7 +27,7 @@ namespace SavingsProjection.SPA.Pages
             var recurrentItems = await savingProjectionAPI.GetRecurrentMoneyItems(null, true);
             RecurrentItems = recurrentItems.Where(x => x.EndDate >= DateTime.Now && x.Type == MoneyType.InstallmentPayment).OrderBy(x => x.Note).ToArray();
             var projections = await savingProjectionAPI.GetSavingsProjection(null, RecurrentItems.Max(x => x.EndDate), true);
-            Projections = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0).ToArray();
+            Projections = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0 && x.Date >= DateTime.Now).ToArray();
         }
     }
 }
