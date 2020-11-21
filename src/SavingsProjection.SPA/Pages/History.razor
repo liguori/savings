@@ -33,7 +33,7 @@ else
                 {
                     <tr class="@(item.EndPeriod ? "end-period" : "")">
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                        <td class="text-right">@item.Amount.ToString("N")</td>
+                        <td class="text-right">@item.Amount.ToString("N2")</td>
                         <td class="text-center">
                             @{
                                 var iconToUse = "";
@@ -77,7 +77,7 @@ else
                             if (item.EndPeriod) projectionStyle += " important-amount";
                         }
                         <td class="@projectionStyle">
-                            @item.Projection.ToString("N")
+                            @item.Projection.ToString("N2")
                         </td>
                         <td class="ellipses">@item.Note</td>
                         <td>

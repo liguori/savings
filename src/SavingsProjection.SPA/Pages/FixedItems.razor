@@ -43,7 +43,7 @@ else
                             }
                         </th>
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                        <td class="text-right">@item.Amount.ToString("N")</td>
+                        <td class="text-right">@item.Amount.ToString("N2")</td>
                         <td>@item.Note</td>
                         <td>
                             <button class="btn btn-danger" @onclick="@(()=>Delete(item.ID))"><span class="oi oi-trash" aria-hidden="true"></span></button>
