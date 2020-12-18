@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,9 +18,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SavingsProjection.Model\SavingsProjection.Model.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-  </ItemGroup>
-
 </Project>
