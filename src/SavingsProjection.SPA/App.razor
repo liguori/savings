@@ -1,5 +1,5 @@
 @inject IConfiguration Configuration
-@if (bool.Parse(Configuration["UseAuthentication"]))
+@if (Configuration["AuthenticationToUse"]== AuthenticationToUse.Oidc)
 {
     <CascadingAuthenticationState>
         <Router AppAssembly="@typeof(Program).Assembly">

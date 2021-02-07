@@ -5,12 +5,12 @@ using System;
 using System.Threading.Tasks;
 using Radzen;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace SavingsProjection.SPA.Pages
 {
     public partial class Projection : ComponentBase
     {
-
         [Inject]
         public ISavingProjectionApi savingProjectionAPI { get; set; }
 

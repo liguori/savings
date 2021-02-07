@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using SavingsProjection.API.Authentication;
 using SavingsProjection.API.Infrastructure;
 using SavingsProjection.API.Services;
 using SavingsProjection.API.Services.Abstract;
+using SavingsProjection.Model;
 using System.Reflection;
 
 namespace SavingsProjection.API
@@ -29,13 +31,25 @@ namespace SavingsProjection.API
         {
             services.AddControllers();
 
-            // Add the ApiKey Authentication
-            services.AddAuthentication(options =>
+            var authenticationToUse = Configuration["AuthenticationToUse"];
+
+            if (authenticationToUse == AuthenticationToUse.Oidc)
             {
-                options.DefaultAuthenticateScheme = ApiKeyAuthOptions.ApiKeySchemaName;
-                options.DefaultChallengeScheme = ApiKeyAuthOptions.ApiKeySchemaName;
-            })
-            .AddApiKeyAuth(options => options.AuthKeys = Configuration[ApiKeys].Split(","));
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+                {
+                    options.Audience = Configuration["IdentityProvider:Audience"];
+                    options.Authority = Configuration["IdentityProvider:Authority"];
+                });
+            }
+            else if (authenticationToUse == AuthenticationToUse.ApiKey)
+            {
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = ApiKeyAuthOptions.ApiKeySchemaName;
+                    options.DefaultChallengeScheme = ApiKeyAuthOptions.ApiKeySchemaName;
+                })
+                .AddApiKeyAuth(options => options.AuthKeys = Configuration[ApiKeys].Split(","));
+            }
 
             services.AddTransient<IProjectionCalculator, ProjectionCalculator>();
 
@@ -43,16 +57,42 @@ namespace SavingsProjection.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Savings Projection", Version = "v1" });
-                //Add API Key Informations
-                c.AddSecurityDefinition(ApiKeyAuthOptions.ApiKeySchemaName, new OpenApiSecurityScheme
+
+                if (authenticationToUse == AuthenticationToUse.Oidc)
                 {
-                    Description = "Api key needed to access the endpoints. " + ApiKeyAuthOptions.HeaderName + ": My_API_Key",
-                    In = ParameterLocation.Header,
-                    Name = ApiKeyAuthOptions.HeaderName,
-                    Type = SecuritySchemeType.ApiKey
-                });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Please insert JWT with Bearer into field",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey
+                    });
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    }
+                  });
+                }
+                else if (authenticationToUse == AuthenticationToUse.ApiKey)
                 {
+                    //Add API Key Informations
+                    c.AddSecurityDefinition(ApiKeyAuthOptions.ApiKeySchemaName, new OpenApiSecurityScheme
+                    {
+                        Description = "Api key needed to access the endpoints. " + ApiKeyAuthOptions.HeaderName + ": My_API_Key",
+                        In = ParameterLocation.Header,
+                        Name = ApiKeyAuthOptions.HeaderName,
+                        Type = SecuritySchemeType.ApiKey
+                    });
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                     {
                     {
                         new OpenApiSecurityScheme
                         {
@@ -68,6 +108,7 @@ namespace SavingsProjection.API
                          new string[] {}
                      }
                 });
+                }
             });
 
             services.AddDbContext<SavingProjectionContext>(
@@ -87,8 +128,10 @@ namespace SavingsProjection.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,SavingProjectionContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SavingProjectionContext context)
         {
+            var authenticationToUse = Configuration["AuthenticationToUse"];
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -112,7 +155,6 @@ namespace SavingsProjection.API
             app.UseRouting();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

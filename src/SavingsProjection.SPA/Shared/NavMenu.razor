@@ -9,7 +9,7 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    @if (bool.Parse(Configuration["UseAuthentication"]))
+    @if (Configuration["AuthenticationToUse"] == AuthenticationToUse.Oidc)
     {
         <LoginDisplay />
     }
