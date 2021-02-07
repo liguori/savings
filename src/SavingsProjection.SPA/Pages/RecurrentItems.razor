@@ -1,4 +1,5 @@
 ﻿@page "/recurrent-items"
+@attribute [Authorize]
 @if (!parentItemID.HasValue)
 {
     <h1>Recurrent Items</h1>

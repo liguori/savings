@@ -1,4 +1,5 @@
-﻿<EditForm Model="@fixedItemToEdit" OnValidSubmit="@OnValidSubmit">
+﻿@attribute [Authorize]
+<EditForm Model="@fixedItemToEdit" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
     <div class="form-row">
         <div class="form-group col">
