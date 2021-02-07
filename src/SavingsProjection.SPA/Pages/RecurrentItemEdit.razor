@@ -1,4 +1,5 @@
-﻿<EditForm Model="@recurrentItemToEdit" OnValidSubmit="@OnValidSubmit">
+﻿@attribute [Authorize]
+<EditForm Model="@recurrentItemToEdit" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
     <div class="form-row">
         <div class="form-group col">
