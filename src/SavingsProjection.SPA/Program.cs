@@ -25,7 +25,7 @@ namespace SavingsProjection.SPA
                 c.BaseAddress = new Uri(builder.Configuration["SavingProjectionApiServiceUrl"]);
                 c.DefaultRequestHeaders.Add("X-API-Key", builder.Configuration["SavingProjectionApiKey"]);
             });
-            if (bool.Parse(builder.Configuration["UseOidcAuthentication"]))
+            if (bool.Parse(builder.Configuration["UseAuthentication"]))
             {
                 builder.Services.AddOidcAuthentication(options =>
                 {
