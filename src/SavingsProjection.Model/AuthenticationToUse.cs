@@ -2,8 +2,7 @@
 {
     public static class AuthenticationToUse
     {
-        public const string Oidc = nameof(Oidc);
+        public const string AzureAD = nameof(AzureAD);
         public const string ApiKey = nameof(ApiKey);
-        public const string None = "";
     }
 }

@@ -26,7 +26,7 @@ namespace SavingsProjection.SPA
 
             var configuredAuthentication = builder.Configuration["AuthenticationToUse"];
 
-            if (configuredAuthentication == AuthenticationToUse.Oidc)
+            if (configuredAuthentication == AuthenticationToUse.AzureAD)
             {
                 builder.Services.AddMsalAuthentication(options =>
                 {
@@ -46,7 +46,7 @@ namespace SavingsProjection.SPA
             });
 
 
-            if (configuredAuthentication == AuthenticationToUse.Oidc)
+            if (configuredAuthentication == AuthenticationToUse.AzureAD)
             {
                 httpClientBuilder.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
             }

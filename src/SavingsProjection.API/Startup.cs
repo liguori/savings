@@ -33,7 +33,7 @@ namespace SavingsProjection.API
 
             var authenticationToUse = Configuration["AuthenticationToUse"];
 
-            if (authenticationToUse == AuthenticationToUse.Oidc)
+            if (authenticationToUse == AuthenticationToUse.AzureAD)
             {
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
                 {
@@ -58,7 +58,7 @@ namespace SavingsProjection.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Savings Projection", Version = "v1" });
 
-                if (authenticationToUse == AuthenticationToUse.Oidc)
+                if (authenticationToUse == AuthenticationToUse.AzureAD)
                 {
                     c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
                     {
