@@ -17,6 +17,11 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '5.0.102'
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
