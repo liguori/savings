@@ -11,7 +11,7 @@ namespace SavingsProjection.SPA.Authorization
             : base(provider, navigationManager)
         {
             ConfigureHandler(
-                authorizedUrls: new[] { "https://localhost:44350/" });
+                authorizedUrls: new[] { configuration["SavingProjectionApiServiceUrl"] });
         }
     }
 }
