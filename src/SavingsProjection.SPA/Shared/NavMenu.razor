@@ -9,7 +9,7 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    @if (Configuration["AuthenticationToUse"] == AuthenticationToUse.Oidc)
+    @if (Configuration["AuthenticationToUse"] == AuthenticationToUse.AzureAD)
     {
         <LoginDisplay />
     }
