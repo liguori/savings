@@ -44,6 +44,7 @@ jobs:
           AuthenticationToUse: 'AzureAD'
           AzureAd.Authority: ${{ secrets[env.IDENTITY_AUTHORITY_VARIABLE] }}
           AzureAd.ClientId: ${{ secrets[env.IDENTITY_CLIENT_ID_VARIABLE] }}
+          AzureAd.ValidateAuthority: true
           AzureAd.DefaultScope: ${{ secrets[env.IDENTITY_DEFAULT_SCOPE_VARIABLE] }}
 
       - name: Deploy Frontend
