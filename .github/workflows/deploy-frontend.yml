@@ -23,7 +23,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2.11.0
         with:
           workflow: build-backend.yml
-          name: engagement-organizer-backend
+          name: savings-projection-frontend
           branch: master
           path: ./deploy
 
@@ -31,15 +31,20 @@ jobs:
         run: |
           echo "APP_SERVICE_NAME_VARIABLE=APPSERVICENAME_${{github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
           echo "API_KEY_VARIABLE=APPSERVICE_CONFIG_APIKEY_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
+          echo "IDENTITY_AUDIENCE_VARIABLE=APPSERVICE_CONFIG_IDENTITY_AUDIENCE_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
+          echo "IDENTITY_AUTHORITY_VARIABLE=APPSERVICE_CONFIG_IDENTITY_AUTHORITY_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
       - name: Config Settings Substitution
         uses: microsoft/variable-substitution@v1
         with:
           files: 'deploy/appsettings.json,deploy/appsettings.Development.json,deploy/appsettings.Production.json'
         env:
           ApiKeys: ${{ secrets[env.API_KEY_VARIABLE] }}
-          DatabasePath: 'EngagementOrganizer.db'
+          DatabasePath: 'SavingsProjection.db'
+          AuthenticationToUse: 'AzureAD'
+          IdentityProvider.Audience: ${{ secrets[env.IDENTITY_AUDIENCE_VARIABLE] }}
+          IdentityProvider.Authority: ${{ secrets[env.IDENTITY_AUTHORITY_VARIABLE] }}
 
-      - name: Deploy Backend
+      - name: Deploy Frontend
         uses: azure/webapps-deploy@v2
         with:
           app-name:    ${{ secrets[env.APP_SERVICE_NAME_VARIABLE] }}
