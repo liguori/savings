@@ -28,7 +28,9 @@ namespace SavingsProjection.API.Services
         public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false)
         {
             var res = new List<MaterializedMoneyItem>();
-            var fromDate = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault()?.Date ?? throw new Exception("Unable to define the starting time");
+            var lastEndPeriod = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault();
+            if (lastEndPeriod != null) res.Add(lastEndPeriod);
+            var fromDate = lastEndPeriod?.Date ?? throw new Exception("Unable to define the starting time");
             var periodStart = fromDate.AddDays(1);
             var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
             DateTime periodEnd;

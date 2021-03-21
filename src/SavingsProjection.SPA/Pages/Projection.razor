@@ -1,7 +1,8 @@
 @page "/"
 @attribute [Authorize]
 <h1>Projection</h1>
-@{ var saveHistoryShown = false; }
+@{
+    var saveHistoryShown = false; }
 @if (materializedMoneyItems == null)
 {
     <p><em>Loading...</em></p>
@@ -110,7 +111,7 @@ else
                             }
                             else
                             {
-                                if (!saveHistoryShown)
+                                if (!saveHistoryShown && item.ID == 0)
                                 {
                                     saveHistoryShown = true;
                                     <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="@(()=>SaveMaterializedHistory())"></span>
