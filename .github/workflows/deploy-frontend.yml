@@ -29,20 +29,22 @@ jobs:
 
       - name: Calculate dynamic secret name with suffix
         run: |
-          echo "APP_SERVICE_NAME_VARIABLE=APPSERVICENAME_${{github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
+          echo "APP_SERVICE_NAME_VARIABLE=APPSERVICENAME_FE_${{github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
           echo "API_KEY_VARIABLE=APPSERVICE_CONFIG_APIKEY_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
-          echo "IDENTITY_AUDIENCE_VARIABLE=APPSERVICE_CONFIG_IDENTITY_AUDIENCE_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
           echo "IDENTITY_AUTHORITY_VARIABLE=APPSERVICE_CONFIG_IDENTITY_AUTHORITY_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
+          echo "IDENTITY_CLIENT_ID_VARIABLE=APPSERVICE_FE_CONFIG_IDENTITY_CLIENT_ID_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
+          echo "IDENTITY_DEFAULT_SCOPE_VARIABLE=APPSERVICE_FE_CONFIG_IDEFAULT_SCOPE_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
       - name: Config Settings Substitution
         uses: microsoft/variable-substitution@v1
         with:
           files: 'deploy/appsettings.json,deploy/appsettings.Development.json,deploy/appsettings.Production.json'
         env:
-          ApiKeys: ${{ secrets[env.API_KEY_VARIABLE] }}
-          DatabasePath: 'SavingsProjection.db'
+          SavingProjectionApiServiceUrl: ${{ secrets[env.API_KEY_VARIABLE] }}
+          ApiKey: ${{ secrets[env.API_KEY_VARIABLE] }}
           AuthenticationToUse: 'AzureAD'
-          IdentityProvider.Audience: ${{ secrets[env.IDENTITY_AUDIENCE_VARIABLE] }}
-          IdentityProvider.Authority: ${{ secrets[env.IDENTITY_AUTHORITY_VARIABLE] }}
+          AzureAd.Authority: ${{ secrets[env.IDENTITY_AUTHORITY_VARIABLE] }}
+          AzureAd.ClientId: ${{ secrets[env.IDENTITY_CLIENT_ID_VARIABLE] }}
+          AzureAd.DefaultScope: ${{ secrets[env.IDENTITY_DEFAULT_SCOPE_VARIABLE] }}
 
       - name: Deploy Frontend
         uses: azure/webapps-deploy@v2
