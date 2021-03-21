@@ -9,7 +9,7 @@ on:
           default: ""
 
 jobs:
-  Deploy-Backend:
+  Deploy-Frontend:
     environment:
         name: ${{ github.event.inputs.environment_name }}
     runs-on: ubuntu-latest
