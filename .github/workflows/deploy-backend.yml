@@ -10,7 +10,7 @@ on:
 
 jobs:
   Deploy-Backend:
-    environment: ${{ github.event.inputs.environment_name }}
+    environment: '${{ github.event.inputs.environment_name }}'
     runs-on: ubuntu-latest
 
     steps:
