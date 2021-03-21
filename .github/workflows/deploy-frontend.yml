@@ -21,7 +21,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
 
-      - name: Download Backend Artifact
+      - name: Download Frontend Artifact
         uses: dawidd6/action-download-artifact@v2.11.0
         with:
           workflow: build-frontend.yml
@@ -33,7 +33,7 @@ jobs:
       - name: Config Settings Substitution
         uses: microsoft/variable-substitution@v1
         with:
-          files: 'deploy/appsettings.json,deploy/appsettings.Development.json,deploy/appsettings.Production.json'
+          files: 'deploy/wwwroot/appsettings.json,deploy/wwwroot/appsettings.Development.json,deploy/wwwroot/appsettings.Production.json'
         env:
           SavingProjectionApiServiceUrl: ${{ secrets.APPSERVICE_FE_CONFIG_APIURL }}
           ApiKey: ${{ secrets.APPSERVICE_CONFIG_APIKEY }}
