@@ -30,6 +30,7 @@ jobs:
       - name: Calculate dynamic secret name with suffix
         run: |
           echo "APP_SERVICE_NAME_VARIABLE=APPSERVICENAME_FE_${{github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
+          echo "API_URL_VARIABLE=APPSERVICE_FE_CONFIG_APIURL_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
           echo "API_KEY_VARIABLE=APPSERVICE_CONFIG_APIKEY_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
           echo "IDENTITY_AUTHORITY_VARIABLE=APPSERVICE_CONFIG_IDENTITY_AUTHORITY_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
           echo "IDENTITY_CLIENT_ID_VARIABLE=APPSERVICE_FE_CONFIG_IDENTITY_CLIENT_ID_${{ github.event.inputs.appservice_suffix }}" >> $GITHUB_ENV
@@ -39,7 +40,7 @@ jobs:
         with:
           files: 'deploy/appsettings.json,deploy/appsettings.Development.json,deploy/appsettings.Production.json'
         env:
-          SavingProjectionApiServiceUrl: ${{ secrets[env.API_KEY_VARIABLE] }}
+          SavingProjectionApiServiceUrl: ${{ secrets[env.API_URL_VARIABLE] }}
           ApiKey: ${{ secrets[env.API_KEY_VARIABLE] }}
           AuthenticationToUse: 'AzureAD'
           AzureAd.Authority: ${{ secrets[env.IDENTITY_AUTHORITY_VARIABLE] }}
