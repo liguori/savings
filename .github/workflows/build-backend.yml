@@ -1,0 +1,33 @@
+name: Build Backend
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+    - 'src/SavingsProjection.API/**'
+  
+  workflow_dispatch:
+
+jobs:
+  Build-Backend:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Build .NET Backend
+      run: dotnet publish SavingsProjection.API.csproj -o "output" -c "Release"
+      working-directory: ./src/SavingsProjection.API
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: savings-projection-backend
+        path: ./src/SavingsProjection.API/output/*
+        if-no-files-found: error
+        retention-days: 90

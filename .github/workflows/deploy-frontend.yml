@@ -1,0 +1,50 @@
+name: Deploy Frontend on Azure
+
+on:
+  workflow_dispatch:
+   inputs:
+       environment_name:
+          description: "Environment Name"
+          required: true
+          default: ""
+
+jobs:
+  Deploy-Frontend:
+    environment:
+        name: ${{ github.event.inputs.environment_name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+
+      - name: Download Frontend Artifact
+        uses: dawidd6/action-download-artifact@v2.11.0
+        with:
+          workflow: build-frontend.yml
+          name: savings-projection-frontend
+          branch: master
+          path: ./deploy
+
+
+      - name: Config Settings Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'deploy/wwwroot/appsettings.json,deploy/wwwroot/appsettings.Development.json,deploy/wwwroot/appsettings.Production.json'
+        env:
+          SavingProjectionApiServiceUrl: ${{ secrets.APPSERVICE_FE_CONFIG_APIURL }}
+          ApiKey: ${{ secrets.APPSERVICE_CONFIG_APIKEY }}
+          AuthenticationToUse: 'AzureAD'
+          AzureAd.Authority: ${{ secrets.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
+          AzureAd.ClientId: ${{ secrets.APPSERVICE_FE_CONFIG_CLIENT_ID }}
+          AzureAd.ValidateAuthority: true
+          AzureAd.DefaultScope: ${{ secrets.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
+
+      - name: Deploy Frontend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name:    ${{ secrets.APPSERVICENAME_FE }}
+          package: ./deploy

@@ -1,0 +1,48 @@
+name: Deploy Backend on Azure
+
+on:
+  workflow_dispatch:
+   inputs:
+        environment_name:
+          description: "Environment Name"
+          required: true
+          default: ""
+
+jobs:
+  Deploy-Backend:
+    environment:
+      name: ${{ github.event.inputs.environment_name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+
+      - name: Download Backend Artifact
+        uses: dawidd6/action-download-artifact@v2.11.0
+        with:
+          workflow: build-backend.yml
+          name: savings-projection-backend
+          branch: master
+          path: ./deploy
+
+      - name: Config Settings Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'deploy/appsettings.json,deploy/appsettings.Development.json,deploy/appsettings.Production.json'
+        env:
+          ApiKeys: ${{ secrets.APPSERVICE_CONFIG_APIKEY }}
+          DatabasePath: 'SavingsProjection.db'
+          AuthenticationToUse: 'AzureAD'
+          IdentityProvider.Audience: ${{ secrets.APPSERVICE_CONFIG_IDENTITY_AUDIENCE }}
+          IdentityProvider.Authority: ${{ secrets.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
+
+      - name: Deploy Backend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name:    ${{ secrets.APPSERVICENAME }}
+          package: ./deploy
+        

@@ -1,0 +1,33 @@
+name: Build Frontend
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+    - 'src/SavingsProjection.SPA/**'
+    
+  workflow_dispatch:
+
+jobs:
+  Build-Frontend:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Build .NET Frontend
+      run: dotnet publish SavingsProjection.SPA.csproj -o "output" -c "Release"
+      working-directory: ./src/SavingsProjection.SPA
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: savings-projection-frontend
+        path: ./src/SavingsProjection.SPA/output/*
+        if-no-files-found: error
+        retention-days: 90
