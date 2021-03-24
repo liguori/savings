@@ -8,7 +8,7 @@ namespace SavingsProjection.API.Services.Abstract
     public interface IProjectionCalculator
     {
 
-        Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false);
+        Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false, bool includeLastEndPeriod = true);
 
         Task SaveProjectionToHistory();
     }

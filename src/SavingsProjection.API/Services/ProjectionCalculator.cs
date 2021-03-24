@@ -20,16 +20,16 @@ namespace SavingsProjection.API.Services
 
         public async Task SaveProjectionToHistory()
         {
-            var projectionItems = await CalculateAsync(null, null, true);
+            var projectionItems = await CalculateAsync(null, null, true, false, false);
             await this.context.MaterializedMoneyItems.AddRangeAsync(projectionItems);
             await this.context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false)
+        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false, bool includeLastEndPeriod = true)
         {
             var res = new List<MaterializedMoneyItem>();
             var lastEndPeriod = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault();
-            if (lastEndPeriod != null) res.Add(lastEndPeriod);
+            if (lastEndPeriod != null && includeLastEndPeriod) res.Add(lastEndPeriod);
             var fromDate = lastEndPeriod?.Date ?? throw new Exception("Unable to define the starting time");
             var periodStart = fromDate.AddDays(1);
             var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
@@ -56,7 +56,7 @@ namespace SavingsProjection.API.Services
                         Type = MoneyType.Others,
                         TimelineWeight = fixedItem.TimelineWeight,
                         IsRecurrent = false,
-                        FixedMoneyItemID= fixedItem.ID
+                        FixedMoneyItemID = fixedItem.ID
                     });
                 }
 
