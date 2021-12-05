@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using Radzen;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
@@ -27,6 +29,10 @@ namespace SavingsProjection.SPA.Pages
 
         public MoneyCategory[] Categories { get; set; }
 
+        public string amountInputID = "amountInputID";
+
+        InputNumber<decimal?> amountInputNumber;
+      
         protected override void OnInitialized()
         {
             if (isNew)
@@ -41,6 +47,7 @@ namespace SavingsProjection.SPA.Pages
         {
             Categories = await savingProjectionAPI.GetMoneyCategories();
             Incoming = fixedItemToEdit.Amount > 0;
+            await amountInputNumber.Element.Value.FocusAsync();
         }
 
         bool ValidateData()
