@@ -1,2 +1,4 @@
 /.vs
 /src/.vs
+*.db-shm
+*.db-wal
