@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize]
 <EditForm Model="@fixedItemToEdit" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
+
     <div class="form-row">
         <div class="form-group col">
             <label>Date :</label><br />
@@ -14,12 +15,18 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col">
+        <div class="form-group col-6">
             <label>Accumulate:</label><br />
             <InputCheckbox @bind-Value="@fixedItemToEdit.AccumulateForBudget" />
             <ValidationMessage For="@(() => fixedItemToEdit.AccumulateForBudget)" />
         </div>
-        <div class="form-group col">
+        <div class="form-group col-3">
+            <div>
+                Incoming
+            </div>
+            <RadzenSwitch @bind-Value="@Incoming" />
+        </div>
+        <div class="form-group col-3">
             <label>Timeline weight:</label>
             <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control" />
             <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />

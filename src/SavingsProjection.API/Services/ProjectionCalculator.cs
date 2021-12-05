@@ -50,7 +50,7 @@ namespace SavingsProjection.API.Services
                     {
                         Date = fixedItem.Date,
                         Category = fixedItem.Category,
-                        Amount = fixedItem.Amount,
+                        Amount = fixedItem.Amount ?? 0,
                         EndPeriod = false,
                         Note = fixedItem.Note,
                         Type = MoneyType.Others,
@@ -66,7 +66,7 @@ namespace SavingsProjection.API.Services
                 foreach (var accumulateItem in fixedItemsAccumulate)
                 {
                     accumulateMaterializedItem.Category = null;
-                    accumulateMaterializedItem.Amount += accumulateItem.Amount;
+                    accumulateMaterializedItem.Amount += accumulateItem.Amount ?? 0;
                     accumulateMaterializedItem.EndPeriod = false;
                     accumulateMaterializedItem.Type = MoneyType.Others;
                 }

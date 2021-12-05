@@ -48,6 +48,7 @@ namespace SavingsProjection.SPA.Pages
             if(recurrentItemToEdit.Amount>0 && recurrentItemToEdit.Type== MoneyType.PeriodicBudget)
             {
                 notificationService.Notify(NotificationSeverity.Error, "Attention", "The amount for the periodic budget must be negative");
+                return false;
             }
             return true;
         }

@@ -23,7 +23,7 @@ namespace SavingsProjection.SPA.Services
         Task<FixedMoneyItem> InsertFixedMoneyItem(FixedMoneyItem fixedMoneyItem);
 
         [Put("/api/FixedMoneyItems/{id}")]
-        Task<FixedMoneyItem> EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
+        Task EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
 
         [Get("/api/RecurrentMoneyItems")]
         Task<RecurrentMoneyItem[]> GetRecurrentMoneyItems(long? parentItemID, bool onlyActive);
@@ -35,7 +35,7 @@ namespace SavingsProjection.SPA.Services
         Task<RecurrentMoneyItem> InsertRecurrentMoneyItem(RecurrentMoneyItem fixedMoneyItem);
 
         [Put("/api/RecurrentMoneyItems/{id}")]
-        Task<RecurrentMoneyItem> EditRecurrentMoneyItem(long id, RecurrentMoneyItem fixedMoneyItem);
+        Task EditRecurrentMoneyItem(long id, RecurrentMoneyItem fixedMoneyItem);
 
         [Get("/api/RecurrencyAdjustements/ByIDRecurrencyAndDate")]
         Task<RecurrencyAdjustement> GetRecurrencyAdjustementByIDRecurrencyAndDate(long idRecurrency, DateTime date);
@@ -44,7 +44,7 @@ namespace SavingsProjection.SPA.Services
         Task<RecurrencyAdjustement> InsertRecurrencyAdjustment(RecurrencyAdjustement recurrencyAdjustement);
 
         [Put("/api/RecurrencyAdjustements/{id}")]
-        Task<RecurrencyAdjustement> EditRecurrencyAdjustment(long id, RecurrencyAdjustement recurrencyAdjustement);
+        Task EditRecurrencyAdjustment(long id, RecurrencyAdjustement recurrencyAdjustement);
 
         [Delete("/api/RecurrencyAdjustements/{id}")]
         Task<RecurrencyAdjustement> DeleteRecurrencyAdjustment(long id);
