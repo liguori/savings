@@ -13,8 +13,9 @@ namespace SavingsProjection.Model
         public decimal Projection { get; set; }
         public bool EndPeriod { get; set; }
         public int TimelineWeight { get; set; }
-        public bool IsRecurrent{ get; set; }
+        public bool IsRecurrent { get; set; }
         public long? RecurrentMoneyItemID { get; set; }
         public long? FixedMoneyItemID { get; set; }
+        public bool Cash { get; set; }
     }
 }

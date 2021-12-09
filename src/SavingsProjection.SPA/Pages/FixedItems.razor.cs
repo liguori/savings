@@ -17,6 +17,8 @@ namespace SavingsProjection.SPA.Pages
         [Inject]
         public DialogService dialogService { get; set; }
 
+        public Configuration CurrentConfiguration { get; set; }
+
         private FixedMoneyItem[] fixedMoneyItems;
 
         public DateTime? FilterDateFrom { get; set; }
@@ -27,6 +29,7 @@ namespace SavingsProjection.SPA.Pages
         {
             FilterDateFrom = DateTime.Now.Date.AddMonths(-2);
             FilterDateTo = DateTime.Now.Date.AddDays(15);
+            CurrentConfiguration = (await savingProjectionAPI.GetConfigurations()).FirstOrDefault();
             await InitializeList();
         }
 

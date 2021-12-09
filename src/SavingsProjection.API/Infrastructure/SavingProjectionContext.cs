@@ -40,7 +40,7 @@ namespace SavingsProjection.API.Infrastructure
            );
 
             modelBuilder.Entity<MaterializedMoneyItem>().HasData(
-               new MaterializedMoneyItem { ID = 1, Date = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day), Amount = 0, Type = MoneyType.InstallmentPayment, Projection = 0, EndPeriod = true, }
+               new MaterializedMoneyItem { ID = 1, Date = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day), Amount = 0, Type = MoneyType.InstallmentPayment, Projection = 0, EndPeriod = true, Cash = false }
             );
         }
 

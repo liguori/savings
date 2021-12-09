@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Radzen.Blazor" Version="3.13.3" />
+    <PackageReference Include="Radzen.Blazor" Version="3.13.5" />
     <PackageReference Include="Refit" Version="6.1.15" />
     <PackageReference Include="Refit.HttpClientFactory" Version="6.1.15" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />

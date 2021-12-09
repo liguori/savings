@@ -26,6 +26,7 @@ else
             <thead class="thead-dark">
                 <tr>
                     <th></th>
+                    <th></th>
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Note</th>
@@ -40,6 +41,20 @@ else
                             @if (item.Date <= DateTime.Now.Date)
                             {
                                 <span class="oi oi-check done-item" aria-hidden="true"></span>
+                            }
+                        </th>
+                        <th>
+                            @if (item.Category?.ID == CurrentConfiguration.CashWithdrawalCategoryID)
+                            {
+                                <span class="oi oi-browser" aria-hidden="true"></span>
+                            }
+                            else if (item.Cash)
+                            {
+                                <span class="oi oi-euro" aria-hidden="true"></span>
+                            }
+                            else
+                            {
+                                <span class="oi oi-credit-card" aria-hidden="true"></span>
                             }
                         </th>
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>

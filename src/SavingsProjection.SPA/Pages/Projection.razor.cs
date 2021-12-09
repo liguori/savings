@@ -22,10 +22,13 @@ namespace SavingsProjection.SPA.Pages
 
         public DateTime? FilterDateTo { get; set; }
 
+        public Configuration CurrentConfiguration { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             FilterDateTo = DateTime.Now.Date.AddYears(1);
             await InitializeList();
+            CurrentConfiguration = (await savingProjectionAPI.GetConfigurations()).FirstOrDefault();
         }
 
         async void Change(DateTime? value, string name)

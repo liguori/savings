@@ -32,8 +32,8 @@ namespace SavingsProjection.SPA.Pages
         public string amountInputID = "amountInputID";
 
         InputNumber<decimal?> amountInputNumber;
-      
-        protected override void OnInitialized()
+
+    protected override void OnInitialized()
         {
             if (isNew)
             {

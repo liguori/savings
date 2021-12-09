@@ -26,7 +26,7 @@ namespace SavingsProjection.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems(DateTime? from, DateTime? to)
         {
-            var result = _context.FixedMoneyItems.AsQueryable();
+            var result = _context.FixedMoneyItems.Include(x=>x.Category).AsQueryable();
             if (from.HasValue) result = result.Where(x => x.Date >= from);
             if (to.HasValue) result = result.Where(x => x.Date <= to);
             return await result.OrderByDescending(x=>x.Date).ToListAsync();

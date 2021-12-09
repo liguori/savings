@@ -60,5 +60,8 @@ namespace SavingsProjection.SPA.Services
 
         [Get("/api/MoneyCategories")]
         Task<MoneyCategory[]> GetMoneyCategories();
+
+        [Get("/api/Configurations")]
+        Task<Configuration[]> GetConfigurations();
     }
 }
