@@ -2,9 +2,6 @@
 using Radzen;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SavingsProjection.SPA.Pages
 {
@@ -23,8 +20,24 @@ namespace SavingsProjection.SPA.Pages
 
         private RecurrentMoneyItem[] recurrentMoneyItems;
 
-        [ParameterAttribute]
+        [Parameter]
         public long? parentItemID { get; set; } = null;
+
+        public bool ShowOnlyActive { get; set; } = true;
+        public DateTime? FilterOnlyActiveDateFrom { get; set; }
+        public DateTime? FilterOnlyActiveDateTo { get; set; }
+
+        async Task ShowOnlyActiveOnChange()
+        {
+            await InitializeList();
+            StateHasChanged();
+        }
+
+        async void FilterDateOnlyActiveChange(DateTime? value, string name)
+        {
+            await InitializeList();
+            StateHasChanged();
+        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -33,7 +46,7 @@ namespace SavingsProjection.SPA.Pages
 
         async Task InitializeList()
         {
-            recurrentMoneyItems = await savingProjectionAPI.GetRecurrentMoneyItems(parentItemID, true);
+            recurrentMoneyItems = await savingProjectionAPI.GetRecurrentMoneyItems(parentItemID, ShowOnlyActive, FilterOnlyActiveDateFrom, FilterOnlyActiveDateTo);
         }
 
         async Task Delete(long itemID)

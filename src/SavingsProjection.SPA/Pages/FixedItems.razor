@@ -18,7 +18,7 @@ else
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
         </div>
     </div>
-    <button class="btn btn-success" @onclick="@(() => AddNew())">
+    <button class="btn btn-success" @onclick="AddNew">
         <span class="oi oi-plus" aria-hidden="true"></span>ADD
     </button>
     <div class="table-responsive-sm">

@@ -26,7 +26,7 @@ namespace SavingsProjection.SPA.Services
         Task EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
 
         [Get("/api/RecurrentMoneyItems")]
-        Task<RecurrentMoneyItem[]> GetRecurrentMoneyItems(long? parentItemID, bool onlyActive);
+        Task<RecurrentMoneyItem[]> GetRecurrentMoneyItems(long? parentItemID, bool onlyActive, DateTime? endDateFrom, DateTime? endDateTo);
 
         [Delete("/api/RecurrentMoneyItems/{id}")]
         Task<RecurrentMoneyItem> DeleteRecurrentMoneyItem(long id);

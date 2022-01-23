@@ -11,7 +11,21 @@
 }
 else
 {
-    <button class="btn btn-success" @onclick="@(() => AddNew())">
+    <div class="form-row">
+        <div class="col-md-2 col">
+            Show only active<br>
+            <RadzenSwitch @bind-Value="@ShowOnlyActive" Change="ShowOnlyActiveOnChange" />
+        </div>
+        <div class="col-md-2 col">
+            <span>From:</span><br />
+            <RadzenDatePicker @bind-Value="FilterOnlyActiveDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => FilterDateOnlyActiveChange(args, nameof(FilterOnlyActiveDateFrom)))" />
+        </div>
+        <div class="col-md-8 col">
+            <span>To:</span><br />
+            <RadzenDatePicker @bind-Value="FilterOnlyActiveDateTo" DateFormat="dd/MM/yyyy" Change="@(args => FilterDateOnlyActiveChange(args, nameof(FilterOnlyActiveDateTo)))" />
+        </div>
+    </div>
+    <button class="btn btn-success" @onclick="AddNew">
         <span class="oi oi-plus" aria-hidden="true"></span>ADD
     </button>
     <div class="table-responsive-sm">

@@ -21,7 +21,7 @@ else
         </div>
         <div class="col-md-8 col-2">
             <br />
-            <button class="btn-sm btn-success" @onclick="@(() => AddNew())">
+            <button class="btn-sm btn-success" @onclick="AddNew">
                 <span class="oi oi-plus" aria-hidden="true"></span>
             </button>
         </div>
@@ -133,7 +133,7 @@ else
                                 if (!saveHistoryShown && item.ID == 0)
                                 {
                                     saveHistoryShown = true;
-                                    <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="@(()=>SaveMaterializedHistory())"></span>
+                                    <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="SaveMaterializedHistory"></span>
                                 }
                             }
                         </td>

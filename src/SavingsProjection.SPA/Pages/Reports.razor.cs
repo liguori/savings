@@ -22,7 +22,7 @@ namespace SavingsProjection.SPA.Pages
 
         async Task InitializeInstallmentResume()
         {
-            var recurrentItems = await savingProjectionAPI.GetRecurrentMoneyItems(null, true);
+            var recurrentItems = await savingProjectionAPI.GetRecurrentMoneyItems(null, true, null, null);
             RecurrentItems = recurrentItems.Where(x => x.EndDate >= DateTime.Now && x.Type == MoneyType.InstallmentPayment).OrderBy(x => x.Note).ToArray();
             DateTime endDate = DateTime.Now.AddMonths(1);
             if (RecurrentItems.Any())
@@ -39,7 +39,7 @@ namespace SavingsProjection.SPA.Pages
             statistics = await savingProjectionAPI.GetCategoryResume();
         }
 
-     
+
 
         string FormatAmount(object value)
         {
