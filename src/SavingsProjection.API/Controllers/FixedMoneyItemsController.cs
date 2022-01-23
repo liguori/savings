@@ -24,12 +24,13 @@ namespace SavingsProjection.API.Controllers
 
         // GET: api/FixedMoneyItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal)
+        public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal, long? filterCategory)
         {
             var withdrawalID = _context.Configuration.FirstOrDefault()?.CashWithdrawalCategoryID;
             var result = _context.FixedMoneyItems.Include(x => x.Category).AsQueryable();
             if (from.HasValue) result = result.Where(x => x.Date >= from);
             if (to.HasValue) result = result.Where(x => x.Date <= to);
+            if (filterCategory.HasValue) result = result.Where(x => x.CategoryID == filterCategory);
             if (excludeWithdrawal) result = result.Where(x => x.CategoryID != withdrawalID);
             return await result.OrderByDescending(x => x.Date).ToListAsync();
         }

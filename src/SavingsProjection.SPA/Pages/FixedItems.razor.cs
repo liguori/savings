@@ -25,10 +25,15 @@ namespace SavingsProjection.SPA.Pages
 
         public DateTime? FilterDateTo { get; set; }
 
+        public long? FilterCategory { get; set; }
+
+        public MoneyCategory[] Categories { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             FilterDateFrom = DateTime.Now.Date.AddMonths(-2);
             FilterDateTo = DateTime.Now.Date.AddDays(15);
+            Categories = await savingProjectionAPI.GetMoneyCategories();
             CurrentConfiguration = (await savingProjectionAPI.GetConfigurations()).FirstOrDefault();
             await InitializeList();
         }
@@ -39,10 +44,19 @@ namespace SavingsProjection.SPA.Pages
             StateHasChanged();
         }
 
+        async Task FilterCategoryChanged(ChangeEventArgs e)
+        {
+            var selectedString = e.Value.ToString();
+            FilterCategory = string.IsNullOrWhiteSpace(selectedString) ? null : long.Parse(selectedString);
+
+            await InitializeList();
+            StateHasChanged();
+        }
+
 
         async Task InitializeList()
         {
-            fixedMoneyItems = await savingProjectionAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo, false);
+            fixedMoneyItems = await savingProjectionAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo, false, FilterCategory);
         }
 
         async Task Delete(long itemID)

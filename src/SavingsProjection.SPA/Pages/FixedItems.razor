@@ -13,9 +13,24 @@ else
             <span>From:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
         </div>
-        <div class="col-md-10 col">
+        <div class="col-md-2 col">
             <span>To:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+        </div>
+        <div class="col-md-8 col">
+             <label>Category:</label>
+        <select class="form-control" @onchange="FilterCategoryChanged">
+            <option value=""></option>
+            @{
+                if (Categories != null)
+                {
+                    foreach (var value in Categories)
+                    {
+                        <option value="@value.ID" selected="@(value.ID == FilterCategory)">@value.Description</option>
+                    }
+                }
+            }
+        </select>
         </div>
     </div>
     <button class="btn btn-success" @onclick="AddNew">

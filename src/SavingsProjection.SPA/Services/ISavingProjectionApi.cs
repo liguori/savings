@@ -11,7 +11,7 @@ namespace SavingsProjection.SPA.Services
         Task<MaterializedMoneyItem[]> GetSavingsProjection(DateTime? from, DateTime? to, bool onlyInstallment = false);
 
         [Get("/api/FixedMoneyItems")]
-        Task<FixedMoneyItem[]> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal);
+        Task<FixedMoneyItem[]> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal, long? filterCategory);
 
         [Delete("/api/FixedMoneyItems/{id}")]
         Task<FixedMoneyItem> DeleteFixedMoneyItem(long id);
