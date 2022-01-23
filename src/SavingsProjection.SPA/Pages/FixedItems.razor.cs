@@ -42,7 +42,7 @@ namespace SavingsProjection.SPA.Pages
 
         async Task InitializeList()
         {
-            fixedMoneyItems = await savingProjectionAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo);
+            fixedMoneyItems = await savingProjectionAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo, false);
         }
 
         async Task Delete(long itemID)

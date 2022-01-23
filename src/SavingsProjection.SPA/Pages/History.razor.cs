@@ -2,9 +2,6 @@
 using Radzen;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SavingsProjection.SPA.Pages
 {
@@ -37,7 +34,7 @@ namespace SavingsProjection.SPA.Pages
 
         async Task InitializeList()
         {
-            var items = await savingProjectionAPI.GetMaterializedMoneyItems(FilterDateFrom, FilterDateTo);
+            var items = await savingProjectionAPI.GetMaterializedMoneyItems(FilterDateFrom, FilterDateTo, false);
             materializedMoneyItems = items.OrderByDescending(x => x.Date).ThenBy(x => x.ID).ToArray();
         }
 

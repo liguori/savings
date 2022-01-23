@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SavingsProjection.SPA.Pages
 {
@@ -20,6 +17,7 @@ namespace SavingsProjection.SPA.Pages
         protected override async Task OnInitializedAsync()
         {
             await InitializeInstallmentResume();
+            await InitializeCategoryResume();
         }
 
         async Task InitializeInstallmentResume()
@@ -34,5 +32,21 @@ namespace SavingsProjection.SPA.Pages
             var projections = await savingProjectionAPI.GetSavingsProjection(null, endDate, true);
             Projections = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0 && x.Date >= DateTime.Now).ToArray();
         }
+
+
+        async Task InitializeCategoryResume()
+        {
+            statistics = await savingProjectionAPI.GetCategoryResume();
+        }
+
+     
+
+        string FormatAmount(object value)
+        {
+            return ((double)value).ToString("N2");
+        }
+
+        ReportCategoryData[] statistics;
     }
+
 }

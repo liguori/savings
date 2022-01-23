@@ -25,11 +25,12 @@ namespace SavingsProjection.API.Controllers
 
         // GET: api/MaterializedMoneyItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MaterializedMoneyItem>>> GetMaterializedMoneyItems(DateTime? from, DateTime? to)
+        public async Task<ActionResult<IEnumerable<MaterializedMoneyItem>>> GetMaterializedMoneyItems(DateTime? from, DateTime? to, bool onlyRecurrent)
         {
             var res = _context.MaterializedMoneyItems.AsQueryable();
             if (from.HasValue) res = res.Where(x => x.Date >= from);
             if (to.HasValue) res = res.Where(x => x.Date <= to);
+            if (onlyRecurrent) res = res.Where(x => x.IsRecurrent);
             return await _context.MaterializedMoneyItems.OrderByDescending(x => x.ID).ToListAsync();
         }
 

@@ -11,7 +11,7 @@ namespace SavingsProjection.SPA.Services
         Task<MaterializedMoneyItem[]> GetSavingsProjection(DateTime? from, DateTime? to, bool onlyInstallment = false);
 
         [Get("/api/FixedMoneyItems")]
-        Task<FixedMoneyItem[]> GetFixedMoneyItems(DateTime? from, DateTime? to);
+        Task<FixedMoneyItem[]> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal);
 
         [Delete("/api/FixedMoneyItems/{id}")]
         Task<FixedMoneyItem> DeleteFixedMoneyItem(long id);
@@ -53,7 +53,7 @@ namespace SavingsProjection.SPA.Services
         Task PostSavingsProjectionToHistory();
 
         [Get("/api/MaterializedMoneyItems")]
-        Task<MaterializedMoneyItem[]> GetMaterializedMoneyItems(DateTime? from, DateTime? to);
+        Task<MaterializedMoneyItem[]> GetMaterializedMoneyItems(DateTime? from, DateTime? to, bool onlyRecurrent);
 
         [Delete("/api/MaterializedMoneyItems/ToHistory/{id}")]
         Task DeleteMaterializedMoneyItemToHistory(long id);
@@ -63,5 +63,8 @@ namespace SavingsProjection.SPA.Services
 
         [Get("/api/Configurations")]
         Task<Configuration[]> GetConfigurations();
+
+        [Get("/api/Report/GetCategoryResume")]
+        Task<ReportCategoryData[]> GetCategoryResume();
     }
 }

@@ -7,6 +7,37 @@
 }
 else
 {
+    <h2>Categories</h2>
+    <table class="table table-sm table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th></th>
+                @foreach (var c in statistics)
+                {
+                    <th>@c.Category</th>
+                }
+            </tr>
+
+        </thead>
+        <tbody>
+            @{
+                DateTime currentMonth = DateTime.Now;
+            }
+            @for (int i = 0; i <= 6; i++)
+            {
+
+                <tr>
+                    <td>@currentMonth.ToString("MM/yy")</td>
+                    @foreach (var c in statistics)
+                    {
+                        <td>@c.Data.Where(x=>x.Month==currentMonth.ToString("MM/yy")).FirstOrDefault()?.Amount.ToString("N2")</td>
+                    }
+                </tr>
+                currentMonth = currentMonth.AddMonths(-1);
+            }
+        </tbody>
+    </table>
+
     <h2>Installments Resume</h2>
     <div class="row">
         @for (int i = 0; i < RecurrentItems.Length; i++)
@@ -44,4 +75,5 @@ else
         }
     </div>
     <div><b>TOTAL: @Projections.Sum(x => x.Amount).ToString("N2")</b></div>
+
 }
