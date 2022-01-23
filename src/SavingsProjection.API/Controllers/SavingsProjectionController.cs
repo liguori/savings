@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using SavingsProjection.API.Services.Abstract;
 using SavingsProjection.Model;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 
 namespace SavingsProjection.API.Controllers
 {

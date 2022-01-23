@@ -75,7 +75,7 @@ namespace SavingsProjection.API.Services
                 int accumulatorStartingIndex = res.Count;
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems.Include(x => x.Category).Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
                 var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x=>x.Category).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
 
                 if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 

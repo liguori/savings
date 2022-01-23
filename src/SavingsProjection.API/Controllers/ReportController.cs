@@ -25,16 +25,18 @@ namespace SavingsProjection.API.Controllers
             var endPeriod = DateTime.Now;
 
             var sourceMaterializedRecurrentItems = await _context.MaterializedMoneyItems
-                .Where(x => x.Date >= startPeriod && x.Date <= endPeriod && x.IsRecurrent)
+                .Include(x => x.Category)
+                .Where(x => x.Date >= startPeriod && x.Date <= endPeriod && x.IsRecurrent && x.Type != MoneyType.PeriodicBudget)
                 .OrderByDescending(x => x.ID).ToListAsync();
 
             var withdrawalID = _context.Configuration.FirstOrDefault()?.CashWithdrawalCategoryID;
-            var sourceFixedItemsWithoutWithDrawal = await _context.FixedMoneyItems.Include(x => x.Category)
+            var sourceFixedItemsWithoutWithDrawal = await _context.FixedMoneyItems
+                .Include(x => x.Category)
                 .Where(x => x.Date >= startPeriod && x.Date <= endPeriod && x.CategoryID != withdrawalID)
                 .OrderByDescending(x => x.Date).ToListAsync();
 
-            var ris1 = sourceMaterializedRecurrentItems.Select(x => new { x.Amount, Category = x.Category?.Description, Month = x.Date.ToString("MM/yy") });
-            var ris2 = sourceFixedItemsWithoutWithDrawal.Select(x => new { Amount = x.Amount ?? 0, Category = x.Category?.Description, Month = x.Date.ToString("MM/yy") });
+            var ris1 = sourceMaterializedRecurrentItems.Select(x => new { Type = "Materialized", x.ID, x.Amount, Category = x.Category?.Description, Month = x.Date.ToString("MM/yy") });
+            var ris2 = sourceFixedItemsWithoutWithDrawal.Select(x => new { Type = "Fixed", x.ID, Amount = x.Amount ?? 0, Category = x.Category?.Description, Month = x.Date.ToString("MM/yy") });
 
             var union = ris1.Union(ris2);
 
@@ -53,7 +55,7 @@ namespace SavingsProjection.API.Controllers
                             .ToArray()
                 });
             }
-            return lstStatistics.ToArray();
+            return lstStatistics.OrderBy(x => x.Category).ToArray();
         }
     }
 }

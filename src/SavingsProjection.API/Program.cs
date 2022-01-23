@@ -8,14 +8,17 @@ using SavingsProjection.API.Services;
 using SavingsProjection.API.Services.Abstract;
 using SavingsProjection.Model;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 const string ApiKeys = "ApiKeys";
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}); ;
 
 var authenticationToUse = builder.Configuration["AuthenticationToUse"];
 
