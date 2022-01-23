@@ -50,6 +50,11 @@ namespace SavingsProjection.SPA.Pages
                 notificationService.Notify(NotificationSeverity.Error, "Attention", "The amount for the periodic budget must be negative");
                 return false;
             }
+            if (recurrentItemToEdit.CategoryID == null)
+            {
+                notificationService.Notify(NotificationSeverity.Error, "Attention", "Category is mandatory field");
+                return false;
+            }
             return true;
         }
 

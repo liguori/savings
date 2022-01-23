@@ -57,6 +57,11 @@ namespace SavingsProjection.SPA.Pages
                 notificationService.Notify(NotificationSeverity.Error, "Attention", "The amount must contain a value and be different than 0");
                 return false;
             }
+            if (fixedItemToEdit.CategoryID == null)
+            {
+                notificationService.Notify(NotificationSeverity.Error, "Attention", "Category is mandatory field");
+                return false;
+            }
             return true;
         }
 
