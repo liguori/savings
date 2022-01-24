@@ -43,11 +43,19 @@ namespace SavingsProjection.SPA.Pages
             }
         }
 
+        protected override async void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await Task.Delay(500);
+                await amountInputNumber.Element.Value.FocusAsync();
+            }
+        }
+
         protected override async Task OnInitializedAsync()
         {
             Categories = await savingProjectionAPI.GetMoneyCategories();
             Incoming = fixedItemToEdit.Amount > 0;
-            await amountInputNumber.Element.Value.FocusAsync();
         }
 
         bool ValidateData()
