@@ -24,7 +24,7 @@ else
                 @{
                     DateTime currentMonth = DateTime.Now;
                 }
-                @for (int i = 0; i <= 6; i++)
+                @for (int i = 1; i <= statistics.Max(x => x.Data.Length); i++)
                 {
 
                     <tr>
