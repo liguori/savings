@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using SavingsProjection.Model;
 using Radzen;
+using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
-using System.Threading.Tasks;
-using System.Reflection;
 
 namespace SavingsProjection.SPA.Pages
 {

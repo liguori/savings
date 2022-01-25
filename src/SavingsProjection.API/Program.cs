@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SavingsProjection.API.Authentication;
@@ -15,10 +16,13 @@ const string ApiKeys = "ApiKeys";
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers().AddJsonOptions(x =>
+builder.Services.AddControllers(opt =>
+{
+    opt.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
+}).AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-}); ;
+});
 
 var authenticationToUse = builder.Configuration["AuthenticationToUse"];
 
