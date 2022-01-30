@@ -21,7 +21,7 @@ namespace SavingsProjection.API.Controllers
         [HttpGet("GetCategoryResume")]
         public async Task<ActionResult<ReportCategoryData[]>> GetCategoryResume()
         {
-            var startPeriod = DateTime.Now.AddMonths(-11);
+            var startPeriod = DateTime.Now.AddMonths(-12);
             var endPeriod = DateTime.Now;
 
             var sourceMaterializedRecurrentItems = await _context.MaterializedMoneyItems
