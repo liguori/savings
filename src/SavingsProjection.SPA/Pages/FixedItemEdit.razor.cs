@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
 using Radzen;
 using SavingsProjection.Model;
 using SavingsProjection.SPA.Services;
@@ -37,7 +36,7 @@ namespace SavingsProjection.SPA.Pages
         {
             if (isNew)
             {
-                this.fixedItemToEdit.Date = DateTime.Now.Date;
+                this.fixedItemToEdit.Date = DateTime.UtcNow.Date;
                 this.fixedItemToEdit.Amount = null;
                 this.fixedItemToEdit.AccumulateForBudget = true;
             }
