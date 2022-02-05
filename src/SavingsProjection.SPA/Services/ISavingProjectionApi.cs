@@ -65,6 +65,6 @@ namespace SavingsProjection.SPA.Services
         Task<Configuration[]> GetConfigurations();
 
         [Get("/api/Report/GetCategoryResume")]
-        Task<ReportCategoryData[]> GetCategoryResume();
+        Task<ReportCategoryData[]> GetCategoryResume(string periodPattern, int lastMonths);
     }
 }

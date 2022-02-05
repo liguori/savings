@@ -14,6 +14,27 @@ namespace SavingsProjection.SPA.Pages
 
         private MaterializedMoneyItem[] Projections { get; set; }
 
+        public string FilterCategoryGroupByPeriod { get; set; } = "yy/MM";
+
+        public int FilterCategoryLastMonths { get; set; } = 12;
+
+        async Task FilterCategoryLastMonthsOnChange(ChangeEventArgs e)
+        {
+            FilterCategoryLastMonths = int.Parse(e.Value.ToString());
+
+            await InitializeCategoryResume();
+            StateHasChanged();
+        }
+
+        async Task FilterGroupByCategoryPeriodChanged(ChangeEventArgs e)
+        {
+            var selectedString = e.Value.ToString();
+            FilterCategoryGroupByPeriod = string.IsNullOrWhiteSpace(selectedString) ? null : selectedString;
+
+            await InitializeCategoryResume();
+            StateHasChanged();
+        }
+
         protected override async Task OnInitializedAsync()
         {
             await InitializeInstallmentResume();
@@ -36,7 +57,7 @@ namespace SavingsProjection.SPA.Pages
 
         async Task InitializeCategoryResume()
         {
-            statistics = await savingProjectionAPI.GetCategoryResume();
+            statistics = await savingProjectionAPI.GetCategoryResume(FilterCategoryGroupByPeriod, FilterCategoryLastMonths);
         }
 
 

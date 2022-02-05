@@ -8,6 +8,19 @@
 else
 {
     <h2>Categories</h2>
+    <div class="form-row">
+        <div class="col-md-6 col">
+            <label>Group by:</label>
+            <select class="form-control" @onchange="FilterGroupByCategoryPeriodChanged">
+                <option value="yy/MM" selected="@("yy/MM" == FilterCategoryGroupByPeriod)">Month</option>
+                <option value="yyyy" selected="@("yyyy" == FilterCategoryGroupByPeriod)">Year</option>
+            </select>
+        </div>
+        <div class="col-md-6 col">
+            <span>Last Months:</span><br />
+            <input type="number" value="@FilterCategoryLastMonths"  @onchange="FilterCategoryLastMonthsOnChange" class="form-control" />
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-bordered table-sm table-striped table-hover">
             <thead class="thead-dark">
@@ -21,20 +34,16 @@ else
 
             </thead>
             <tbody>
-                @{
-                    DateTime currentMonth = DateTime.Now;
-                }
-                @for (int i = 1; i <= statistics.Max(x => x.Data.Length); i++)
+                @foreach (var period in statistics.SelectMany(x => x.Data.Select(x => x.Period)).Distinct().OrderByDescending(x => x))
                 {
 
                     <tr>
-                        <td>@currentMonth.ToString("MM/yy")</td>
+                        <td>@period</td>
                         @foreach (var c in statistics)
                         {
-                            <td>@c.Data.Where(x=>x.Month==currentMonth.ToString("MM/yy")).FirstOrDefault()?.Amount.ToString("N2")</td>
+                            <td>@c.Data.Where(x=>x.Period==period).FirstOrDefault()?.Amount.ToString("N2")</td>
                         }
                     </tr>
-                    currentMonth = currentMonth.AddMonths(-1);
                 }
             </tbody>
         </table>

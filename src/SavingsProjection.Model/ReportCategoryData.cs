@@ -12,7 +12,7 @@ namespace SavingsProjection.Model
 
     public class CategoryResumDataItem
     {
-        public string Month { get; set; }
+        public string Period { get; set; }
         public double Amount { get; set; }
     }
 
