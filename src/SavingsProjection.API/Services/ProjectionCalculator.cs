@@ -22,7 +22,7 @@ namespace SavingsProjection.API.Services
             await this.context.SaveChangesAsync();
         }
 
-        private void CalculateCash(List<FixedMoneyItem> itemsToAccumulate, List<FixedMoneyItem> itemsNotAccumulate, Configuration config)
+        private decimal CalculateCash(List<FixedMoneyItem> itemsToAccumulate, List<FixedMoneyItem> itemsNotAccumulate, Configuration config)
         {
             var cashItems = itemsNotAccumulate
                             .Where(x => x.CategoryID != config.CashWithdrawalCategoryID && x.Cash)
@@ -38,10 +38,17 @@ namespace SavingsProjection.API.Services
                 .OrderBy(x => x.Date).ToList();
 
 
+            decimal carryCashExpenses = 0;
+            decimal cashLeftToSpend = 0;
             foreach (var cashWithdrawalItem in cashWithdrawal)
             {
                 var currentCashItems = cashItems.Where(x => x.Date >= cashWithdrawalItem.Date).OrderBy(x => x.Date);
-                if (currentCashItems.Any()) cashWithdrawalItem.Note += $"(Withdrawal amount {cashWithdrawalItem.Amount})";
+                if (currentCashItems.Any()) cashWithdrawalItem.Note += $"(Original amount {cashWithdrawalItem.Amount})";
+                if (carryCashExpenses > 0)
+                {
+                    cashWithdrawalItem.Amount += carryCashExpenses;
+                    carryCashExpenses = 0;
+                }
                 var lstItemsToRemove = new List<FixedMoneyItem>();
                 foreach (var currentCashItem in currentCashItems)
                 {
@@ -49,6 +56,7 @@ namespace SavingsProjection.API.Services
                     lstItemsToRemove.Add(currentCashItem);
                     if (cashWithdrawalItem.Amount >= 0)
                     {
+                        carryCashExpenses = cashWithdrawalItem.Amount.Value;
                         cashWithdrawalItem.Amount = 0;
                         break;
                     }
@@ -57,7 +65,12 @@ namespace SavingsProjection.API.Services
                 {
                     cashItems.Remove(item);
                 }
+                if (cashWithdrawalItem.Amount < 0)
+                {
+                    cashLeftToSpend += cashWithdrawalItem.Amount.Value;
+                }
             }
+            return cashLeftToSpend;
         }
 
         public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false, bool includeLastEndPeriod = true)
@@ -75,11 +88,11 @@ namespace SavingsProjection.API.Services
                 int accumulatorStartingIndex = res.Count;
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems.Include(x => x.Category).Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
                 var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x=>x.Category).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
 
                 if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 
-                CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config);
+                var cashLeftToSpend = CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config);
 
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
@@ -174,7 +187,7 @@ namespace SavingsProjection.API.Services
                     }
                 }
 
-                res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = string.Empty, Date = periodEnd, EndPeriod = true, IsRecurrent = false });
+                res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = $"💵 Cash: {cashLeftToSpend:N2}", Date = periodEnd, EndPeriod = true, IsRecurrent = false });
                 periodStart = periodEnd.AddDays(1);
                 if (breakFirstEndPeriod) break;
             }
