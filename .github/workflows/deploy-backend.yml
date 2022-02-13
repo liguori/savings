@@ -48,6 +48,6 @@ jobs:
       - name: Deploy Backend
         uses: azure/webapps-deploy@v2
         with:
-          app-name:    ${{ secrets.APPSERVICENAME }}
+          app-name: ${{ secrets.APPSERVICENAME }}
           package: ./deploy
         
