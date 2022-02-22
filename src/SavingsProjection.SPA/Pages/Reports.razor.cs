@@ -44,11 +44,11 @@ namespace SavingsProjection.SPA.Pages
         async Task InitializeInstallmentResume()
         {
             var recurrentItems = await savingProjectionAPI.GetRecurrentMoneyItems(null, true, null, null);
-            RecurrentItems = recurrentItems.Where(x => x.EndDate >= DateTime.Now && x.Type == MoneyType.InstallmentPayment).OrderBy(x => x.Note).ToArray();
+            RecurrentItems = recurrentItems.Where(x => x.EndDate.HasValue && x.EndDate.Value >= DateTime.Now && x.Type == MoneyType.InstallmentPayment).OrderBy(x => x.Note).ToArray();
             DateTime endDate = DateTime.Now.AddMonths(1);
             if (RecurrentItems.Any())
             {
-                endDate = RecurrentItems.Max(x => x.EndDate);
+                endDate = RecurrentItems.Max(x => x.EndDate.Value);
             }
             var projections = await savingProjectionAPI.GetSavingsProjection(null, endDate, true);
             Projections = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0 && x.Date >= DateTime.Now).ToArray();

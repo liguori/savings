@@ -7,7 +7,7 @@ namespace SavingsProjection.Model
     {
         public long ID { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public decimal Amount { get; set; }
         public int RecurrencyInterval { get; set; }
         public RecurrencyType RecurrencyType { get; set; }

@@ -88,7 +88,7 @@ namespace SavingsProjection.API.Services
                 int accumulatorStartingIndex = res.Count;
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems.Include(x => x.Category).Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
                 var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category).Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate && x.RecurrentMoneyItemID == null).ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category).Where(x => x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null).ToListAsync();
 
                 if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 
@@ -151,7 +151,7 @@ namespace SavingsProjection.API.Services
                         if (recurrentItem.AssociatedItems != null)
                         {
                             var lstNoteAssociatedItems = new List<string>();
-                            var associatedItemsToCalculate = recurrentItem.AssociatedItems.Where(x => x.StartDate <= periodEnd && periodStart <= x.EndDate);
+                            var associatedItemsToCalculate = recurrentItem.AssociatedItems.Where(x => x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate.Value));
                             if (onlyInstallment) associatedItemsToCalculate = associatedItemsToCalculate.Where(x => x.Type == MoneyType.InstallmentPayment);
                             foreach (var associatedItem in associatedItemsToCalculate)
                             {
@@ -206,7 +206,7 @@ namespace SavingsProjection.API.Services
         IEnumerable<(DateTime original, DateTime currentDate)> CalculateInstallmentInPeriod(RecurrentMoneyItem item, DateTime periodStart, DateTime periodEnd)
         {
             var lstInstallmentsDate = new List<(DateTime original, DateTime currentDate)>();
-            if (item.StartDate <= periodEnd && periodStart <= item.EndDate)
+            if (item.StartDate <= periodEnd && (!item.EndDate.HasValue || periodStart <= item.EndDate.Value))
             {
                 var currentInstallmentOriginal = item.StartDate;
                 var currentInstallmentDate = CalculateActualInstallmentDate(item, currentInstallmentOriginal);

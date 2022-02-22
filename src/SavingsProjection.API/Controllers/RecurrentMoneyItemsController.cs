@@ -27,9 +27,9 @@ namespace SavingsProjection.API.Controllers
         public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems(long? parentItemID, bool onlyActive, DateTime? endDateFrom, DateTime? endDateTo)
         {
             var res = _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).AsQueryable();
-            if (onlyActive) res = res.Where(x => x.EndDate >= DateTime.Now.Date);
-            if (endDateFrom.HasValue) res = res.Where(x => x.EndDate >= endDateFrom.Value);
-            if (endDateTo.HasValue) res = res.Where(x => x.EndDate <= endDateTo.Value);
+            if (onlyActive) res = res.Where(x => !x.EndDate.HasValue || x.EndDate.Value >= DateTime.Now.Date);
+            if (endDateFrom.HasValue) res = res.Where(x => !x.EndDate.HasValue || x.EndDate.Value >= endDateFrom.Value);
+            if (endDateTo.HasValue) res = res.Where(x =>  x.EndDate.HasValue && x.EndDate <= endDateTo.Value);
             if (parentItemID.HasValue)
             {
                 res = res.Where(x => x.RecurrentMoneyItemID == parentItemID.Value);
