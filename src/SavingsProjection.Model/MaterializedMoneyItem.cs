@@ -9,6 +9,7 @@ namespace SavingsProjection.Model
         public decimal Amount { get; set; }
         public MoneyType Type { get; set; }
         public MoneyCategory Category { get; set; }
+        public long? CategoryID { get; set; }
         public string Note { get; set; }
         public decimal Projection { get; set; }
         public bool EndPeriod { get; set; }

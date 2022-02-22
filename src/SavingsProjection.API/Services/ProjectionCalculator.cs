@@ -92,9 +92,9 @@ namespace SavingsProjection.API.Services
             {
                 if (!to.HasValue) breakFirstEndPeriod = true;
                 int accumulatorStartingIndex = res.Count;
-                var fixedItemsNotAccumulate = await context.FixedMoneyItems.Include(x => x.Category).Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).ToListAsync();
-                var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category).Where(x => x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null).ToListAsync();
+                var fixedItemsNotAccumulate = await context.FixedMoneyItems.Include(x => x.Category).Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).AsNoTracking().ToListAsync();
+                var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).AsNoTracking().ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category).Where(x => x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null).AsNoTracking().ToListAsync();
 
                 if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 
@@ -111,7 +111,7 @@ namespace SavingsProjection.API.Services
                     res.Add(new MaterializedMoneyItem
                     {
                         Date = fixedItem.Date,
-                        Category = fixedItem.Category,
+                        CategoryID = fixedItem?.Category?.ID,
                         Amount = fixedItem.Amount ?? 0,
                         EndPeriod = false,
                         Note = fixedItem.Note,
@@ -187,7 +187,7 @@ namespace SavingsProjection.API.Services
                         res.Add(new MaterializedMoneyItem
                         {
                             Date = currentInstallmentDate,
-                            Category = recurrentItem.Category,
+                            CategoryID = recurrentItem?.Category?.ID,
                             Amount = currentInstallmentAmount,
                             EndPeriod = false,
                             Note = currentInstallmentNote,
