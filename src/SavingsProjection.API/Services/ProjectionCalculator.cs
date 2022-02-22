@@ -22,7 +22,7 @@ namespace SavingsProjection.API.Services
             await this.context.SaveChangesAsync();
         }
 
-        private decimal CalculateCash(List<FixedMoneyItem> itemsToAccumulate, List<FixedMoneyItem> itemsNotAccumulate, Configuration config)
+        private decimal CalculateCash(List<FixedMoneyItem> itemsToAccumulate, List<FixedMoneyItem> itemsNotAccumulate, Configuration config, decimal additionalCashLeft,DateTime periodStart)
         {
             var cashItems = itemsNotAccumulate
                             .Where(x => x.CategoryID != config.CashWithdrawalCategoryID && x.Cash)
@@ -36,6 +36,11 @@ namespace SavingsProjection.API.Services
                 .Union(itemsToAccumulate
                 .Where(x => x.CategoryID == config.CashWithdrawalCategoryID))
                 .OrderBy(x => x.Date).ToList();
+
+            if (additionalCashLeft != 0)
+            {
+                cashWithdrawal.Insert(0, new FixedMoneyItem { Cash = true, Amount = additionalCashLeft, Note = "Additional Cash", Date = periodStart });
+            }
 
 
             decimal carryCashExpenses = 0;
@@ -82,6 +87,7 @@ namespace SavingsProjection.API.Services
             var periodStart = fromDate.AddDays(1);
             var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
             DateTime periodEnd;
+            bool endPeriodCashCarryUsed = false;
             while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= (to ?? new DateTime(9999, 12, 31)))
             {
                 if (!to.HasValue) breakFirstEndPeriod = true;
@@ -92,7 +98,13 @@ namespace SavingsProjection.API.Services
 
                 if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 
-                var cashLeftToSpend = CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config);
+                decimal additionalCash = 0;
+                if (!endPeriodCashCarryUsed)
+                {
+                    endPeriodCashCarryUsed = true;
+                    additionalCash = lastEndPeriod.EndPeriodCashCarry;
+                }
+                var cashLeftToSpend = CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config, additionalCash,periodStart);
 
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
@@ -187,7 +199,7 @@ namespace SavingsProjection.API.Services
                     }
                 }
 
-                res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = $"💵 Cash: {cashLeftToSpend:N2}", Date = periodEnd, EndPeriod = true, IsRecurrent = false });
+                res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = $"💵 Cash: {cashLeftToSpend:N2}", Date = periodEnd, EndPeriod = true, IsRecurrent = false, EndPeriodCashCarry = cashLeftToSpend });
                 periodStart = periodEnd.AddDays(1);
                 if (breakFirstEndPeriod) break;
             }

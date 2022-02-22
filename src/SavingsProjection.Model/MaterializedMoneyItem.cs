@@ -17,5 +17,6 @@ namespace SavingsProjection.Model
         public long? RecurrentMoneyItemID { get; set; }
         public long? FixedMoneyItemID { get; set; }
         public bool Cash { get; set; }
+        public decimal EndPeriodCashCarry { get; set; }
     }
 }
