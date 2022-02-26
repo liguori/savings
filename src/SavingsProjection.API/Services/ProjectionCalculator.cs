@@ -22,7 +22,7 @@ namespace SavingsProjection.API.Services
             await this.context.SaveChangesAsync();
         }
 
-        private decimal CalculateCash(List<FixedMoneyItem> itemsToAccumulate, List<FixedMoneyItem> itemsNotAccumulate, Configuration config, decimal additionalCashLeft,DateTime periodStart)
+        private decimal CalculateCash(List<FixedMoneyItem> itemsToAccumulate, List<FixedMoneyItem> itemsNotAccumulate, Configuration config, decimal additionalCashLeft, DateTime periodStart)
         {
             var cashItems = itemsNotAccumulate
                             .Where(x => x.CategoryID != config.CashWithdrawalCategoryID && x.Cash)
@@ -37,9 +37,11 @@ namespace SavingsProjection.API.Services
                 .Where(x => x.CategoryID == config.CashWithdrawalCategoryID))
                 .OrderBy(x => x.Date).ToList();
 
+            //There is additional cash left (ex. from previous month)
+            const long cashWithdrawalAdditionalCashLeftID = 99999999999999999;
             if (additionalCashLeft != 0)
             {
-                cashWithdrawal.Insert(0, new FixedMoneyItem { Cash = true, Amount = additionalCashLeft, Note = "Additional Cash", Date = periodStart });
+                cashWithdrawal.Insert(0, new FixedMoneyItem { ID = cashWithdrawalAdditionalCashLeftID, Cash = true, Amount = additionalCashLeft, Note = "Additional Cash", Date = periodStart });
             }
 
 
@@ -58,6 +60,11 @@ namespace SavingsProjection.API.Services
                 foreach (var currentCashItem in currentCashItems)
                 {
                     cashWithdrawalItem.Amount -= currentCashItem.Amount;
+                    //If it's subctracted from the additional cash (ex. from the prvious month). It has already been subtracted so it must be counted as 0 for this month balance
+                    if (cashWithdrawalItem.ID == cashWithdrawalAdditionalCashLeftID)
+                    {
+                        currentCashItem.Amount = 0;
+                    }
                     lstItemsToRemove.Add(currentCashItem);
                     if (cashWithdrawalItem.Amount >= 0)
                     {
@@ -104,7 +111,7 @@ namespace SavingsProjection.API.Services
                     endPeriodCashCarryUsed = true;
                     additionalCash = lastEndPeriod.EndPeriodCashCarry;
                 }
-                var cashLeftToSpend = CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config, additionalCash,periodStart);
+                var cashLeftToSpend = CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config, additionalCash, periodStart);
 
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
