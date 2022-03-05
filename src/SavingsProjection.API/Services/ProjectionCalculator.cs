@@ -63,7 +63,10 @@ namespace SavingsProjection.API.Services
                     //If it's subctracted from the additional cash (ex. from the prvious month). It has already been subtracted so it must be counted as 0 for this month balance
                     if (cashWithdrawalItem.ID == cashWithdrawalAdditionalCashLeftID)
                     {
-                        currentCashItem.Amount = 0;
+                        if (cashWithdrawalItem.Amount >= 0)
+                            currentCashItem.Amount = -cashWithdrawalItem.Amount;
+                        else
+                            currentCashItem.Amount = 0;
                     }
                     lstItemsToRemove.Add(currentCashItem);
                     if (cashWithdrawalItem.Amount >= 0)
