@@ -1,6 +1,6 @@
 {
-  "name": "Savings Projection",
-  "short_name": "Savings Projection",
+  "name": "Savings",
+  "short_name": "Savings",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
