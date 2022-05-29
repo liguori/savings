@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master ]
     paths:
-    - 'src/SavingsProjection.API/**'
+    - 'src/Savings.API/**'
   
   
   workflow_dispatch:
@@ -22,13 +22,13 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Build .NET Backend
-      run: dotnet publish SavingsProjection.API.csproj -o "output" -c "Release"
-      working-directory: ./src/SavingsProjection.API
+      run: dotnet publish Savings.API.csproj -o "output" -c "Release"
+      working-directory: ./src/Savings.API
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.2
       with:
-        name: savings-projection-backend
-        path: ./src/SavingsProjection.API/output/*
+        name: savings-backend
+        path: ./src/Savings.API/output/*
         if-no-files-found: error
         retention-days: 90
