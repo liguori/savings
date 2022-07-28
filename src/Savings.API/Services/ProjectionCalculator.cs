@@ -102,9 +102,18 @@ namespace Savings.API.Services
             {
                 if (!to.HasValue) breakFirstEndPeriod = true;
                 int accumulatorStartingIndex = res.Count;
-                var fixedItemsNotAccumulate = await context.FixedMoneyItems.Include(x => x.Category).Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget).AsNoTracking().ToListAsync();
-                var fixedItemsAccumulate = await context.FixedMoneyItems.Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget).AsNoTracking().ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems.Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category).Where(x => x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null).AsNoTracking().ToListAsync();
+                var fixedItemsNotAccumulate = await context.FixedMoneyItems
+                                                    .Include(x => x.Category)
+                                                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget)
+                                                    .AsNoTracking().ToListAsync();
+                var fixedItemsAccumulate = await context.FixedMoneyItems
+                                                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget)
+                                                    .AsNoTracking().ToListAsync();
+                var recurrentItems = await context.RecurrentMoneyItems
+                                                    .Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category)
+                                                    .Where(x => (x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null) ||
+                                                                (x.Adjustements.Count() > 0 && x.Adjustements.First().RecurrencyNewDate.HasValue && x.Adjustements.First().RecurrencyNewDate.Value >= periodStart && x.Adjustements.First().RecurrencyNewDate.Value <= periodEnd))
+                                                    .AsNoTracking().ToListAsync();
 
                 if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 
@@ -214,7 +223,7 @@ namespace Savings.API.Services
                 if (breakFirstEndPeriod) break;
             }
             //Calculate the projection
-            var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).FirstOrDefault().Projection;
+            var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).ThenByDescending(x => x.EndPeriod).FirstOrDefault().Projection;
             res = res.OrderBy(x => x.Date).ThenByDescending(x => x.TimelineWeight).ToList();
             foreach (var resItem in res)
             {

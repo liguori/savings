@@ -35,7 +35,7 @@ namespace Savings.SPA.Pages
         async Task InitializeList()
         {
             var items = await savingsAPI.GetMaterializedMoneyItems(FilterDateFrom, FilterDateTo, false);
-            materializedMoneyItems = items.OrderByDescending(x => x.Date).ThenBy(x => x.ID).ToArray();
+            materializedMoneyItems = items;
         }
 
         async Task DeleteMaterializedHistory(MaterializedMoneyItem item)
