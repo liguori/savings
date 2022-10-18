@@ -49,23 +49,7 @@ namespace Savings.SPA.Pages
             recurrentMoneyItems = await savingsAPI.GetRecurrentMoneyItems(parentItemID, ShowOnlyActive, FilterOnlyActiveDateFrom, FilterOnlyActiveDateTo);
         }
 
-        async Task Delete(long itemID)
-        {
-            try
-            {
-                var res = await dialogService.Confirm("Are you sure you want delete?", "Delete recurrent item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-                if (res.HasValue && res.Value)
-                {
-                    var deletedItem = await savingsAPI.DeleteRecurrentMoneyItem(itemID);
-                    await InitializeList();
-                }
-            }
-            catch (Exception ex)
-            {
-                notificationService.Notify(NotificationSeverity.Error, "Error", ex.Message);
-            }
-        }
-
+       
         async Task AddNew()
         {
             bool? res = await dialogService.OpenAsync<RecurrentItemEdit>($"Add new",

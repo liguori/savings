@@ -59,16 +59,6 @@ namespace Savings.SPA.Pages
             fixedMoneyItems = await savingsAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo, false, FilterCategory);
         }
 
-        async Task Delete(long itemID)
-        {
-            var res = await dialogService.Confirm("Are you sure you want delete?", "Delete fixed item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-            if (res.HasValue && res.Value)
-            {
-                var deletedItem = await savingsAPI.DeleteFixedMoneyItem(itemID);
-                await InitializeList();
-            }
-        }
-
         async Task AddNew()
         {
             bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Add new",

@@ -80,5 +80,6 @@
         <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })">
             <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
         </button>
+        <button type="button" class="btn btn-danger" @onclick="@(()=>Delete())"><span class="oi oi-trash" aria-hidden="true"></span></button>
     </div>
 </EditForm>

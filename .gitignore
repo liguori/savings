@@ -2,3 +2,4 @@
 /src/.vs
 *.db-shm
 *.db-wal
+/src/Savings.MAUI

@@ -41,10 +41,10 @@ app {
             margin-left: 1.5rem;
         }
 
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .main .top-row a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 .sidebar {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
@@ -129,12 +129,12 @@ app {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
@@ -180,4 +180,59 @@ app {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
+}
+
+.item-action {
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 800px) {
+    /* Force table to not be like tables anymore */
+    .mobile-resume table, .mobile-resume thead, .mobile-resume tbody, .mobile-resume th, .mobile-resume td, .mobile-resume tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .mobile-resume thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    .mobile-resume tr {
+        border: 1px solid #ccc;
+    }
+
+    .mobile-resume td {
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 25%;
+        white-space: normal;
+        text-align: left;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+        .mobile-resume td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 2px;
+            left: 2px;
+            bottom: 2px;
+            width: 20%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+	Label the data
+	*/
+        .mobile-resume td:before {
+            content: attr(data-title);
+        }
 }

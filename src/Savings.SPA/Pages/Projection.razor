@@ -43,7 +43,7 @@ else
             <tbody>
                 @foreach (var item in materializedMoneyItems)
                 {
-                    <tr class="@(item.EndPeriod ? "end-period" : "")">
+                    <tr class="@(item.EndPeriod ? "end-period" : "") item-action" @onclick="@(()=>  item.IsRecurrent ? AdjustRecurrency(item) : AdjustFixedItem(item))">
                         <th>
                             @if (item.Date <= DateTime.Now.Date)
                             {
@@ -121,11 +121,11 @@ else
                             {
                                 if (item.IsRecurrent)
                                 {
-                                    <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent" @onclick="@(()=>AdjustRecurrency(item))"></span>
+                                    <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent"></span>
                                 }
                                 else
                                 {
-                                    <span class="oi oi-pin edit-adjustment" aria-hidden="true" title="Fixed" @onclick="@(()=>AdjustFixedItem(item))"></span>
+                                    <span class="oi oi-pin edit-adjustment" aria-hidden="true" title="Fixed"></span>
                                 }
                             }
                             else

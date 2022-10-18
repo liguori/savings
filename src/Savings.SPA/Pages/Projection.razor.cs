@@ -45,6 +45,7 @@ namespace Savings.SPA.Pages
 
         async Task AdjustRecurrency(MaterializedMoneyItem item)
         {
+            if (item.EndPeriod) return;
             var res = await dialogService.OpenAsync<RecurrencyAdjustment>($"Recurrency Adjustment",
                             new Dictionary<string, object>() { { "materializedItem", item } },
                             new DialogOptions() { Width = "600px", Height = "300px" });
@@ -54,6 +55,7 @@ namespace Savings.SPA.Pages
 
         async Task AdjustFixedItem(MaterializedMoneyItem item)
         {
+            if (item.EndPeriod) return;
             if (!item.FixedMoneyItemID.HasValue) return;
             var itemToEdit = await savingsAPI.GetixedMoneyItem(item.FixedMoneyItemID.Value);
             bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Edit item",

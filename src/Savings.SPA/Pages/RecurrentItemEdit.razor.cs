@@ -24,7 +24,7 @@ namespace Savings.SPA.Pages
         [Parameter]
         public bool isNew { get; set; }
 
-        [ParameterAttribute]
+        [Parameter]
         public long? parentItemID { get; set; } = null;
 
         protected override void OnInitialized()
@@ -40,6 +40,24 @@ namespace Savings.SPA.Pages
         {
             Categories = await savingsAPI.GetMoneyCategories();
         }
+
+        async Task Delete()
+        {
+            try
+            {
+                var res = await dialogService.Confirm("Are you sure you want delete?", "Delete recurrent item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+                if (res.HasValue && res.Value)
+                {
+                    var deletedItem = await savingsAPI.DeleteRecurrentMoneyItem(recurrentItemToEdit.ID);
+                    this.dialogService.Close(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                notificationService.Notify(NotificationSeverity.Error, "Error", ex.Message);
+            }
+        }
+
 
         bool ValidateData()
         {
@@ -71,9 +89,9 @@ namespace Savings.SPA.Pages
                 }
                 this.dialogService.Close(true);
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw ;
             }
 
         }

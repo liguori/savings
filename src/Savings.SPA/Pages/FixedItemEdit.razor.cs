@@ -72,6 +72,17 @@ namespace Savings.SPA.Pages
             return true;
         }
 
+        async Task Delete()
+        {
+            var res = await dialogService.Confirm("Are you sure you want delete?", "Delete fixed item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+            if (res.HasValue && res.Value)
+            {
+                var deletedItem = await savingsAPI.DeleteFixedMoneyItem(fixedItemToEdit.ID);
+                this.dialogService.Close(true);
+            }
+        }
+
+
         private async void OnValidSubmit()
         {
             try
@@ -95,9 +106,9 @@ namespace Savings.SPA.Pages
                 }
                 this.dialogService.Close(true);
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
 
         }
