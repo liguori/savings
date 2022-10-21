@@ -27,7 +27,7 @@ namespace Savings.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MoneyCategory>>> GetMoneyCategories()
         {
-            return await _context.MoneyCategories.OrderBy(x => x.Description).ToListAsync();
+            return await _context.MoneyCategories.OrderBy(x => x.Description.Substring(1)).ToListAsync();
         }
 
         // GET: api/MoneyCategories/5
