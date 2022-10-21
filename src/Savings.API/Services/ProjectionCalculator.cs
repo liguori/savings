@@ -143,7 +143,7 @@ namespace Savings.API.Services
                 }
 
                 //Fixed items to accumulate for budget
-                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "Accumulator", TimelineWeight = 5, IsRecurrent = false };
+                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "🧾 Accumulator", TimelineWeight = 5, IsRecurrent = false };
                 foreach (var accumulateItem in fixedItemsAccumulate)
                 {
                     accumulateMaterializedItem.Category = null;
