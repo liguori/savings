@@ -48,7 +48,7 @@
                 {
                     foreach (var value in Categories)
                     {
-                        <option value="@value.ID" selected="@(value.ID == fixedItemToEdit.CategoryID)">@value.Description</option>
+                        <option value="@value.ID" selected="@(value.ID == fixedItemToEdit.CategoryID)">@value.Icon @value.Description</option>
                     }
                 }
             }

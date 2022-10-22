@@ -10,5 +10,7 @@ namespace Savings.Model
         public long ID { get; set; }
 
         public string Description { get; set; }
+
+        public string Icon { get; set; }
     }
 }

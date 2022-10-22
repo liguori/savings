@@ -7,6 +7,7 @@ namespace Savings.Model
     public class ReportCategoryData
     {
         public string Category { get; set; }
+        public string CategoryIcon { get; set; }
         public CategoryResumDataItem[] Data { get; set; }
     }
 

@@ -35,8 +35,8 @@ namespace Savings.API.Controllers
                 .Where(x => x.Date >= startPeriod && x.Date <= endPeriod && x.CategoryID != withdrawalID)
                 .OrderByDescending(x => x.Date).ToListAsync();
 
-            var ris1 = sourceMaterializedRecurrentItems.Select(x => new { Type = "Materialized", x.ID, x.Amount, Category = x.Category?.Description, Period = x.Date.ToString(periodPattern) });
-            var ris2 = sourceFixedItemsWithoutWithDrawal.Select(x => new { Type = "Fixed", x.ID, Amount = x.Amount ?? 0, Category = x.Category?.Description, Period = x.Date.ToString(periodPattern) });
+            var ris1 = sourceMaterializedRecurrentItems.Select(x => new { Type = "Materialized", x.ID, x.Amount, CatIncon = x.Category?.Icon, Category = x.Category?.Description, Period = x.Date.ToString(periodPattern) });
+            var ris2 = sourceFixedItemsWithoutWithDrawal.Select(x => new { Type = "Fixed", x.ID, Amount = x.Amount ?? 0, CatIncon = x.Category?.Icon, Category = x.Category?.Description, Period = x.Date.ToString(periodPattern) });
 
             var union = ris1.Union(ris2);
 
@@ -48,12 +48,13 @@ namespace Savings.API.Controllers
                 lstStatistics.Add(new ReportCategoryData
                 {
                     Category = category.Key,
+                    CategoryIcon = category.First().CatIncon,
                     Data = category
                             .GroupBy(x => x.Period)
                             .Select(x => new CategoryResumDataItem() { Period = x.Key, Amount = (double)x.Sum(y => y.Amount) })
                             .Where(x => x.Amount != 0)
                             .ToArray()
-                });
+                }); ;;
             }
             return lstStatistics.OrderBy(x => x.Category).ToArray();
         }
