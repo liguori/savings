@@ -59,7 +59,7 @@ else
                         <td data-title="Type">@item.Type.ToString()</td>
                         @if (!parentItemID.HasValue)
                         {
-                            <td data-title="Items" @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="@(() => ViewChild(item))"><a href="#">@item.AssociatedItems.Count()</a></td>
+                            <td data-title="Items" @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="@(() => ViewChild(item))"><a href="#">@item.AssociatedItems.Where(x => !x.EndDate.HasValue || x.EndDate.Value >= DateTime.Now.Date).Count()</a></td>
                         }
                     </tr>
                 }
