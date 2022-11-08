@@ -20,6 +20,10 @@ jobs:
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+          
+      - name: Print directory content
+        shell: bash
+        run: ls -hl
 
       - name: Extract branch name
         shell: bash
@@ -49,7 +53,7 @@ jobs:
           AzureAd.DefaultScope: ${{ secrets.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
         
       - name: Recaulate SHA integrity
-        run: .github/workflows/script/recalculate-integrity.sh
+        run: ./.github/workflows/script/recalculate-integrity.sh
         shell: bash
         working-directory: deploy/wwwroot
 
