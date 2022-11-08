@@ -19,7 +19,7 @@ jobs:
        
       - name: Extract branch name
         shell: bash
-        run: ls .hl
+        run: ls script
         
       - uses: azure/login@v1
         with:
