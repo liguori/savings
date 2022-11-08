@@ -16,11 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-       
-      - name: Extract branch name
-        shell: bash
-        run: ls script
-        
+
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
@@ -54,8 +50,12 @@ jobs:
           AzureAd.ValidateAuthority: true
           AzureAd.DefaultScope: ${{ secrets.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
         
-      - name: Recaulate SHA integrity
-        run: ./script/recalculate-integrity.sh
+      - name: Extract branch name
+        shell: bash
+        run: cat script/recalculate-integrity.sh
+        
+      - name: Recalculate SHA integrity
+        run: script/recalculate-integrity.sh
         shell: bash
         working-directory: deploy/wwwroot
 
