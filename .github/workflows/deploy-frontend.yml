@@ -57,7 +57,7 @@ jobs:
       - name: Recalculate SHA integrity
         run: script/recalculate-integrity.sh
         shell: bash
-        working-directory: deploy/wwwroot
+
 
       - name: Deploy Frontend
         uses: azure/webapps-deploy@v2
