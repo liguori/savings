@@ -1,3 +1,6 @@
+
+Set-Location ../deploy/wwwroot/
+
 # make sure you're in the wwwroot folder of the published application
 $JsFileContent = Get-Content -Path service-worker-assets.js -Raw
 # remove JavaScript from contents so it can be interpreted as JSON

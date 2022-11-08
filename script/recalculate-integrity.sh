@@ -1,4 +1,7 @@
 #!/bin/bash
+
+cd ../deploy/wwwroot/
+
 # make sure you're in the wwwroot folder of the published application
 jsFile=$(<service-worker-assets.js)
 # remove JavaScript from contents so it can be interpreted as JSON
