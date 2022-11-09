@@ -49,15 +49,10 @@ jobs:
           AzureAd.ClientId: ${{ secrets.APPSERVICE_FE_CONFIG_CLIENT_ID }}
           AzureAd.ValidateAuthority: true
           AzureAd.DefaultScope: ${{ secrets.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
-        
-      - name: Extract branch name
-        shell: bash
-        run: cat script/recalculate-integrity.sh
-        
+                
       - name: Recalculate SHA integrity
         run: script/recalculate-integrity.sh
         shell: bash
-
 
       - name: Deploy Frontend
         uses: azure/webapps-deploy@v2
