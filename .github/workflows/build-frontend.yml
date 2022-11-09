@@ -14,18 +14,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+    
     - name: Setup .NET
-      
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
     - name: Build .NET Frontend
+    
       run: dotnet publish Savings.SPA.csproj -o "output" -c "Release"
       working-directory: ./src/Savings.SPA
 
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.2
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: savings-frontend
         path: ./src/Savings.SPA/output/*
