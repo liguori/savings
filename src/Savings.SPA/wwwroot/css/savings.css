@@ -1,8 +1,18 @@
-﻿.end-period {
+﻿body, html {
+    font-size: 1rem !important;
+}
+
+.end-period {
     font-weight: bold;
     background-color: #60368e !important;
     color: white !important;
 }
+
+.transaction-type-col {
+    max-width: 20px;
+    text-align: center;
+}
+
 
 .done-item {
     color: #35aa17;
@@ -21,9 +31,13 @@
     color: #0159cc;
 }
 
+/*Projection*/
+#history tbody > tr > :nth-child(4), thead > tr > :nth-child(4) {
+    border-right: 1px solid #b2b2b2;
+}
 
-.important-amount {
-    border: 2px solid #ff9613 !important;
+#projections tbody > tr > :nth-child(5), thead > tr > :nth-child(5) {
+    border-right: 1px solid #b2b2b2;
 }
 
 .materialize-history {

@@ -27,15 +27,15 @@ else
         </div>
     </div>
     <div class="table-responsive-sm">
-        <table class="table table-sm table-striped table-hover">
+        <table id="projections" class="table table-sm table-striped table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th></th>
                     <th></th>
                     <th>Date</th>
                     <th class="text-right">Amount</th>
                     <th></th>
                     <th class="text-right">Projection</th>
+                    <th class="transaction-type-col"></th>
                     <th>Note</th>
                     <th></th>
                 </tr>
@@ -44,31 +44,15 @@ else
                 @foreach (var item in materializedMoneyItems)
                 {
                     <tr class="@(item.EndPeriod ? "end-period" : "") item-action" @onclick="@(()=>  item.IsRecurrent ? AdjustRecurrency(item) : AdjustFixedItem(item))">
-                        <th>
+                        <td class="text-center">
                             @if (item.Date <= DateTime.Now.Date)
                             {
                                 <span class="oi oi-check done-item" aria-hidden="true"></span>
                             }
-                        </th>
-                        <th>
-                            @if (!item.EndPeriod)
-                            {
-                                @if (item.Category?.ID == CurrentConfiguration.CashWithdrawalCategoryID)
-                                {
-                                    <span class="oi oi-browser" aria-hidden="true"></span>
-                                }
-                                else if (item.Cash)
-                                {
-                                    <span class="oi oi-euro" aria-hidden="true"></span>
-                                }
-                                else
-                                {
-                                    <span class="oi oi-credit-card" aria-hidden="true"></span>
-                                }
-                            }
-                        </th>
+                        </td>
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
                         <td class="text-right">@item.Amount.ToString("N2")</td>
+
                         <td class="text-center">
                             @{
                                 var iconToUse = "";
@@ -108,12 +92,27 @@ else
                             <span class="oi oi-@iconToUse @classToUse" aria-hidden="true" title="Fixed"></span>
                         </td>
                         @{
-                            var projectionStyle = "text-right";
-                            projectionStyle += item.Date <= DateTime.Now.Date ? " done-projection" : "";
-                            if (item.EndPeriod) projectionStyle += " important-amount";
+                            var projectionStyle = "text-right " + (item.Date <= DateTime.Now.Date ? " done-projection" : "");
                         }
                         <td class="@projectionStyle">
                             @item.Projection.ToString("N2")
+                        </td>
+                        <td class="transaction-type-col">
+                            @if (!item.EndPeriod)
+                            {
+                                @if (item.Category?.ID == CurrentConfiguration.CashWithdrawalCategoryID)
+                                {
+                                    <span class="oi oi-browser" aria-hidden="true"></span>
+                                }
+                                else if (item.Cash)
+                                {
+                                    <span class="oi oi-euro" aria-hidden="true"></span>
+                                }
+                                else
+                                {
+                                    <span class="oi oi-credit-card" aria-hidden="true"></span>
+                                }
+                            }
                         </td>
                         <td class="ellipses">@item.Note</td>
                         <td>

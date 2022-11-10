@@ -18,7 +18,7 @@ else
         </div>
     </div>
     <div class="table-responsive-sm">
-        <table class="table table-sm table-striped table-hover">
+        <table id="history" class="table table-sm table-striped table-hover">
             <thead class="table-dark">
                 <tr>
                     <th>Date</th>
@@ -73,11 +73,7 @@ else
                             }
                             <span class="oi oi-@iconToUse @classToUse" aria-hidden="true" title="Fixed"></span>
                         </td>
-                        @{
-                            var projectionStyle = "text-right";
-                            if (item.EndPeriod) projectionStyle += " important-amount";
-                        }
-                        <td class="@projectionStyle">
+                        <td class="text-right done-projection">
                             @item.Projection.ToString("N2")
                         </td>
                         <td class="ellipses">@item.Note</td>
