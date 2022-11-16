@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Radzen;
 using Refit;
@@ -40,7 +41,18 @@ var httpClientBuilder = builder.Services.AddRefitClient<ISavingsApi>().Configure
 
 if (configuredAuthentication == AuthenticationToUse.AzureAD)
 {
-    httpClientBuilder.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+    builder.Services.AddScoped(sp =>
+    {
+        var authorizationMessageHandler = sp.GetRequiredService<AuthorizationMessageHandler>();
+        authorizationMessageHandler.InnerHandler = new HttpClientHandler();
+        authorizationMessageHandler = authorizationMessageHandler.ConfigureHandler(
+            authorizedUrls: new[] { builder.Configuration["SavingsApiServiceUrl"] },
+            scopes: new[] { builder.Configuration["AzureAd:DefaultScope"] });
+        return new HttpClient(authorizationMessageHandler)
+        {
+            BaseAddress = new Uri(builder.Configuration["SavingsApiServiceUrl"] ?? string.Empty)
+        };
+    });
 }
 
 await builder.Build().RunAsync();
