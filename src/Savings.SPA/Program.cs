@@ -6,6 +6,7 @@ using Radzen;
 using Refit;
 using Savings.Model;
 using Savings.SPA;
+using Savings.SPA.Authorization;
 using Savings.SPA.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -39,18 +40,7 @@ var httpClientBuilder = builder.Services.AddRefitClient<ISavingsApi>().Configure
 
 if (configuredAuthentication == AuthenticationToUse.AzureAD)
 {
-    builder.Services.AddScoped(sp =>
-    {
-        var authorizationMessageHandler = sp.GetRequiredService<AuthorizationMessageHandler>();
-        authorizationMessageHandler.InnerHandler = new HttpClientHandler();
-        authorizationMessageHandler = authorizationMessageHandler.ConfigureHandler(
-            authorizedUrls: new[] { builder.Configuration["SavingsApiServiceUrl"] },
-            scopes: new[] { builder.Configuration["AzureAd:DefaultScope"] });
-        return new HttpClient(authorizationMessageHandler)
-        {
-            BaseAddress = new Uri(builder.Configuration["SavingsApiServiceUrl"] ?? string.Empty)
-        };
-    });
+    httpClientBuilder.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 }
 
 await builder.Build().RunAsync();
