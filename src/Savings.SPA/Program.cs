@@ -25,6 +25,7 @@ if (configuredAuthentication == AuthenticationToUse.AzureAD)
     builder.Services.AddMsalAuthentication(options =>
     {
         options.ProviderOptions.Cache.CacheLocation = "localStorage";
+        options.ProviderOptions.Cache.StoreAuthStateInCookie = true;
         options.ProviderOptions.LoginMode = "redirect";
         builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
         options.ProviderOptions.DefaultAccessTokenScopes.Add(builder.Configuration["AzureAd:DefaultScope"]);
