@@ -6,7 +6,6 @@ using Radzen;
 using Refit;
 using Savings.Model;
 using Savings.SPA;
-using Savings.SPA.Authorization;
 using Savings.SPA.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -16,7 +15,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
 var configuredAuthentication = builder.Configuration["AuthenticationToUse"];
 
