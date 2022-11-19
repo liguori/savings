@@ -5,7 +5,6 @@ using Savings.Model;
 
 namespace Savings.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SavingsController : ControllerBase

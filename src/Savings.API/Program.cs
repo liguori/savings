@@ -136,9 +136,17 @@ app.UseCors("AllowAllOrigin");
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+if (authenticationToUse != AuthenticationToUse.None)
+{
+    app.UseAuthentication();
+    app.UseAuthorization();
+}
 
-app.MapControllers();
+var controllerBuilder = app.MapControllers();
+
+if (authenticationToUse != AuthenticationToUse.None)
+{
+    controllerBuilder.RequireAuthorization();
+}
 
 app.Run();

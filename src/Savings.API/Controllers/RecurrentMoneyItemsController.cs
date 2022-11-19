@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Savings.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RecurrentMoneyItemsController : ControllerBase
