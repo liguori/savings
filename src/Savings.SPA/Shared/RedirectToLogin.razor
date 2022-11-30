@@ -6,8 +6,17 @@
 @code {
     protected override void OnInitialized()
     {
+
+        var requestOptions = new InteractiveRequestOptions()
+            {
+                Interaction = InteractionType.SignIn,
+                ReturnUrl = Navigation.Uri,
+            };
+
+        requestOptions.TryAddAdditionalParameter("prompt", "select_account");
+
         Navigation.NavigateToLogin(Options.Get(
             Microsoft.Extensions.Options.Options.DefaultName)
-            .AuthenticationPaths.LogInPath);
+            .AuthenticationPaths.LogInPath, requestOptions);
     }
 }
