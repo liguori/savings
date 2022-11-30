@@ -19,9 +19,6 @@
     <TrimmerRootDescriptor Include="TrimmerRootDescriptor.xml" />
   </ItemGroup>
   <ItemGroup>
-    <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Savings.Model\Savings.Model.csproj" />
   </ItemGroup>
   <ItemGroup>
