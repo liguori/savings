@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@inherits LayoutComponentBase
 <RadzenDialog />
 <RadzenNotification />
 <div class="page">
@@ -8,7 +9,19 @@
 
     <main>
         <article class="content px-4">
-            @Body
+            <ErrorBoundary>
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent Context="ex">
+                    @{
+                        if (ex is AccessTokenNotAvailableException)
+                        {
+                            <RedirectToLogin />
+                        }
+                    }
+                </ErrorContent>
+            </ErrorBoundary>
         </article>
     </main>
 </div>
