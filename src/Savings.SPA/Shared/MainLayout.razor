@@ -20,7 +20,7 @@
                     @{
                         if (ex.GetType().IsAssignableFrom(typeof(AccessTokenNotAvailableException)))
                         {
-                            JS.InvokeVoidAsync("Storage.clear");
+                            JS.InvokeVoidAsync("localStorage.clear");
                             <RedirectToLogin />
                         }
                     }
