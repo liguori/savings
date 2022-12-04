@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @inherits LayoutComponentBase
+@inject IJSRuntime JS
+
 <RadzenDialog />
 <RadzenNotification />
 <div class="page">
@@ -14,11 +16,12 @@
                     @Body
                 </ChildContent>
                 <ErrorContent Context="ex">
-                    <RedirectToLogin />
+
                     @{
                         if (ex.GetType().IsAssignableFrom(typeof(AccessTokenNotAvailableException)))
                         {
-                           
+                            JS.InvokeVoidAsync("Storage.clear");
+                            <RedirectToLogin />
                         }
                     }
                 </ErrorContent>
