@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Options;
 @inject NavigationManager Navigation
+
+@inject IOptionsSnapshot<RemoteAuthenticationOptions<ApiAuthorizationProviderOptions>> Options
 
 <AuthorizeView>
     <Authorized>
@@ -18,6 +21,8 @@
 @code {
     public void BeginLogOut()
     {
-        Navigation.NavigateToLogout("authentication/logout");
+        Navigation.NavigateToLogout(Options.Get(
+            Microsoft.Extensions.Options.Options.DefaultName)
+            .AuthenticationPaths.LogOutPath);
     }
 }
