@@ -16,15 +16,8 @@
                 </ChildContent>
                 <ErrorContent Context="ex">
                     @{
-                        if (ex.GetType().IsAssignableFrom(typeof(AccessTokenNotAvailableException)))
-                        {
-                            ((AccessTokenNotAvailableException)ex).Redirect();
-                            //See: https://github.com/dotnet/aspnetcore/issues/28151
-                            //The user is not redirect to an interactive signin from AuthorizationMessageHandler nor AuthorizeView
-                            //If the refresh tokene expires, this exception is catched:the localStorage is cleared and the user is rediret to a new login
-                            //JS.InvokeVoidAsync("localStorage.clear");
-                            //<RedirectToLogin />
-                        }
+                        //Capture when the access token can't be retrieved and perform an interactive redirect
+                        if (ex is AccessTokenNotAvailableException) ((AccessTokenNotAvailableException)ex).Redirect();
                     }
                 </ErrorContent>
             </ErrorBoundary>
