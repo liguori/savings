@@ -14,12 +14,8 @@
                     @Body
                 </ChildContent>
                 <ErrorContent Context="ex">
-                    Stampo l'excpeption
-                    @ex.Message
-                    @ex.GetType().ToString()
                     @{
-                        
-                        if (ex is AccessTokenNotAvailableException)
+                        if (ex.GetType().IsAssignableFrom(typeof(AccessTokenNotAvailableException)))
                         {
                             <RedirectToLogin />
                         }
