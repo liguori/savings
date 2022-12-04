@@ -14,10 +14,11 @@
                     @Body
                 </ChildContent>
                 <ErrorContent Context="ex">
+                    <RedirectToLogin />
                     @{
                         if (ex.GetType().IsAssignableFrom(typeof(AccessTokenNotAvailableException)))
                         {
-                            <RedirectToLogin />
+                           
                         }
                     }
                 </ErrorContent>
