@@ -17,7 +17,15 @@
                 <ErrorContent Context="ex">
                     @{
                         //Capture when the access token can't be retrieved (i.e. refresh token is expired after 1d) and perform an interactive redirect
-                        if (ex is AccessTokenNotAvailableException) ((AccessTokenNotAvailableException)ex).Redirect();
+                        if (ex is AccessTokenNotAvailableException)
+                        {
+                            //See: https://github.com/dotnet/aspnetcore/issues/28151
+                            //The user is not redirect to an interactive signin from AuthorizationMessageHandler nor AuthorizeView
+                            //If the refresh tokene expires, this exception is catched:the localStorage is cleared and the user is rediret to a new login
+                            //((AccessTokenNotAvailableException)ex).Redirect(); //This seems not to work
+                            JS.InvokeVoidAsync("localStorage.clear");
+                            <RedirectToLogin />
+                        }
                     }
                 </ErrorContent>
             </ErrorBoundary>
