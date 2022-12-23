@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Savings.API.Infrastructure;
 using Savings.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.Xml;
-using System.Threading.Tasks;
 
 namespace Savings.API.Controllers
 {
@@ -20,6 +14,27 @@ namespace Savings.API.Controllers
         public MaterializedMoneyItemsController(SavingsContext context)
         {
             _context = context;
+        }
+
+
+
+       
+        [HttpPatch("LastMaterializedMoneyItemPeriod")]
+        public async Task<ActionResult> PostLastMaterializedMoneyItemPeriod(DateTime date)
+        {
+            var res = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
+            res.Date = date;
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+
+        // GET: api/LastMaterializedMoneyItemPeriod
+        [HttpGet("LastMaterializedMoneyItemPeriod")]
+        public async Task<ActionResult<MaterializedMoneyItem>> GetLastMaterializedMoneyItemPeriod()
+        {
+            var res = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
+            return res;
         }
 
         // GET: api/MaterializedMoneyItems

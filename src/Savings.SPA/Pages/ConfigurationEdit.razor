@@ -1,0 +1,59 @@
+﻿@page "/configuration"
+@attribute [Authorize]
+<h1>Configuration</h1>
+@if (Configuration == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@Configuration" OnValidSubmit="@OnValidSubmit">
+        <DataAnnotationsValidator />
+        <div class="form-row">
+            <div class="form-group col-2">
+                <label>Date :</label><br />
+                <RadzenDatePicker @bind-Value="LastMaterializedDate" DateFormat="dd/MM/yyyy" />
+                <ValidationMessage For="@(() => LastMaterializedDate)" />
+            </div>
+             <div class="form-group col-2">
+                <label>Interval:</label>
+                <InputNumber @bind-Value="@Configuration.EndPeriodRecurrencyInterval" class="form-control" />
+                <ValidationMessage For="@(() => Configuration.EndPeriodRecurrencyInterval)" />
+            </div>
+            <div class="form-group col-4">
+                <label>Recurrency:</label>
+                <InputSelect @bind-Value="@Configuration.EndPeriodRecurrencyType" class="form-control">
+                    @foreach (var value in Enum.GetValues(typeof(Savings.Model.RecurrencyType)))
+                    {
+                        <option>@value</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => Configuration.EndPeriodRecurrencyType)" />
+            </div>
+           
+        </div>
+
+        <div class="form-group">
+            <label>Cash accumulator category:</label>
+            <InputSelectNumber @bind-Value="@Configuration.CashWithdrawalCategoryID" class="form-control">
+                <option value=""></option>
+                @{
+                    if (Categories != null)
+                    {
+                        foreach (var value in Categories)
+                        {
+                            <option value="@value.ID" selected="@(value.ID == Configuration.CashWithdrawalCategoryID)">@value.Icon @value.Description</option>
+                        }
+                    }
+                }
+            </InputSelectNumber>
+            <ValidationMessage For="@(() => Configuration.CashWithdrawalCategoryID)" />
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">
+                <span class="oi oi-circle-check" aria-hidden="true"></span>SAVE
+            </button>
+        </div>
+    </EditForm>
+
+}

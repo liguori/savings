@@ -52,6 +52,12 @@ namespace Savings.SPA.Services
         [Post("/api/Savings/ToHistory")]
         Task PostSavingsToHistory();
 
+        [Patch("/api/MaterializedMoneyItems/LastMaterializedMoneyItemPeriod")]
+        Task EditLastMaterializedMoneyItemPeriod(DateTime date);
+
+        [Get("/api/MaterializedMoneyItems/LastMaterializedMoneyItemPeriod")]
+        Task<MaterializedMoneyItem> GetLastMaterializedMoneyItemPeriod();
+
         [Get("/api/MaterializedMoneyItems")]
         Task<MaterializedMoneyItem[]> GetMaterializedMoneyItems(DateTime? from, DateTime? to, bool onlyRecurrent);
 
@@ -63,6 +69,9 @@ namespace Savings.SPA.Services
 
         [Get("/api/Configurations")]
         Task<Configuration[]> GetConfigurations();
+
+        [Put("/api/Configurations/{id}")]
+        Task PutConfiguration(long id, Configuration configuration);
 
         [Get("/api/Report/GetCategoryResume")]
         Task<ReportCategoryData[]> GetCategoryResume(string periodPattern, int lastMonths);
