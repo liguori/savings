@@ -37,7 +37,16 @@ namespace Savings.API.Controllers
         [HttpGet("Backup")]
         public async Task<ActionResult> GetBackup()
         {
-            return File(await System.IO.File.ReadAllBytesAsync(configuration["DatabasePath"]), "application/octet-stream", "Database.db");
+            byte[] fileContent;
+            using (var fs = new FileStream(configuration["DatabasePath"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (var ms = new MemoryStream())
+                {
+                    fs.CopyTo(ms);
+                    fileContent = ms.ToArray();
+                }
+            }
+            return File(fileContent, "application/octet-stream", "Database.db");
         }
 
     }

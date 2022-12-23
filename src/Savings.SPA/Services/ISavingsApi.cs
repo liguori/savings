@@ -49,6 +49,9 @@ namespace Savings.SPA.Services
         [Delete("/api/RecurrencyAdjustements/{id}")]
         Task<RecurrencyAdjustement> DeleteRecurrencyAdjustment(long id);
 
+        [Get("/api/Savings/Backup")]
+        Task<Stream> GetBackup();
+
         [Post("/api/Savings/ToHistory")]
         Task PostSavingsToHistory();
 
