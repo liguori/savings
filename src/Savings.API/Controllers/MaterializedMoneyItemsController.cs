@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using Savings.API.Infrastructure;
 using Savings.Model;
@@ -20,10 +21,12 @@ namespace Savings.API.Controllers
 
 
         [HttpPatch("LastMaterializedMoneyItemPeriod")]
-        public async Task<ActionResult> PostLastMaterializedMoneyItemPeriod(DateTime date)
+        public async Task<ActionResult> PostLastMaterializedMoneyItemPeriod(DateTime date, decimal amount)
         {
             var res = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
             res.Date = date;
+            res.Amount = amount;
+            res.Projection = amount;
             await _context.SaveChangesAsync();
             return Ok();
         }

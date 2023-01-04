@@ -56,7 +56,7 @@ namespace Savings.SPA.Services
         Task PostSavingsToHistory();
 
         [Patch("/api/MaterializedMoneyItems/LastMaterializedMoneyItemPeriod")]
-        Task EditLastMaterializedMoneyItemPeriod(DateTime date);
+        Task EditLastMaterializedMoneyItemPeriod(DateTime date,decimal amount);
 
         [Get("/api/MaterializedMoneyItems/LastMaterializedMoneyItemPeriod")]
         Task<MaterializedMoneyItem> GetLastMaterializedMoneyItemPeriod();

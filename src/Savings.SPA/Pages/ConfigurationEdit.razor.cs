@@ -16,6 +16,8 @@ namespace Savings.SPA.Pages
 
         public DateTime LastMaterializedDate { get; set; }
 
+        public decimal LastMaterializedAmount { get; set; }
+
         bool ValidateData()
         {
 
@@ -24,7 +26,9 @@ namespace Savings.SPA.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            LastMaterializedDate = (await savingsAPI.GetLastMaterializedMoneyItemPeriod()).Date;
+            var lastMaterializedItem = await savingsAPI.GetLastMaterializedMoneyItemPeriod();
+            LastMaterializedDate = lastMaterializedItem.Date;
+            LastMaterializedAmount = lastMaterializedItem.Projection;
             Categories = await savingsAPI.GetMoneyCategories();
             Configuration = (await savingsAPI.GetConfigurations()).First();
         }
@@ -34,7 +38,7 @@ namespace Savings.SPA.Pages
             try
             {
                 if (!ValidateData()) return;
-                await savingsAPI.EditLastMaterializedMoneyItemPeriod(LastMaterializedDate);
+                await savingsAPI.EditLastMaterializedMoneyItemPeriod(LastMaterializedDate,LastMaterializedAmount);
                 await savingsAPI.PutConfiguration(Configuration.ID, Configuration);
             }
             catch

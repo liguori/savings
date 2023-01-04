@@ -10,17 +10,22 @@ else
     <EditForm Model="@Configuration" OnValidSubmit="@OnValidSubmit">
         <DataAnnotationsValidator />
         <div class="form-row">
-            <div class="form-group col-2">
+            <div class="form-group col-3">
                 <label>Date :</label><br />
                 <RadzenDatePicker @bind-Value="LastMaterializedDate" DateFormat="dd/MM/yyyy" />
                 <ValidationMessage For="@(() => LastMaterializedDate)" />
             </div>
-             <div class="form-group col-2">
+            <div class="form-group col-3">
+                <label>Amount:</label>
+                <InputNumber @bind-Value="@LastMaterializedAmount" @bind-Value:format="F2" class="form-control" />
+                <ValidationMessage For="@(() => LastMaterializedAmount)" />
+            </div>
+             <div class="form-group col-3">
                 <label>Interval:</label>
                 <InputNumber @bind-Value="@Configuration.EndPeriodRecurrencyInterval" class="form-control" />
                 <ValidationMessage For="@(() => Configuration.EndPeriodRecurrencyInterval)" />
             </div>
-            <div class="form-group col-4">
+            <div class="form-group col-3">
                 <label>Recurrency:</label>
                 <InputSelect @bind-Value="@Configuration.EndPeriodRecurrencyType" class="form-control">
                     @foreach (var value in Enum.GetValues(typeof(Savings.Model.RecurrencyType)))
