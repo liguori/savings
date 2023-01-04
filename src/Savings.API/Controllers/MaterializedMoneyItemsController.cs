@@ -18,7 +18,7 @@ namespace Savings.API.Controllers
 
 
 
-       
+
         [HttpPatch("LastMaterializedMoneyItemPeriod")]
         public async Task<ActionResult> PostLastMaterializedMoneyItemPeriod(DateTime date)
         {
@@ -135,8 +135,8 @@ namespace Savings.API.Controllers
             var previous = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod && x.Date < materializedMoneyItem.Date).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
             if (previous != null)
             {
-                _context.MaterializedMoneyItems.RemoveRange(await _context.MaterializedMoneyItems.Where(x => x.Date > previous.Date).ToListAsync());
-                await _context.SaveChangesAsync();
+                await _context.MaterializedMoneyItems.SelectMany(x => x.Subitems).ExecuteDeleteAsync();
+                await _context.MaterializedMoneyItems.Where(x => x.Date > previous.Date).ExecuteDeleteAsync();
             }
             return Ok();
         }

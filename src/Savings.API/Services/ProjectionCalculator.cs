@@ -2,7 +2,6 @@
 using Savings.API.Infrastructure;
 using Savings.API.Services.Abstract;
 using Savings.Model;
-using System.Security.Cryptography.Xml;
 
 namespace Savings.API.Services
 {
@@ -125,6 +124,7 @@ namespace Savings.API.Services
                 }
                 var cashLeftToSpend = CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config, additionalCash, periodStart);
 
+                //********************************  Calculation 1: Fixed items to not accumulate
                 foreach (var fixedItem in fixedItemsNotAccumulate)
                 {
                     res.Add(new MaterializedMoneyItem
@@ -142,14 +142,17 @@ namespace Savings.API.Services
                     });
                 }
 
-                //Fixed items to accumulate for budget
-                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "🧾 Accumulator", TimelineWeight = 5, IsRecurrent = false };
+                //********************************  Calculation 2: Fixed items to accumulate for budget
+                List<MaterializedMoneySubitems> lstSubItemsFixed = new();
+                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "🧾 Accumulator", TimelineWeight = 5, IsRecurrent = false, Subitems = lstSubItemsFixed };
                 foreach (var accumulateItem in fixedItemsAccumulate)
                 {
                     accumulateMaterializedItem.Category = null;
                     accumulateMaterializedItem.Amount += accumulateItem.Amount ?? 0;
                     accumulateMaterializedItem.EndPeriod = false;
                     accumulateMaterializedItem.Type = MoneyType.Others;
+
+                    lstSubItemsFixed.Add(new MaterializedMoneySubitems { Amount = accumulateItem.Amount ?? 0, CategoryID = accumulateItem.CategoryID, Note = accumulateItem.Note });
                 }
                 if (fixedItemsAccumulate.Count > 0)
                 {
@@ -157,6 +160,7 @@ namespace Savings.API.Services
                 }
                 res.Add(accumulateMaterializedItem);
 
+                //********************************  Calculation 3: Recurrent items 
                 var accumulatedForBudgetLeft = accumulateMaterializedItem.Amount;
                 foreach (var recurrentItem in recurrentItems)
                 {
@@ -178,6 +182,7 @@ namespace Savings.API.Services
                             currentInstallmentAmount -= accumulatorToSubtract;
                         }
 
+                        List<MaterializedMoneySubitems> lstSubItemsRecurrent = new();
                         //Check if there are child items
                         if (recurrentItem.AssociatedItems != null)
                         {
@@ -194,6 +199,7 @@ namespace Savings.API.Services
                                         currentInstallmentAmount += associatedItem.Amount;
                                     }
                                     lstNoteAssociatedItems.Add(associatedItem.Note);
+                                    lstSubItemsRecurrent.Add(new MaterializedMoneySubitems { Amount = associatedItem.Amount, CategoryID = associatedItem.CategoryID, Note = associatedItem.Note });
                                 }
                             }
                             if (lstNoteAssociatedItems.Count > 0)
@@ -213,12 +219,15 @@ namespace Savings.API.Services
                             Type = recurrentItem.Type,
                             TimelineWeight = recurrentItem.TimelineWeight,
                             IsRecurrent = true,
-                            RecurrentMoneyItemID = recurrentItem.ID
+                            RecurrentMoneyItemID = recurrentItem.ID,
+                            Subitems = lstSubItemsRecurrent
                         });
                     }
                 }
 
+                //********************************  Calculation 4: Cash item
                 res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = $"💵 Cash: {cashLeftToSpend:N2}", Date = periodEnd, EndPeriod = true, IsRecurrent = false, EndPeriodCashCarry = cashLeftToSpend });
+
                 periodStart = periodEnd.AddDays(1);
                 if (breakFirstEndPeriod) break;
             }

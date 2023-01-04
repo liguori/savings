@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Savings.Model
 {
@@ -19,5 +20,15 @@ namespace Savings.Model
         public long? FixedMoneyItemID { get; set; }
         public bool Cash { get; set; }
         public decimal EndPeriodCashCarry { get; set; }
+        public IEnumerable<MaterializedMoneySubitems> Subitems{ get; set; }
+    }
+
+    public class MaterializedMoneySubitems
+    {
+        public long ID { get; set; }
+        public decimal Amount { get; set; }
+        public long? CategoryID { get; set; }
+        public MoneyCategory Category { get; set; }
+        public string Note { get; set; }
     }
 }
