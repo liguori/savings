@@ -9,16 +9,20 @@ else
 {
     <h2>Categories</h2>
     <div class="form-row">
+        <div class="col-md-3 col">
+            <label>From:</label><br />
+            <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => DateTimeDateChanged(args, nameof(FilterDateFrom)))" />
+        </div>
+        <div class="col-md-3 col">
+            <label>To:</label><br />
+            <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => DateTimeDateChanged(args, nameof(FilterDateTo)))" />
+        </div>
         <div class="col-md-6 col">
             <label>Group by:</label>
             <select class="form-control" @onchange="FilterGroupByCategoryPeriodChanged">
                 <option value="yy/MM" selected="@("yy/MM" == FilterCategoryGroupByPeriod)">Month</option>
                 <option value="yyyy" selected="@("yyyy" == FilterCategoryGroupByPeriod)">Year</option>
             </select>
-        </div>
-        <div class="col-md-6 col">
-            <span>Last Months:</span><br />
-            <input type="number" value="@FilterCategoryLastMonths"  @onchange="FilterCategoryLastMonthsOnChange" class="form-control" />
         </div>
     </div>
     <div class="table-responsive">
@@ -41,7 +45,8 @@ else
                         <td>@period</td>
                         @foreach (var c in statistics)
                         {
-                            <td>@c.Data.Where(x=>x.Period==period).FirstOrDefault()?.Amount.ToString("N2")</td>
+                            var item = c.Data.Where(x => x.Period == period).FirstOrDefault();
+                            <td class="item-action" @onclick="@(() => OpenDetails(c.CategoryID,period))">@item?.Amount.ToString("N2")</td>
                         }
                     </tr>
                 }

@@ -1,0 +1,29 @@
+﻿@if (ReportCategoryDetails == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-striped table-hover mobile-resume">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ReportCategoryDetails)
+                {
+                    <tr>
+                        <td data-title="Start date">@item.Date.ToString("dd/MM/yyyy")</td>
+                        <td data-title="Amount" class="text-right">@item.Amount.ToString("N2")</td>
+                        <td data-title="Note">@item.Description</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+

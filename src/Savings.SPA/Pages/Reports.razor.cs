@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Radzen;
 using Savings.Model;
 using Savings.SPA.Services;
 
@@ -10,18 +11,23 @@ namespace Savings.SPA.Pages
         [Inject]
         private ISavingsApi savingsAPI { get; set; }
 
+        [Inject]
+        public DialogService dialogService { get; set; }
+
         private RecurrentMoneyItem[] RecurrentItems { get; set; }
 
         private MaterializedMoneyItem[] Projections { get; set; }
 
         public string FilterCategoryGroupByPeriod { get; set; } = "yy/MM";
 
-        public int FilterCategoryLastMonths { get; set; } = 12;
+        public DateTime FilterDateFrom { get; set; }
 
-        async Task FilterCategoryLastMonthsOnChange(ChangeEventArgs e)
+        public DateTime FilterDateTo { get; set; }
+
+        ReportCategoryData[] statistics;
+
+        async void DateTimeDateChanged(DateTime? value, string name)
         {
-            FilterCategoryLastMonths = int.Parse(e.Value.ToString());
-
             await InitializeCategoryResume();
             StateHasChanged();
         }
@@ -37,6 +43,10 @@ namespace Savings.SPA.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            var today = DateTime.Now;
+            FilterDateTo = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+            FilterDateFrom = FilterDateTo.AddYears(-1);
+
             await InitializeInstallmentResume();
             await InitializeCategoryResume();
         }
@@ -54,20 +64,23 @@ namespace Savings.SPA.Pages
             Projections = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0 && x.Date >= DateTime.Now).ToArray();
         }
 
-
         async Task InitializeCategoryResume()
         {
-            statistics = await savingsAPI.GetCategoryResume(FilterCategoryGroupByPeriod, FilterCategoryLastMonths);
+            statistics = await savingsAPI.GetCategoryResume(FilterCategoryGroupByPeriod, FilterDateFrom, FilterDateTo);
         }
 
-
-
-        string FormatAmount(object value)
+        async Task OpenDetails(long? category, string period)
         {
-            return ((double)value).ToString("N2");
+            var res = await dialogService.OpenAsync<ReportsDetail>($"Report details",
+                           new Dictionary<string, object>() {
+                               { "FilterDateFrom", FilterDateFrom },
+                               { "FilterDateTo", FilterDateTo },
+                               { "category", (long?)category },
+                               { "periodPattern", FilterCategoryGroupByPeriod },
+                               { "period", period }
+                           },
+                            new DialogOptions() { Width = "800px", Height = "600px" });
         }
-
-        ReportCategoryData[] statistics;
     }
 
 }

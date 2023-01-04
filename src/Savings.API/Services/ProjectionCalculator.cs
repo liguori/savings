@@ -89,6 +89,7 @@ namespace Savings.API.Services
 
         public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false, bool includeLastEndPeriod = true)
         {
+            if (to == null) to = new DateTime(9999, 12, 31);
             var res = new List<MaterializedMoneyItem>();
             var lastEndPeriod = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault();
             if (lastEndPeriod != null && includeLastEndPeriod) res.Add(lastEndPeriod);
@@ -97,7 +98,7 @@ namespace Savings.API.Services
             var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
             DateTime periodEnd;
             bool endPeriodCashCarryUsed = false;
-            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= (to ?? new DateTime(9999, 12, 31)))
+            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= to || periodStart < to)
             {
                 if (!to.HasValue) breakFirstEndPeriod = true;
                 int accumulatorStartingIndex = res.Count;
@@ -152,7 +153,7 @@ namespace Savings.API.Services
                     accumulateMaterializedItem.EndPeriod = false;
                     accumulateMaterializedItem.Type = MoneyType.Others;
 
-                    lstSubItemsFixed.Add(new MaterializedMoneySubitems { Amount = accumulateItem.Amount ?? 0, CategoryID = accumulateItem.CategoryID, Note = accumulateItem.Note });
+                    lstSubItemsFixed.Add(new MaterializedMoneySubitems { Date = accumulateItem.Date, Amount = accumulateItem.Amount ?? 0, CategoryID = accumulateItem.CategoryID, Note = accumulateItem.Note });
                 }
                 if (fixedItemsAccumulate.Count > 0)
                 {
@@ -199,7 +200,7 @@ namespace Savings.API.Services
                                         currentInstallmentAmount += associatedItem.Amount;
                                     }
                                     lstNoteAssociatedItems.Add(associatedItem.Note);
-                                    lstSubItemsRecurrent.Add(new MaterializedMoneySubitems { Amount = associatedItem.Amount, CategoryID = associatedItem.CategoryID, Note = associatedItem.Note });
+                                    lstSubItemsRecurrent.Add(new MaterializedMoneySubitems { Date = currentInstallmentDate, Amount = associatedItem.Amount, CategoryID = associatedItem.CategoryID, Note = associatedItem.Note });
                                 }
                             }
                             if (lstNoteAssociatedItems.Count > 0)
@@ -232,7 +233,7 @@ namespace Savings.API.Services
                 if (breakFirstEndPeriod) break;
             }
             //Calculate the projection
-            var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).ThenByDescending(x => x.EndPeriod).FirstOrDefault().Projection;
+            var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).ThenByDescending(x => x.EndPeriod).AsNoTracking().FirstOrDefault().Projection;
             res = res.OrderBy(x => x.Date).ThenByDescending(x => x.TimelineWeight).ToList();
             foreach (var resItem in res)
             {
