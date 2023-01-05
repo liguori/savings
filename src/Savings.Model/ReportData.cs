@@ -2,28 +2,28 @@
 
 namespace Savings.Model
 {
-    public class ReportCategoryData
+    public class ReportCategory
     {
         public long? CategoryID { get; set; }
         public string Category { get; set; }
         public string CategoryIcon { get; set; }
-        public CategoryResumDataItem[] Data { get; set; }
+        public ReportPeriodAmount[] Data { get; set; }
     }
 
-    public class CategoryResumDataItem
+    public class ReportPeriodAmount
     {
         public string Period { get; set; }
         public double Amount { get; set; }
     }
 
-    public class ReportCategoryDetail
+    public class ReportDetail
     {
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public string Description { get; set; }
     }
 
-    public class ReportCategoryFullDetail
+    public class ReportFullDetail
     {
         public string Type { get; set; }
 

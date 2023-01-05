@@ -40,7 +40,6 @@ else
             <tbody>
                 @foreach (var period in statistics.SelectMany(x => x.Data.Select(x => x.Period)).Distinct().OrderByDescending(x => x))
                 {
-
                     <tr>
                         <td><b>@period</b></td>
                         @foreach (var c in statistics)
@@ -52,6 +51,26 @@ else
                 }
             </tbody>
         </table>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 my-5">
+                <RadzenChart>
+                    @foreach (var category in FilterStatisticsResume())
+                    {
+                        <RadzenLineSeries Smooth="false" Data="@category.Data" CategoryProperty="Period" Title="@category.Category" ValueProperty="Amount">
+                            <RadzenMarkers MarkerType="MarkerType.Circle" />
+                            <RadzenSeriesDataLabels Visible="false" />
+                        </RadzenLineSeries>
+                    }
+                    <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth" />
+                    <RadzenValueAxis Formatter="@FormatAsAmount">
+                        <RadzenGridLines Visible="true" />
+                        <RadzenAxisTitle Text="Money" />
+                    </RadzenValueAxis>
+                </RadzenChart>
+            </div>
+        </div>
     </div>
     <h2>Installments Resume</h2>
     <div class="row">

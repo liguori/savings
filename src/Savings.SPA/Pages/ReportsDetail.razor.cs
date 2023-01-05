@@ -25,7 +25,7 @@ namespace Savings.SPA.Pages
         [Parameter]
         public string period { get; set; } = null;
 
-        public ReportCategoryDetail[]  ReportCategoryDetails { get; set; }
+        public ReportDetail[]  ReportCategoryDetails { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
