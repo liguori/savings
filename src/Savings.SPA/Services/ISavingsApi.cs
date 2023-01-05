@@ -53,7 +53,7 @@ namespace Savings.SPA.Services
         Task<Stream> GetBackup();
 
         [Post("/api/Savings/ToHistory")]
-        Task PostSavingsToHistory();
+        Task PostSavingsToHistory(DateTime date);
 
         [Patch("/api/MaterializedMoneyItems/LastMaterializedMoneyItemPeriod")]
         Task EditLastMaterializedMoneyItemPeriod(DateTime date,decimal amount);

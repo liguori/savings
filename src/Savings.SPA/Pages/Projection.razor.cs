@@ -68,12 +68,12 @@ namespace Savings.SPA.Pages
             }
         }
 
-        async Task SaveMaterializedHistory()
+        async Task SaveMaterializedHistory(DateTime date)
         {
-            var res = await dialogService.Confirm("Do you want to save the projection to the history?", "Save the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+            var res = await dialogService.Confirm($"Do you want to save the projection to the history until {date:dd/MM/yyyy}?", "Save the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
             if (res.HasValue && res.Value)
             {
-                await savingsAPI.PostSavingsToHistory();
+                await savingsAPI.PostSavingsToHistory(date);
                 await InitializeList();
             }
         }

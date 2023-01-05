@@ -1,9 +1,6 @@
 @page "/"
 @attribute [Authorize]
 <h1>Projection</h1>
-@{
-    var saveHistoryShown = false;
-}
 @if (materializedMoneyItems == null)
 {
     <p><em>Loading...</em></p>
@@ -52,7 +49,6 @@ else
                         </td>
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
                         <td class="text-right">@item.Amount.ToString("N2")</td>
-
                         <td class="text-center">
                             @{
                                 var iconToUse = "";
@@ -129,10 +125,9 @@ else
                             }
                             else
                             {
-                                if (!saveHistoryShown && item.ID == 0)
+                                if (item.ID == 0)
                                 {
-                                    saveHistoryShown = true;
-                                    <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="SaveMaterializedHistory"></span>
+                                    <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="()=>SaveMaterializedHistory(item.Date)"></span>
                                 }
                             }
                         </td>

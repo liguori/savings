@@ -14,9 +14,9 @@ namespace Savings.API.Services
             this.context = context;
         }
 
-        public async Task SaveProjectionToHistory()
+        public async Task SaveProjectionToHistory(DateTime date)
         {
-            var projectionItems = await CalculateAsync(null, null, true, false, false);
+            var projectionItems = await CalculateAsync(null, null, date, false, false);
             await this.context.MaterializedMoneyItems.AddRangeAsync(projectionItems);
             await this.context.SaveChangesAsync();
         }
@@ -87,7 +87,7 @@ namespace Savings.API.Services
             return cashLeftToSpend;
         }
 
-        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, bool breakFirstEndPeriod = false, bool onlyInstallment = false, bool includeLastEndPeriod = true)
+        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, DateTime? stopToDate, bool onlyInstallment = false, bool includeLastEndPeriod = true)
         {
             if (to == null) to = new DateTime(9999, 12, 31);
             var res = new List<MaterializedMoneyItem>();
@@ -100,7 +100,6 @@ namespace Savings.API.Services
             bool endPeriodCashCarryUsed = false;
             while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= to || periodStart < to)
             {
-                if (!to.HasValue) breakFirstEndPeriod = true;
                 int accumulatorStartingIndex = res.Count;
                 var fixedItemsNotAccumulate = await context.FixedMoneyItems
                                                     .Include(x => x.Category)
@@ -229,8 +228,8 @@ namespace Savings.API.Services
                 //********************************  Calculation 4: Cash item
                 res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = $"💵 Cash: {cashLeftToSpend:N2}", Date = periodEnd, EndPeriod = true, IsRecurrent = false, EndPeriodCashCarry = cashLeftToSpend });
 
+                if (periodEnd == stopToDate) break;
                 periodStart = periodEnd.AddDays(1);
-                if (breakFirstEndPeriod) break;
             }
             //Calculate the projection
             var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).ThenByDescending(x => x.EndPeriod).AsNoTracking().FirstOrDefault().Projection;

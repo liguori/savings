@@ -61,7 +61,7 @@ namespace Savings.API.Controllers
 
         private async Task<IEnumerable<ReportCategoryFullDetail>> GetCategoryDetailsAsync(string periodPattern, DateTime dateFrom, DateTime dateTo)
         {
-            var projectionItems = await calculator.CalculateAsync(null, dateTo, false, false);
+            var projectionItems = await calculator.CalculateAsync(null, dateTo, null, false);
             var withdrawalID = _context.Configuration.FirstOrDefault()?.CashWithdrawalCategoryID;
 
 

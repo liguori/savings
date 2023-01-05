@@ -23,14 +23,14 @@ namespace Savings.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MaterializedMoneyItem>>> GetSavings(DateTime? from, DateTime? to, bool onlyInstallment = false)
         {
-            return (List<MaterializedMoneyItem>)await calculator.CalculateAsync(from, to, false, onlyInstallment);
+            return (List<MaterializedMoneyItem>)await calculator.CalculateAsync(from, to, null, onlyInstallment);
         }
 
 
         [HttpPost("ToHistory")]
-        public async Task<ActionResult> PostSavingsToHistory()
+        public async Task<ActionResult> PostSavingsToHistory(DateTime date)
         {
-            await calculator.SaveProjectionToHistory();
+            await calculator.SaveProjectionToHistory(date);
             return Ok();
         }
 

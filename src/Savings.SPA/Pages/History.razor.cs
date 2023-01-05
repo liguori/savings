@@ -40,7 +40,7 @@ namespace Savings.SPA.Pages
 
         async Task DeleteMaterializedHistory(MaterializedMoneyItem item)
         {
-            var res = await dialogService.Confirm($"Do you want to delete the projection to the history until {item.Date.ToShortDateString()}?", "Delete the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+            var res = await dialogService.Confirm($"Do you want to delete the projection to the history until {item.Date:dd/MM/yyyy}?", "Delete the history", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
             if (res.HasValue && res.Value)
             {
                 await savingsAPI.DeleteMaterializedMoneyItemToHistory(item.ID);
