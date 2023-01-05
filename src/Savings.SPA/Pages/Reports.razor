@@ -42,11 +42,11 @@ else
                 {
 
                     <tr>
-                        <td>@period</td>
+                        <td><b>@period</b></td>
                         @foreach (var c in statistics)
                         {
                             var item = c.Data.Where(x => x.Period == period).FirstOrDefault();
-                            <td class="item-action" @onclick="@(() => OpenDetails(c.CategoryID,period))">@item?.Amount.ToString("N2")</td>
+                            <td class="item-action text-right" @onclick="@(() => OpenDetails(c.CategoryID,period))">@item?.Amount.ToString("N2")</td>
                         }
                     </tr>
                 }
