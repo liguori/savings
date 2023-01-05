@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using Savings.API.Infrastructure;
 using Savings.Model;
@@ -16,9 +15,6 @@ namespace Savings.API.Controllers
         {
             _context = context;
         }
-
-
-
 
         [HttpPatch("LastMaterializedMoneyItemPeriod")]
         public async Task<ActionResult> PostLastMaterializedMoneyItemPeriod(DateTime date, decimal amount)
@@ -138,7 +134,7 @@ namespace Savings.API.Controllers
             var previous = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod && x.Date < materializedMoneyItem.Date).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
             if (previous != null)
             {
-                await _context.MaterializedMoneyItems.SelectMany(x => x.Subitems).ExecuteDeleteAsync();
+                await _context.MaterializedMoneyItems.Where(x => x.Date > previous.Date).SelectMany(x => x.Subitems).ExecuteDeleteAsync();
                 await _context.MaterializedMoneyItems.Where(x => x.Date > previous.Date).ExecuteDeleteAsync();
             }
             return Ok();
