@@ -90,7 +90,7 @@ namespace Savings.API.Controllers
             var materializedItemsSecondLevel = await _context.MaterializedMoneyItems
                 .Include(x => x.Category)
                 .Where(secondLevelPredicate)
-                .SelectMany(x => x.Subitems, (moneyItem, subitem) => new ReportFullDetail { Type = "MaterL2", ID = subitem.ID, Date = moneyItem.Date, Period = moneyItem.Date.ToString(periodPattern), Description = subitem.Note, CategoryID = subitem.CategoryID, Amount = subitem.Amount })
+                .SelectMany(x => x.Subitems, (moneyItem, subitem) => new ReportFullDetail { Type = "MaterL2", ID = subitem.ID, Date = subitem.Date, Period = subitem.Date.ToString(periodPattern), Description = subitem.Note, CategoryID = subitem.CategoryID, Amount = subitem.Amount })
                 .Where(subItemPredicate)
                 .ToListAsync();
 
