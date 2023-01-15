@@ -42,12 +42,12 @@ jobs:
           ApiKeys: ${{ secrets.APPSERVICE_CONFIG_APIKEY }}
           DatabasePath: 'Savings.db'
           AuthenticationToUse: 'AzureAD'
-          IdentityProvider.Audience: ${{ secrets.APPSERVICE_CONFIG_IDENTITY_AUDIENCE }}
-          IdentityProvider.Authority: ${{ secrets.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
+          IdentityProvider.Audience: ${{ vars.APPSERVICE_CONFIG_IDENTITY_AUDIENCE }}
+          IdentityProvider.Authority: ${{ vars.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
 
       - name: Deploy Backend
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ secrets.APPSERVICENAME }}
+          app-name: ${{ vars.APPSERVICENAME }}
           package: ./deploy
         
