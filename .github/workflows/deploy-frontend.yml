@@ -42,13 +42,13 @@ jobs:
         with:
           files: 'deploy/wwwroot/appsettings.json'
         env:
-          SavingsApiServiceUrl: ${{ secrets.APPSERVICE_FE_CONFIG_APIURL }}
+          SavingsApiServiceUrl: ${{ vars.APPSERVICE_FE_CONFIG_APIURL }}
           ApiKey: ${{ secrets.APPSERVICE_CONFIG_APIKEY }}
           AuthenticationToUse: 'AzureAD'
-          AzureAd.Authority: ${{ secrets.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
-          AzureAd.ClientId: ${{ secrets.APPSERVICE_FE_CONFIG_CLIENT_ID }}
+          AzureAd.Authority: ${{ vars.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
+          AzureAd.ClientId: ${{ vars.APPSERVICE_FE_CONFIG_CLIENT_ID }}
           AzureAd.ValidateAuthority: true
-          AzureAd.DefaultScope: ${{ secrets.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
+          AzureAd.DefaultScope: ${{ vars.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
 
       - name: Manifest AppName Substitution
         uses: microsoft/variable-substitution@v1
@@ -65,5 +65,5 @@ jobs:
       - name: Deploy Frontend
         uses: azure/webapps-deploy@v2
         with:
-          app-name:    ${{ secrets.APPSERVICENAME_FE }}
+          app-name:    ${{ vars.APPSERVICENAME_FE }}
           package: ./deploy
