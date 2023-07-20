@@ -16,7 +16,7 @@
     <div class="form-row">
         <div class="form-group col">
             <label>Amount:</label>
-            <InputNumber @bind-Value="@recurrentItemToEdit.Amount" @bind-Value:format="F2" class="form-control" />
+            <InputNumber @bind-Value="@recurrentItemToEdit.Amount" @bind-Value:format="F2" class="form-control" @ref="amountInputNumber" />
             <ValidationMessage For="@(() => recurrentItemToEdit.Amount)" />
         </div>
         <div class="form-group col">

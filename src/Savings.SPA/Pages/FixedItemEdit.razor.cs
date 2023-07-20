@@ -28,11 +28,9 @@ namespace Savings.SPA.Pages
 
         public MoneyCategory[] Categories { get; set; }
 
-        public string amountInputID = "amountInputID";
-
         InputNumber<decimal?> amountInputNumber;
 
-    protected override void OnInitialized()
+        protected override void OnInitialized()
         {
             if (isNew)
             {

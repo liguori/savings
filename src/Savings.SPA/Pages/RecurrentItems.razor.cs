@@ -23,6 +23,9 @@ namespace Savings.SPA.Pages
         [Parameter]
         public long? parentItemID { get; set; } = null;
 
+        [Parameter]
+        public RecurrentMoneyItem parentItem { get; set; } = null;
+
         public bool ShowOnlyActive { get; set; } = true;
         public DateTime? FilterOnlyActiveDateFrom { get; set; }
         public DateTime? FilterOnlyActiveDateTo { get; set; }
@@ -49,11 +52,11 @@ namespace Savings.SPA.Pages
             recurrentMoneyItems = await savingsAPI.GetRecurrentMoneyItems(parentItemID, ShowOnlyActive, FilterOnlyActiveDateFrom, FilterOnlyActiveDateTo);
         }
 
-       
+
         async Task AddNew()
         {
             bool? res = await dialogService.OpenAsync<RecurrentItemEdit>($"Add new",
-                        new Dictionary<string, object>() { { "recurrentItemToEdit", new Savings.Model.RecurrentMoneyItem() }, { "isNew", true }, { "parentItemID", parentItemID } },
+                        new Dictionary<string, object>() { { "recurrentItemToEdit", new Savings.Model.RecurrentMoneyItem() }, { "isNew", true }, { "parentItemID", parentItemID }, { "parentItem", parentItem } },
                         new DialogOptions() { Width = "600px" });
             if (res.HasValue && res.Value)
             {
@@ -78,7 +81,7 @@ namespace Savings.SPA.Pages
         async Task ViewChild(RecurrentMoneyItem item)
         {
             var res = await dialogService.OpenAsync<RecurrentItems>($"Associated Items",
-                            new Dictionary<string, object>() { { "parentItemID", item.ID } },
+                            new Dictionary<string, object>() { { "parentItemID", item.ID }, { "parentItem", item } },
                              new DialogOptions() { Width = "800px", Height = "600px" });
             await InitializeList();
             StateHasChanged();
