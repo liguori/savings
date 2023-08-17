@@ -26,6 +26,8 @@ namespace Savings.SPA.Pages
         [Parameter]
         public bool isNew { get; set; }
 
+        bool Credit { get; set; } = false;
+
         public MoneyCategory[] Categories { get; set; }
 
         InputNumber<decimal?> amountInputNumber;
@@ -96,7 +98,14 @@ namespace Savings.SPA.Pages
                 }
                 if (isNew)
                 {
-                    await savingsAPI.InsertFixedMoneyItem(fixedItemToEdit);
+                    if (Credit)
+                    {
+                        await savingsAPI.InsertCreditFixedMoneyItem(fixedItemToEdit);
+                    }
+                    else
+                    {
+                        await savingsAPI.InsertFixedMoneyItem(fixedItemToEdit);
+                    }
                 }
                 else
                 {
@@ -104,9 +113,9 @@ namespace Savings.SPA.Pages
                 }
                 this.dialogService.Close(true);
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                notificationService.Notify(NotificationSeverity.Error, "Attention", ex.Message);
             }
 
         }

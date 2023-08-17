@@ -22,6 +22,9 @@ namespace Savings.SPA.Services
         [Post("/api/FixedMoneyItems")]
         Task<FixedMoneyItem> InsertFixedMoneyItem(FixedMoneyItem fixedMoneyItem);
 
+        [Post("/api/RecurrentMoneyItems/Credit")]
+        Task<FixedMoneyItem> InsertCreditFixedMoneyItem(FixedMoneyItem fixedMoneyItem);
+
         [Put("/api/FixedMoneyItems/{id}")]
         Task EditFixedMoneyItem(long id, FixedMoneyItem fixedMoneyItem);
 

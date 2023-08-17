@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Savings.API.Infrastructure;
 using Savings.Model;
+using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Savings.API.Controllers
             var res = _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).AsQueryable();
             if (onlyActive) res = res.Where(x => !x.EndDate.HasValue || x.EndDate.Value >= DateTime.Now.Date);
             if (endDateFrom.HasValue) res = res.Where(x => !x.EndDate.HasValue || x.EndDate.Value >= endDateFrom.Value);
-            if (endDateTo.HasValue) res = res.Where(x =>  x.EndDate.HasValue && x.EndDate <= endDateTo.Value);
+            if (endDateTo.HasValue) res = res.Where(x => x.EndDate.HasValue && x.EndDate <= endDateTo.Value);
             if (parentItemID.HasValue)
             {
                 res = res.Where(x => x.RecurrentMoneyItemID == parentItemID.Value);
@@ -92,6 +93,23 @@ namespace Savings.API.Controllers
         [HttpPost]
         public async Task<ActionResult<RecurrentMoneyItem>> PostRecurrentMoneyItem(RecurrentMoneyItem recurrentMoneyItem)
         {
+            _context.RecurrentMoneyItems.Add(recurrentMoneyItem);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetRecurrentMoneyItem", new { id = recurrentMoneyItem.ID }, recurrentMoneyItem);
+        }
+
+        [HttpPost("Credit")]
+        public async Task<ActionResult<RecurrentMoneyItem>> InsertCreditFixedMoneyItem(FixedMoneyItem fixedItem)
+        {
+            var defaultCreditMoneyItem = _context.RecurrentMoneyItems.FirstOrDefault(x => x.DefaultCredit);
+
+            if (defaultCreditMoneyItem == null) return BadRequest("No default credit item");
+
+            DateTime targetDate = DateTime.Now.AddMonths(1);
+            targetDate = new DateTime(targetDate.Year, targetDate.Month, defaultCreditMoneyItem.StartDate.Day);
+
+            var recurrentMoneyItem = new RecurrentMoneyItem { CategoryID = fixedItem.CategoryID, Amount = fixedItem.Amount.Value, Note = fixedItem.Note, RecurrentMoneyItemID = defaultCreditMoneyItem.ID, StartDate = targetDate, EndDate = targetDate };
             _context.RecurrentMoneyItems.Add(recurrentMoneyItem);
             await _context.SaveChangesAsync();
 

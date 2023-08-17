@@ -24,6 +24,10 @@
             <InputNumber @bind-Value="@recurrentItemToEdit.TimelineWeight" class="form-control" />
             <ValidationMessage For="@(() => recurrentItemToEdit.TimelineWeight)" />
         </div>
+        <div class="form-group col">
+            <label>Default credit</label><br>
+            <RadzenSwitch @bind-Value="@recurrentItemToEdit.DefaultCredit" />
+        </div>
     </div>
     <div class="form-group ">
         <label>Note:</label>
@@ -80,6 +84,9 @@
         <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })">
             <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
         </button>
-        <button type="button" class="btn btn-danger" @onclick="@(()=>Delete())"><span class="oi oi-trash" aria-hidden="true"></span></button>
+        @if (!isNew)
+        {
+            <button type="button" class="btn btn-danger" @onclick="@(()=>Delete())"><span class="oi oi-trash" aria-hidden="true"></span></button>
+        }
     </div>
 </EditForm>

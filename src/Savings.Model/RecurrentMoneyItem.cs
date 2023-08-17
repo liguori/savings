@@ -18,6 +18,7 @@ namespace Savings.Model
         public virtual IEnumerable<RecurrentMoneyItem> AssociatedItems { get; set; }
         public int TimelineWeight { get; set; }
         public virtual IEnumerable<RecurrencyAdjustement> Adjustements { get; set; }
+        public bool DefaultCredit { get; set; }
         public long? RecurrentMoneyItemID { get; set; }
     }
 

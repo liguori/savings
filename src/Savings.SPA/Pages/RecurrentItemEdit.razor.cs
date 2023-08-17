@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Radzen;
+using Radzen.Blazor.Rendering;
 using Savings.Model;
 using Savings.SPA.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -51,7 +52,7 @@ namespace Savings.SPA.Pages
                 this.recurrentItemToEdit.StartDate = DateTime.Now.Date;
                 if (parentItemID.HasValue)
                 {
-                    DateTime targetDate = DateTime.Now.Day > parentItem.StartDate.Day ? DateTime.Now.AddMonths(1) : DateTime.Now;
+                    DateTime targetDate = DateTime.Now.AddMonths(1);
                     targetDate = new DateTime(targetDate.Year, targetDate.Month, parentItem.StartDate.Day);
 
                     recurrentItemToEdit.StartDate = targetDate;

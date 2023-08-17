@@ -82,7 +82,7 @@ namespace Savings.SPA.Pages
         {
             bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Add new",
                          new Dictionary<string, object>() { { "fixedItemToEdit", new Savings.Model.FixedMoneyItem() }, { "isNew", true } },
-                         new DialogOptions() { Width = "600px" });
+                         new DialogOptions() { Width = "700px" });
             if (res.HasValue && res.Value)
             {
                 await InitializeList();

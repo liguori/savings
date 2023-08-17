@@ -1,39 +1,52 @@
 ﻿@attribute [Authorize]
 <EditForm Model="@fixedItemToEdit" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
-
     <div class="form-row">
-        <div class="form-group col">
-            <label>Date :</label><br />
-            <RadzenDatePicker @bind-Value="fixedItemToEdit.Date" DateFormat="dd/MM/yyyy" />
-            <ValidationMessage For="@(() => fixedItemToEdit.Date)" />
-        </div>
-        <div class="form-group col">
+        @if (!Credit)
+        {
+            <div class="form-group col-5">
+                <label>Date :</label><br />
+                <RadzenDatePicker @bind-Value="fixedItemToEdit.Date" DateFormat="dd/MM/yyyy" />
+                <ValidationMessage For="@(() => fixedItemToEdit.Date)" />
+            </div>
+        }
+        <div class="form-group col-5">
             <label>Amount:</label>
             <InputNumber @bind-Value="@fixedItemToEdit.Amount" @bind-Value:format="F2" class="form-control" @ref="amountInputNumber" />
             <ValidationMessage For="@(() => fixedItemToEdit.Amount)" />
         </div>
+        @if (isNew)
+        {
+            <div class="form-group col-2">
+                <label>💳Credit</label><br>
+                <RadzenSwitch @bind-Value="@Credit" />
+            </div>
+        }
     </div>
-    <div class="form-row">
-        <div class="form-group col-3">
-            <label>Accumulate</label><br>
-            <RadzenSwitch @bind-Value="@fixedItemToEdit.AccumulateForBudget" />
-            <ValidationMessage For="@(() => fixedItemToEdit.AccumulateForBudget)" />
+    @if (!Credit)
+    {
+        <div class="form-row">
+            <div class="form-group col-3">
+                <label>🧾Accumulate</label><br>
+                <RadzenSwitch @bind-Value="@fixedItemToEdit.AccumulateForBudget" />
+                <ValidationMessage For="@(() => fixedItemToEdit.AccumulateForBudget)" />
+            </div>
+            <div class="form-group col-3">
+                <label>💵Cash</label><br>
+                <RadzenSwitch @bind-Value="@fixedItemToEdit.Cash" />
+            </div>
+            <div class="form-group col-3">
+                <label>💰Incoming</label><br>
+                <RadzenSwitch @bind-Value="@Incoming" />
+            </div>
+
+            <div class="form-group col-3">
+                <label>Weight:</label>
+                <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control" />
+                <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />
+            </div>
         </div>
-        <div class="form-group col-3">
-            <label>Cash</label><br>
-            <RadzenSwitch @bind-Value="@fixedItemToEdit.Cash" />
-        </div>
-        <div class="form-group col-3">
-            <label>Incoming</label><br>
-            <RadzenSwitch @bind-Value="@Incoming" />
-        </div>
-        <div class="form-group col-3">
-            <label>Weight:</label>
-            <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control" />
-            <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />
-        </div>
-    </div>
+    }
     <div class="form-group">
         <label>Note:</label>
         <InputText @bind-Value="@fixedItemToEdit.Note" class="form-control" />
@@ -62,6 +75,9 @@
         <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })">
             <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
         </button>
-        <button type="button" class="btn btn-danger" @onclick="@(()=>Delete())"><span class="oi oi-trash" aria-hidden="true"></span></button>
+        @if (!isNew)
+        {
+            <button type="button" class="btn btn-danger" @onclick="@(()=>Delete())"><span class="oi oi-trash" aria-hidden="true"></span></button>
+        }
     </div>
 </EditForm>
