@@ -24,10 +24,13 @@
             <InputNumber @bind-Value="@recurrentItemToEdit.TimelineWeight" class="form-control" />
             <ValidationMessage For="@(() => recurrentItemToEdit.TimelineWeight)" />
         </div>
-        <div class="form-group col">
-            <label>Default credit</label><br>
-            <RadzenSwitch @bind-Value="@recurrentItemToEdit.DefaultCredit" />
-        </div>
+        @if (!parentItemID.HasValue)
+        {
+            <div class="form-group col">
+                <label>Default credit</label><br>
+                <RadzenSwitch @bind-Value="@recurrentItemToEdit.DefaultCredit" />
+            </div>
+        }
     </div>
     <div class="form-group ">
         <label>Note:</label>
