@@ -16,7 +16,7 @@
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
+    <TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Savings.Model\Savings.Model.csproj" />
