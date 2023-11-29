@@ -52,7 +52,11 @@ namespace Savings.SPA.Pages
 
             if (HidePastItems)
             {
-                materializedMoneyItems= materializedMoneyItems.Where(x=>x.Date>=DateTime.Now.Date).ToArray();    
+                var lastBeforeToday = materializedMoneyItems.LastOrDefault(x => x.Date <= DateTime.Now.Date);
+                if (lastBeforeToday != null)
+                {
+                    materializedMoneyItems = materializedMoneyItems[Array.IndexOf(materializedMoneyItems, lastBeforeToday)..];
+                }
             }
         }
 
