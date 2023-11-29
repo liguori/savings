@@ -18,7 +18,8 @@ namespace Savings.SPA.Pages
 
         [Inject]
         public DialogService dialogService { get; set; }
-        public DateTime? FilterDateFrom { get; set; }
+
+        public bool HidePastItems { get; set; } = true;
 
         public DateTime? FilterDateTo { get; set; }
 
@@ -31,6 +32,13 @@ namespace Savings.SPA.Pages
             CurrentConfiguration = (await savingsAPI.GetConfigurations()).FirstOrDefault();
         }
 
+
+        async void HidePastItems_Changed()
+        {
+            await InitializeList();
+            StateHasChanged();
+        }
+
         async void Change(DateTime? value, string name)
         {
             await InitializeList();
@@ -40,7 +48,12 @@ namespace Savings.SPA.Pages
 
         async Task InitializeList()
         {
-            materializedMoneyItems = await savingsAPI.GetSavings(FilterDateFrom, FilterDateTo);
+            materializedMoneyItems = await savingsAPI.GetSavings(null, FilterDateTo);
+
+            if (HidePastItems)
+            {
+                materializedMoneyItems= materializedMoneyItems.Where(x=>x.Date>=DateTime.Now.Date).ToArray();    
+            }
         }
 
         async Task AdjustRecurrency(MaterializedMoneyItem item)
