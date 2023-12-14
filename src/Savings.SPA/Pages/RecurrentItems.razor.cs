@@ -80,7 +80,7 @@ namespace Savings.SPA.Pages
 
         async Task ViewChild(RecurrentMoneyItem item)
         {
-            var res = await dialogService.OpenAsync<RecurrentItems>($"Associated Items",
+            var res = await dialogService.OpenAsync<RecurrentItems>($"Associated Items - {item.Note}",
                             new Dictionary<string, object>() { { "parentItemID", item.ID }, { "parentItem", item } },
                              new DialogOptions() { Width = "800px", Height = "600px" });
             await InitializeList();
