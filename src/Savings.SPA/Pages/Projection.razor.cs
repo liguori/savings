@@ -21,6 +21,8 @@ namespace Savings.SPA.Pages
 
         public bool HidePastItems { get; set; } = true;
 
+        public bool HideZero { get; set; } = true;
+
         public DateTime? FilterDateTo { get; set; }
 
         public Configuration CurrentConfiguration { get; set; }
@@ -34,6 +36,12 @@ namespace Savings.SPA.Pages
 
 
         async void HidePastItems_Changed()
+        {
+            await InitializeList();
+            StateHasChanged();
+        }
+
+        async void HideZero_Changed()
         {
             await InitializeList();
             StateHasChanged();
@@ -57,6 +65,10 @@ namespace Savings.SPA.Pages
                 {
                     materializedMoneyItems = materializedMoneyItems[Array.IndexOf(materializedMoneyItems, lastBeforeToday)..];
                 }
+            }
+            if(HideZero)
+            {
+                materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0).ToArray();
             }
         }
 

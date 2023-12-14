@@ -13,9 +13,13 @@ else
             <span>To:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
         </div>
-        <div class="col-md-2 col-5">
+        <div class="col-md-2 col-2">
             <label>Hide past items</label><br>
             <RadzenSwitch @bind-Value="@HidePastItems" Change="HidePastItems_Changed" />
+        </div>
+        <div class="col-md-2 col-3">
+            <label>Hide zero</label><br>
+            <RadzenSwitch @bind-Value="@HideZero" Change="HideZero_Changed" />
         </div>
         <div class="col-md-8 col-2">
             <br />
