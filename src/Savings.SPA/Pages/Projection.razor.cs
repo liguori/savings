@@ -19,9 +19,9 @@ namespace Savings.SPA.Pages
         [Inject]
         public DialogService dialogService { get; set; }
 
-        public bool HidePastItems { get; set; } = true;
+        public bool ShowPastItems { get; set; } = false;
 
-        public bool HideZero { get; set; } = true;
+        public bool ShowZero { get; set; } = false;
 
         public DateTime? FilterDateTo { get; set; }
 
@@ -35,13 +35,13 @@ namespace Savings.SPA.Pages
         }
 
 
-        async void HidePastItems_Changed()
+        async void PastItems_Changed()
         {
             await InitializeList();
             StateHasChanged();
         }
 
-        async void HideZero_Changed()
+        async void Zero_Changed()
         {
             await InitializeList();
             StateHasChanged();
@@ -58,7 +58,7 @@ namespace Savings.SPA.Pages
         {
             materializedMoneyItems = await savingsAPI.GetSavings(null, FilterDateTo);
 
-            if (HidePastItems)
+            if (!ShowPastItems)
             {
                 var lastBeforeToday = materializedMoneyItems.LastOrDefault(x => x.Date <= DateTime.Now.Date);
                 if (lastBeforeToday != null)
@@ -66,7 +66,7 @@ namespace Savings.SPA.Pages
                     materializedMoneyItems = materializedMoneyItems[Array.IndexOf(materializedMoneyItems, lastBeforeToday)..];
                 }
             }
-            if(HideZero)
+            if(!ShowZero)
             {
                 materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0).ToArray();
             }
