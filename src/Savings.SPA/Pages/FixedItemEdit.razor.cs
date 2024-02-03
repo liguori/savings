@@ -28,6 +28,8 @@ namespace Savings.SPA.Pages
 
         bool Credit { get; set; } = false;
 
+        public bool OperationRunning { get; set; } = false;
+
         public MoneyCategory[] Categories { get; set; }
 
         InputNumber<decimal?> amountInputNumber;
@@ -74,11 +76,23 @@ namespace Savings.SPA.Pages
 
         async Task Delete()
         {
-            var res = await dialogService.Confirm("Are you sure you want delete?", "Delete fixed item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-            if (res.HasValue && res.Value)
+            try
             {
-                var deletedItem = await savingsAPI.DeleteFixedMoneyItem(fixedItemToEdit.ID);
-                this.dialogService.Close(true);
+                OperationRunning = true;
+                var res = await dialogService.Confirm("Are you sure you want delete?", "Delete fixed item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+                if (res.HasValue && res.Value)
+                {
+                    var deletedItem = await savingsAPI.DeleteFixedMoneyItem(fixedItemToEdit.ID);
+                    this.dialogService.Close(true);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                OperationRunning = false;
             }
         }
 
@@ -87,6 +101,7 @@ namespace Savings.SPA.Pages
         {
             try
             {
+                OperationRunning = true;
                 if (!ValidateData()) return;
                 if (Incoming)
                 {
@@ -113,9 +128,13 @@ namespace Savings.SPA.Pages
                 }
                 this.dialogService.Close(true);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 notificationService.Notify(NotificationSeverity.Error, "Attention", ex.Message);
+            }
+            finally
+            {
+                OperationRunning = false;
             }
 
         }

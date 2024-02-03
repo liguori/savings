@@ -35,6 +35,8 @@ namespace Savings.SPA.Pages
 
         InputNumber<decimal> amountInputNumber;
 
+        public bool OperationRunning { get; set; } = false;
+
 
         protected override async void OnAfterRender(bool firstRender)
         {
@@ -71,6 +73,7 @@ namespace Savings.SPA.Pages
         {
             try
             {
+                OperationRunning = true;
                 var res = await dialogService.Confirm("Are you sure you want delete?", "Delete recurrent item", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
                 if (res.HasValue && res.Value)
                 {
@@ -81,6 +84,10 @@ namespace Savings.SPA.Pages
             catch (Exception ex)
             {
                 notificationService.Notify(NotificationSeverity.Error, "Error", ex.Message);
+            }
+            finally
+            {
+                OperationRunning = false;
             }
         }
 
@@ -104,6 +111,7 @@ namespace Savings.SPA.Pages
         {
             try
             {
+                OperationRunning = true;
                 if (!ValidateData()) return;
                 if (isNew)
                 {
@@ -118,6 +126,10 @@ namespace Savings.SPA.Pages
             catch
             {
                 throw;
+            }
+            finally
+            {
+                OperationRunning = false;
             }
 
         }

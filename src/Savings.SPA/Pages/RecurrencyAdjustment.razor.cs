@@ -21,6 +21,8 @@ namespace Savings.SPA.Pages
 
         public bool isNew { get; set; }
 
+        public bool OperationRunning { get; set; } = false;
+
         protected override async Task OnInitializedAsync()
         {
             var existentAdjustment = await this.savingsAPI.GetRecurrencyAdjustementByIDRecurrencyAndDate(materializedItem.RecurrentMoneyItemID.Value, materializedItem.Date.Date);
@@ -38,22 +40,34 @@ namespace Savings.SPA.Pages
 
         private async void OnValidSubmit()
         {
-            if (!adjustement.RecurrencyNewDate.HasValue && !adjustement.RecurrencyNewAmount.HasValue && !isNew)
+            try
             {
-                await this.savingsAPI.DeleteRecurrencyAdjustment(adjustement.ID);
-            }
-            else
-            {
-                if (isNew)
+                OperationRunning = true;
+                if (!adjustement.RecurrencyNewDate.HasValue && !adjustement.RecurrencyNewAmount.HasValue && !isNew)
                 {
-                    await this.savingsAPI.InsertRecurrencyAdjustment(adjustement);
+                    await this.savingsAPI.DeleteRecurrencyAdjustment(adjustement.ID);
                 }
                 else
                 {
-                    await this.savingsAPI.EditRecurrencyAdjustment(adjustement.ID, adjustement);
+                    if (isNew)
+                    {
+                        await this.savingsAPI.InsertRecurrencyAdjustment(adjustement);
+                    }
+                    else
+                    {
+                        await this.savingsAPI.EditRecurrencyAdjustment(adjustement.ID, adjustement);
+                    }
                 }
+                this.dialogService.Close(true);
             }
-            this.dialogService.Close(true);
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                OperationRunning = false;
+            }
         }
 
     }
