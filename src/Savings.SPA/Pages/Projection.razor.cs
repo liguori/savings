@@ -58,9 +58,10 @@ namespace Savings.SPA.Pages
         {
             materializedMoneyItems = await savingsAPI.GetSavings(null, FilterDateTo);
 
+            MaterializedMoneyItem? lastBeforeToday = null;
             if (!ShowPastItems)
             {
-                var lastBeforeToday = materializedMoneyItems.LastOrDefault(x => x.Date <= DateTime.Now.Date);
+                lastBeforeToday = materializedMoneyItems.LastOrDefault(x => x.Date <= DateTime.Now.Date);
                 if (lastBeforeToday != null)
                 {
                     materializedMoneyItems = materializedMoneyItems[Array.IndexOf(materializedMoneyItems, lastBeforeToday)..];
@@ -68,7 +69,7 @@ namespace Savings.SPA.Pages
             }
             if(!ShowZero)
             {
-                materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0).ToArray();
+                materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0 || x.ID == lastBeforeToday?.ID).ToArray();
             }
         }
 
