@@ -58,19 +58,22 @@ namespace Savings.SPA.Pages
         {
             materializedMoneyItems = await savingsAPI.GetSavings(null, FilterDateTo);
 
-            MaterializedMoneyItem? lastBeforeToday = null;
+            //Remove first zero
+            if (!ShowZero)
+            {
+                materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0).ToArray();
+            }
+
+            //The decide to remove past items (when zero is already excluded)
             if (!ShowPastItems)
             {
-                lastBeforeToday = materializedMoneyItems.LastOrDefault(x => x.Date <= DateTime.Now.Date);
+                var lastBeforeToday = materializedMoneyItems.LastOrDefault(x => x.Date <= DateTime.Now.Date);
                 if (lastBeforeToday != null)
                 {
                     materializedMoneyItems = materializedMoneyItems[Array.IndexOf(materializedMoneyItems, lastBeforeToday)..];
                 }
             }
-            if(!ShowZero)
-            {
-                materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0 || x.ID == lastBeforeToday?.ID).ToArray();
-            }
+           
         }
 
         async Task AdjustRecurrency(MaterializedMoneyItem item)
