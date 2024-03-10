@@ -44,7 +44,7 @@ namespace Savings.API.Controllers
             if (from.HasValue) res = res.Where(x => x.Date >= from);
             if (to.HasValue) res = res.Where(x => x.Date <= to);
             if (onlyRecurrent) res = res.Where(x => x.IsRecurrent);
-            return await _context.MaterializedMoneyItems.OrderByDescending(x => x.ID).ToListAsync();
+            return await res.OrderByDescending(x => x.ID).ToListAsync();
         }
 
         // GET: api/MaterializedMoneyItems/5
