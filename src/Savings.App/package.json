@@ -19,7 +19,7 @@
   "private": true,
   "devDependencies": {
     "electron": "10.1.1",
-    "electron-builder": "^22.8.0",
+    "electron-builder": "^24.13.3",
     "gulp": "^4.0.2",
     "gulp-replace": "^1.0.0"
   },
