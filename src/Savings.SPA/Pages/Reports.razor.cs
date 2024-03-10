@@ -2,10 +2,7 @@
 using Radzen;
 using Savings.Model;
 using Savings.SPA.Services;
-using System.ComponentModel;
 using System.Linq.Dynamic.Core;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Savings.SPA.Pages
 {
@@ -20,7 +17,9 @@ namespace Savings.SPA.Pages
 
         private RecurrentMoneyItem[] RecurrentItems { get; set; }
 
-        private MaterializedMoneyItem[] Projections { get; set; }
+        private MaterializedMoneyItem[] Installments { get; set; }
+
+        private MaterializedMoneyItem[] EndPeriods { get; set; }
 
         public string FilterCategoryGroupByPeriod { get; set; } = "yy/MM";
 
@@ -33,6 +32,7 @@ namespace Savings.SPA.Pages
         async void DateTimeDateChanged(DateTime? value, string name)
         {
             await InitializeCategoryResume();
+            await InitializeEndPeriods();
             StateHasChanged();
         }
 
@@ -51,8 +51,9 @@ namespace Savings.SPA.Pages
             FilterDateTo = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
             FilterDateFrom = FilterDateTo.AddYears(-1);
 
-            await InitializeInstallmentResume();
             await InitializeCategoryResume();
+            await InitializeInstallmentResume();
+            await InitializeEndPeriods();
         }
 
         async Task InitializeInstallmentResume()
@@ -65,12 +66,23 @@ namespace Savings.SPA.Pages
                 endDate = RecurrentItems.Max(x => x.EndDate.Value);
             }
             var projections = await savingsAPI.GetSavings(null, endDate, true);
-            Projections = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0 && x.Date >= DateTime.Now).ToArray();
+            Installments = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0 && x.Date >= DateTime.Now).ToArray();
         }
 
         async Task InitializeCategoryResume()
         {
             statistics = await savingsAPI.GetCategoryResume(FilterCategoryGroupByPeriod, FilterDateFrom, FilterDateTo);
+        }
+
+        async Task InitializeEndPeriods()
+        {
+            var past = await savingsAPI.GetMaterializedMoneyItems(FilterDateFrom, FilterDateTo, false);
+            past = past.Where(x => x.EndPeriod).ToArray();
+
+            var projection = await savingsAPI.GetSavings(FilterDateFrom, FilterDateTo);
+            projection = projection.Where(x => x.EndPeriod).ToArray();
+
+            EndPeriods = past.Union(projection).ToArray();
         }
 
         async Task OpenDetails(long? category, string period)
@@ -106,11 +118,18 @@ namespace Savings.SPA.Pages
                       .Select(x => new ReportPeriodAmount { Period = x.incItem.Period, Amount = x.incItem.Amount - x.outgItem.Amount });
 
 
+            var savings = EndPeriods
+                .Where(x => x.Date >= FilterDateFrom && x.Date <= FilterDateTo)
+                .GroupBy(x => x.Date.ToString(FilterCategoryGroupByPeriod))
+                .Select(x => new ReportPeriodAmount { Period = x.Key, Amount = (double)x.OrderByDescending(x => x.Date).First().Projection });
+
+
             return new ReportCategory[]
             {
                 new ReportCategory { Category="Outgoing", Data=outgoing.OrderBy(x=>x.Period).ToArray() },
                 new ReportCategory { Category="Incoming", Data=incoming.OrderBy(x=>x.Period).ToArray() },
-                new ReportCategory { Category="Gain", Data=gain.OrderBy(x=>x.Period).ToArray() }
+                new ReportCategory { Category="Gain", Data=gain.OrderBy(x=>x.Period).ToArray() },
+                new ReportCategory { Category="Savings", Data=savings.OrderBy(x=>x.Period).ToArray() }
             };
         }
 

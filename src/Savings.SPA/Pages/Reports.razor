@@ -80,7 +80,7 @@ else
                 <b>@RecurrentItems[i].Note</b>
 
                 @{
-                    var currentItemProjection = Projections.Where(x => x.RecurrentMoneyItemID == RecurrentItems[i].ID);
+                    var currentItemProjection = Installments.Where(x => x.RecurrentMoneyItemID == RecurrentItems[i].ID);
                 }
                 <table class="table table-sm table-striped table-hover">
                     <thead class="table-dark">
@@ -108,6 +108,6 @@ else
             </div>
         }
     </div>
-    <div><b>TOTAL: @Projections.Sum(x => x.Amount).ToString("N2")</b></div>
+    <div><b>TOTAL: @Installments.Sum(x => x.Amount).ToString("N2")</b></div>
 
 }
