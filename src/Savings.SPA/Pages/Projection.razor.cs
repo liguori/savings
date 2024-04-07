@@ -61,7 +61,7 @@ namespace Savings.SPA.Pages
             //Remove first zero
             if (!ShowZero)
             {
-                materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0).ToArray();
+                materializedMoneyItems = materializedMoneyItems.Where(x => x.Amount != 0 || x.EndPeriod).ToArray();
             }
 
             //The decide to remove past items (when zero is already excluded)
