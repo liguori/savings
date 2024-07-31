@@ -1,23 +1,23 @@
 ﻿@attribute [Authorize]
 <EditForm Model="@fixedItemToEdit" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
-    <div class="form-row">
+    <div class="row">
         @if (!Credit)
         {
-            <div class="form-group col-5">
+            <div class="col-5">
                 <label>Date :</label><br />
                 <RadzenDatePicker @bind-Value="fixedItemToEdit.Date" DateFormat="dd/MM/yyyy" />
                 <ValidationMessage For="@(() => fixedItemToEdit.Date)" />
             </div>
         }
-        <div class="form-group col-4">
+        <div class="col-4">
             <label>Amount:</label>
             <InputNumber @bind-Value="@fixedItemToEdit.Amount" @bind-Value:format="F2" class="form-control" @ref="amountInputNumber" />
             <ValidationMessage For="@(() => fixedItemToEdit.Amount)" />
         </div>
         @if (isNew)
         {
-            <div class="form-group col-3">
+            <div class="col-3">
                 <label>💳Credit</label><br>
                 <RadzenSwitch @bind-Value="@Credit" />
             </div>
@@ -25,34 +25,34 @@
     </div>
     @if (!Credit)
     {
-        <div class="form-row">
-            <div class="form-group col-3">
+        <div class="row">
+            <div class="col-3">
                 <label>🧾Accu.</label><br>
                 <RadzenSwitch @bind-Value="@fixedItemToEdit.AccumulateForBudget" />
                 <ValidationMessage For="@(() => fixedItemToEdit.AccumulateForBudget)" />
             </div>
-            <div class="form-group col-3">
+            <div class="col-3">
                 <label>💵Cash</label><br>
                 <RadzenSwitch @bind-Value="@fixedItemToEdit.Cash" />
             </div>
-            <div class="form-group col-3">
+            <div class="col-3">
                 <label>💰Income</label><br>
                 <RadzenSwitch @bind-Value="@Incoming" />
             </div>
 
-            <div class="form-group col-3">
+            <div class="col-3">
                 <label>Weight:</label>
                 <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control" />
                 <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />
             </div>
         </div>
     }
-    <div class="form-group">
+    <div>
         <label>Note:</label>
         <InputText @bind-Value="@fixedItemToEdit.Note" class="form-control" />
         <ValidationMessage For="@(() => fixedItemToEdit.Note)" />
     </div>
-    <div class="form-group">
+    <div>
         <label>Category:</label>
         <InputSelectNumber @bind-Value="@fixedItemToEdit.CategoryID" class="form-control">
             <option value=""></option>

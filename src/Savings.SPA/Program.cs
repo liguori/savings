@@ -16,6 +16,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
+builder.Services.AddRadzenComponents();
 
 var configuredAuthentication = builder.Configuration["AuthenticationToUse"];
 

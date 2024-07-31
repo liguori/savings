@@ -1,44 +1,44 @@
 ﻿@attribute [Authorize]
 <EditForm Model="@recurrentItemToEdit" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
-    <div class="form-row">
-        <div class="form-group col">
+    <div class="row">
+        <div class="col">
             <label>Start date :</label><br />
             <RadzenDatePicker @bind-Value="recurrentItemToEdit.StartDate" DateFormat="dd/MM/yyyy" />
             <ValidationMessage For="@(() => recurrentItemToEdit.StartDate)" />
         </div>
-        <div class="form-group col">
+        <div class="col">
             <label>End date :</label><br />
             <RadzenDatePicker @bind-Value="recurrentItemToEdit.EndDate" DateFormat="dd/MM/yyyy" />
             <ValidationMessage For="@(() => recurrentItemToEdit.EndDate)" />
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col">
+    <div class="row">
+        <div class="col">
             <label>Amount:</label>
             <InputNumber @bind-Value="@recurrentItemToEdit.Amount" @bind-Value:format="F2" class="form-control" @ref="amountInputNumber" />
             <ValidationMessage For="@(() => recurrentItemToEdit.Amount)" />
         </div>
-        <div class="form-group col">
+        <div class="col">
             <label>Weight:</label>
             <InputNumber @bind-Value="@recurrentItemToEdit.TimelineWeight" class="form-control" />
             <ValidationMessage For="@(() => recurrentItemToEdit.TimelineWeight)" />
         </div>
         @if (!parentItemID.HasValue)
         {
-            <div class="form-group col">
+            <div class="col">
                 <label>Default credit</label><br>
                 <RadzenSwitch @bind-Value="@recurrentItemToEdit.DefaultCredit" />
             </div>
         }
     </div>
-    <div class="form-group ">
+    <div class=" ">
         <label>Note:</label>
         <InputText @bind-Value="@recurrentItemToEdit.Note" class="form-control" />
         <ValidationMessage For="@(() => recurrentItemToEdit.Note)" />
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-4 col">
+    <div class="row">
+        <div class="col-md-4 col">
             <label>Recurrency:</label>
             <InputSelect @bind-Value="recurrentItemToEdit.RecurrencyType" class="form-control">
                 @foreach (var value in Enum.GetValues(typeof(Savings.Model.RecurrencyType)))
@@ -48,12 +48,12 @@
             </InputSelect>
             <ValidationMessage For="@(() => recurrentItemToEdit.RecurrencyType)" />
         </div>
-        <div class="form-group col-md-3 col">
+        <div class="col-md-3 col">
             <label>Interval:</label>
             <InputNumber @bind-Value="@recurrentItemToEdit.RecurrencyInterval" class="form-control" />
             <ValidationMessage For="@(() => recurrentItemToEdit.RecurrencyInterval)" />
         </div>
-        <div class="form-group col-md-5 col-sm-12">
+        <div class="col-md-5 col-sm-12">
             <label>Type:</label>
             <InputSelect @bind-Value="recurrentItemToEdit.Type" class="form-control">
                 @foreach (var value in Enum.GetValues(typeof(Savings.Model.MoneyType)))
@@ -64,7 +64,7 @@
             <ValidationMessage For="@(() => recurrentItemToEdit.Type)" />
         </div>
     </div>
-    <div class="form-group">
+    <div class="">
         <label>Category:</label>
         <InputSelectNumber @bind-Value="@recurrentItemToEdit.CategoryID" class="form-control">
             <option value=""></option>

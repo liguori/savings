@@ -7,7 +7,7 @@
 }
 else
 {
-    <div class="form-row">
+    <div class="row">
         <div class="col-md-2 col">
             <span>From:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateFrom)))" />
