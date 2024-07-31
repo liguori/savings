@@ -12,15 +12,15 @@
 else
 {
     <div class="row">
-        <div class="col-md-2 col">
+        <div class="col-md-2 col-2">
             Active<br>
             <RadzenSwitch @bind-Value="@ShowOnlyActive" Change="ShowOnlyActiveOnChange" />
         </div>
-        <div class="col-md-2 col">
+        <div class="col-md-2 col-5">
             <span>From:</span><br />
             <RadzenDatePicker @bind-Value="FilterOnlyActiveDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => FilterDateOnlyActiveChange(args, nameof(FilterOnlyActiveDateFrom)))" />
         </div>
-        <div class="col-md-8 col">
+        <div class="col-md-8 col-5">
             <span>To:</span><br />
             <RadzenDatePicker @bind-Value="FilterOnlyActiveDateTo" DateFormat="dd/MM/yyyy" Change="@(args => FilterDateOnlyActiveChange(args, nameof(FilterOnlyActiveDateTo)))" />
         </div>
