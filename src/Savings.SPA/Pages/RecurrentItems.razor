@@ -52,7 +52,7 @@ else
                     <tr class="item-action" @onclick="@(() => Edit(item))" >
                         <td data-title="Start date">@item.StartDate.ToString("dd/MM/yyyy")</td>
                         <td data-title="End date">@item.EndDate?.ToString("dd/MM/yyyy")&nbsp; </td>
-                        <td data-title="Amount" class="text-right">@item.Amount.ToString("N2")</td>
+                        <td data-title="Amount" class="text-end">@item.Amount.ToString("N2")</td>
                         <td data-title="Note">@item.Note</td>
                         <td data-title="Recurrency">@item.RecurrencyType.ToString()</td>
                         <td data-title="Interval">@item.RecurrencyInterval</td>

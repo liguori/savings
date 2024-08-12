@@ -34,9 +34,9 @@ else
                 <tr>
                     <th></th>
                     <th>Date</th>
-                    <th class="text-right">Amount</th>
+                    <th class="text-end">Amount</th>
                     <th></th>
-                    <th class="text-right">Projection</th>
+                    <th class="text-end">Projection</th>
                     <th class="transaction-type-col"></th>
                     <th>Note</th>
                     <th></th>
@@ -53,7 +53,7 @@ else
                             }
                         </td>
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                        <td class="text-right">@item.Amount.ToString("N2")</td>
+                        <td class="text-end">@item.Amount.ToString("N2")</td>
                         <td class="text-center">
                             @{
                                 var iconToUse = "";
@@ -93,7 +93,7 @@ else
                             <span class="oi oi-@iconToUse @classToUse" aria-hidden="true" title="Fixed"></span>
                         </td>
                         @{
-                            var projectionStyle = "text-right " + (item.Date <= DateTime.Now.Date ? " done-projection" : "");
+                            var projectionStyle = "text-end " + (item.Date <= DateTime.Now.Date ? " done-projection" : "");
                         }
                         <td class="@projectionStyle">
                             @item.Projection.ToString("N2")

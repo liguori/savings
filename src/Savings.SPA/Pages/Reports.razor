@@ -45,7 +45,7 @@ else
                         @foreach (var c in statistics)
                         {
                             var item = c.Data.Where(x => x.Period == period).FirstOrDefault();
-                            <td class="item-action text-right" @onclick="@(() => OpenDetails(c.CategoryID,period))">@item?.Amount.ToString("N2")</td>
+                            <td class="item-action text-end" @onclick="@(() => OpenDetails(c.CategoryID,period))">@item?.Amount.ToString("N2")</td>
                         }
                     </tr>
                 }
@@ -86,7 +86,7 @@ else
                     <thead class="table-dark">
                         <tr>
                             <th>Date</th>
-                            <th class="text-right">Amount</th>
+                            <th class="text-end">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,14 +94,14 @@ else
                         {
                             <tr>
                                 <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                                <td class="text-right">@item.Amount.ToString("N2")</td>
+                                <td class="text-end">@item.Amount.ToString("N2")</td>
                             </tr>
                         }
                     </tbody>
                     <tfoot>
                         <tr>
                             <th scope="row">Totals</th>
-                            <td class="text-right"><b>@currentItemProjection.Sum(x => x.Amount).ToString("N2")</b></td>
+                            <td class="text-end"><b>@currentItemProjection.Sum(x => x.Amount).ToString("N2")</b></td>
                         </tr>
                     </tfoot>
                 </table>

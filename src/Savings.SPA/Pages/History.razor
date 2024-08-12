@@ -22,9 +22,9 @@ else
             <thead class="table-dark">
                 <tr>
                     <th>Date</th>
-                    <th class="text-right">Amount</th>
+                    <th class="text-end">Amount</th>
                     <th></th>
-                    <th class="text-right">Projection</th>
+                    <th class="text-end">Projection</th>
                     <th>Note</th>
                     <th></th>
                 </tr>
@@ -34,7 +34,7 @@ else
                 {
                     <tr class="@(item.EndPeriod ? "end-period" : "")">
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                        <td class="text-right">@item.Amount.ToString("N2")</td>
+                        <td class="text-end">@item.Amount.ToString("N2")</td>
                         <td class="text-center">
                             @{
                                 var iconToUse = "";
@@ -73,7 +73,7 @@ else
                             }
                             <span class="oi oi-@iconToUse @classToUse" aria-hidden="true" title="Fixed"></span>
                         </td>
-                        <td class="text-right done-projection">
+                        <td class="text-end done-projection">
                             @item.Projection.ToString("N2")
                         </td>
                         <td class="ellipses">@item.Note</td>
