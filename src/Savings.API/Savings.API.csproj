@@ -22,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Savings.Model\Savings.Model.csproj" />
+    <ProjectReference Include="..\Savings.ServiceDefaults\Savings.ServiceDefaults.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Authentication\" />

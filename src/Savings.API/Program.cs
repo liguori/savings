@@ -15,6 +15,8 @@ const string ApiKeys = "ApiKeys";
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add service defaults & Aspire components.
+builder.AddServiceDefaults();
 
 builder.Services.AddControllers(opt =>
 {
