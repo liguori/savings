@@ -9,12 +9,12 @@ namespace Savings.SPA.Pages
     {
 
         [Inject]
-        public ISavingsApi savingsAPI { get; set; }
+        public ISavingsApi savingsAPI { get; set; } = default!;
 
-        private MaterializedMoneyItem[] materializedMoneyItems;
+        private MaterializedMoneyItem[]? materializedMoneyItems;
 
         [Inject]
-        public DialogService dialogService { get; set; }
+        public DialogService dialogService { get; set; } = default!;
         public DateTime? FilterDateFrom { get; set; }
 
         public DateTime? FilterDateTo { get; set; }

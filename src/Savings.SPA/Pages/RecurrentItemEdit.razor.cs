@@ -11,18 +11,18 @@ namespace Savings.SPA.Pages
     public partial class RecurrentItemEdit : ComponentBase
     {
         [Inject]
-        public ISavingsApi savingsAPI { get; set; }
+        public ISavingsApi savingsAPI { get; set; } = default!;
 
         [Inject]
-        DialogService dialogService { get; set; }
+        DialogService dialogService { get; set; } = default!;
 
         [Inject]
-        public NotificationService notificationService { get; set; }
+        public NotificationService notificationService { get; set; } = default!;
 
         [Parameter]
-        public RecurrentMoneyItem recurrentItemToEdit { get; set; }
+        public RecurrentMoneyItem recurrentItemToEdit { get; set; } = default!;
 
-        public MoneyCategory[] Categories { get; set; }
+        public MoneyCategory[] Categories { get; set; } = default!;
 
         [Parameter]
         public bool isNew { get; set; }
@@ -31,9 +31,9 @@ namespace Savings.SPA.Pages
         public long? parentItemID { get; set; } = null;
 
         [Parameter]
-        public RecurrentMoneyItem parentItem { get; set; } = null;
+        public RecurrentMoneyItem? parentItem { get; set; } = null;
 
-        InputNumber<decimal> amountInputNumber;
+        InputNumber<decimal>? amountInputNumber;
 
         public bool OperationRunning { get; set; } = false;
 
@@ -43,7 +43,7 @@ namespace Savings.SPA.Pages
             if (firstRender)
             {
                 await Task.Delay(500);
-                await amountInputNumber.Element.Value.FocusAsync();
+                await amountInputNumber!.Element!.Value.FocusAsync();
             }
         }
 
@@ -55,7 +55,7 @@ namespace Savings.SPA.Pages
                 if (parentItemID.HasValue)
                 {
                     DateTime targetDate = DateTime.Now.AddMonths(1);
-                    targetDate = new DateTime(targetDate.Year, targetDate.Month, parentItem.StartDate.Day);
+                    targetDate = new DateTime(targetDate.Year, targetDate.Month, parentItem!.StartDate.Day);
 
                     recurrentItemToEdit.StartDate = targetDate;
                     recurrentItemToEdit.EndDate = targetDate;

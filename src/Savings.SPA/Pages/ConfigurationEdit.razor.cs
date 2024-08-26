@@ -8,11 +8,11 @@ namespace Savings.SPA.Pages
     {
 
         [Inject]
-        private ISavingsApi savingsAPI { get; set; }
+        private ISavingsApi savingsAPI { get; set; } = default!;
 
-        private Configuration Configuration { get; set; }
+        private Configuration Configuration { get; set; } = default!;
 
-        public MoneyCategory[] Categories { get; set; }
+        public MoneyCategory[] Categories { get; set; } = default!;
 
         public DateTime LastMaterializedDate { get; set; }
 

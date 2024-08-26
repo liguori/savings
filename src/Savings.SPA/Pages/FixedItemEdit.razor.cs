@@ -10,16 +10,16 @@ namespace Savings.SPA.Pages
     {
 
         [Inject]
-        public ISavingsApi savingsAPI { get; set; }
+        public ISavingsApi savingsAPI { get; set; } = default!;
 
         [Inject]
-        DialogService dialogService { get; set; }
+        DialogService dialogService { get; set; } = default!;
 
         [Inject]
-        public NotificationService notificationService { get; set; }
+        public NotificationService notificationService { get; set; } = default!;
 
         [Parameter]
-        public FixedMoneyItem fixedItemToEdit { get; set; }
+        public FixedMoneyItem fixedItemToEdit { get; set; } = default!;
 
         public bool Incoming { get; set; }
 
@@ -30,9 +30,9 @@ namespace Savings.SPA.Pages
 
         public bool OperationRunning { get; set; } = false;
 
-        public MoneyCategory[] Categories { get; set; }
+        public MoneyCategory[]? Categories { get; set; }
 
-        InputNumber<decimal?> amountInputNumber;
+        InputNumber<decimal?>? amountInputNumber;
 
         protected override void OnInitialized()
         {
@@ -49,7 +49,7 @@ namespace Savings.SPA.Pages
             if (firstRender)
             {
                 await Task.Delay(500);
-                await amountInputNumber.Element.Value.FocusAsync();
+                await amountInputNumber!.Element!.Value.FocusAsync();
             }
         }
 
@@ -105,11 +105,11 @@ namespace Savings.SPA.Pages
                 if (!ValidateData()) return;
                 if (Incoming)
                 {
-                    fixedItemToEdit.Amount = Math.Abs(fixedItemToEdit.Amount.Value);
+                    fixedItemToEdit.Amount = Math.Abs(fixedItemToEdit.Amount!.Value);
                 }
                 else
                 {
-                    fixedItemToEdit.Amount = -Math.Abs(fixedItemToEdit.Amount.Value);
+                    fixedItemToEdit.Amount = -Math.Abs(fixedItemToEdit.Amount!.Value);
                 }
                 if (isNew)
                 {

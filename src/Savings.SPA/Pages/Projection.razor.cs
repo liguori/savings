@@ -1,23 +1,19 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Radzen;
 using Savings.Model;
 using Savings.SPA.Services;
-using System;
-using System.Threading.Tasks;
-using Radzen;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace Savings.SPA.Pages
 {
     public partial class Projection : ComponentBase
     {
         [Inject]
-        public ISavingsApi savingsAPI { get; set; }
+        public ISavingsApi savingsAPI { get; set; } = default!;
 
-        private MaterializedMoneyItem[] materializedMoneyItems;
+        private MaterializedMoneyItem[] materializedMoneyItems = default!;
 
         [Inject]
-        public DialogService dialogService { get; set; }
+        public DialogService dialogService { get; set; } = default!;
 
         public bool ShowPastItems { get; set; } = false;
 
@@ -25,13 +21,13 @@ namespace Savings.SPA.Pages
 
         public DateTime? FilterDateTo { get; set; }
 
-        public Configuration CurrentConfiguration { get; set; }
+        public Configuration CurrentConfiguration { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
             FilterDateTo = DateTime.Now.Date.AddYears(1);
             await InitializeList();
-            CurrentConfiguration = (await savingsAPI.GetConfigurations()).FirstOrDefault();
+            CurrentConfiguration = (await savingsAPI.GetConfigurations()).First();
         }
 
 
@@ -73,7 +69,7 @@ namespace Savings.SPA.Pages
                     materializedMoneyItems = materializedMoneyItems[Array.IndexOf(materializedMoneyItems, lastBeforeToday)..];
                 }
             }
-           
+
         }
 
         async Task AdjustRecurrency(MaterializedMoneyItem item)

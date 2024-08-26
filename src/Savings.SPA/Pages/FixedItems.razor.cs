@@ -2,9 +2,6 @@
 using Radzen;
 using Savings.Model;
 using Savings.SPA.Services;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Savings.SPA.Pages
 {
@@ -12,14 +9,14 @@ namespace Savings.SPA.Pages
     {
 
         [Inject]
-        public ISavingsApi savingsAPI { get; set; }
+        public ISavingsApi savingsAPI { get; set; } = default!;
 
         [Inject]
-        public DialogService dialogService { get; set; }
+        public DialogService dialogService { get; set; } = default!;
 
-        public Configuration CurrentConfiguration { get; set; }
+        public Configuration CurrentConfiguration { get; set; } = default!;
 
-        private FixedMoneyItem[] fixedMoneyItems;
+        private FixedMoneyItem[] fixedMoneyItems = default!;
 
         public DateTime? FilterDateFrom { get; set; }
 
@@ -27,14 +24,14 @@ namespace Savings.SPA.Pages
 
         public long? FilterCategory { get; set; }
 
-        public MoneyCategory[] Categories { get; set; }
+        public MoneyCategory[] Categories { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
             FilterDateFrom = DateTime.Now.Date.AddMonths(-2);
             FilterDateTo = DateTime.Now.Date.AddDays(15);
             Categories = await savingsAPI.GetMoneyCategories();
-            CurrentConfiguration = (await savingsAPI.GetConfigurations()).FirstOrDefault();
+            CurrentConfiguration = (await savingsAPI.GetConfigurations()).First();
             await InitializeList();
         }
 
@@ -46,7 +43,7 @@ namespace Savings.SPA.Pages
 
         async Task FilterCategoryChanged(ChangeEventArgs e)
         {
-            var selectedString = e.Value.ToString();
+            var selectedString = e.Value?.ToString();
             FilterCategory = string.IsNullOrWhiteSpace(selectedString) ? null : long.Parse(selectedString);
 
             await InitializeList();

@@ -31,7 +31,7 @@ namespace Savings.API.Controllers
 
         // GET: api/RecurrencyAdjustements/ByIDRecurrencyAndDate
         [HttpGet("ByIDRecurrencyAndDate", Name = "ByIDRecurrencyAndDate")]
-        public async Task<ActionResult<RecurrencyAdjustement>> GetByIDRecurrency(long idRecurrency, DateTime date)
+        public async Task<ActionResult<RecurrencyAdjustement?>> GetByIDRecurrency(long idRecurrency, DateTime date)
         {
             return await _context.RecurrencyAdjustements.Where(x => x.RecurrentMoneyItemID == idRecurrency && (x.RecurrencyNewDate.HasValue && x.RecurrencyNewDate == date.Date || !x.RecurrencyNewDate.HasValue && x.RecurrencyDate == date.Date)).FirstOrDefaultAsync();
         }

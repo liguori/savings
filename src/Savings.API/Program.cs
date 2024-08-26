@@ -41,7 +41,7 @@ else if (authenticationToUse == AuthenticationToUse.ApiKey)
         options.DefaultAuthenticateScheme = ApiKeyAuthOptions.ApiKeySchemaName;
         options.DefaultChallengeScheme = ApiKeyAuthOptions.ApiKeySchemaName;
     })
-    .AddApiKeyAuth(options => options.AuthKeys = builder.Configuration[ApiKeys].Split(","));
+    .AddApiKeyAuth(options => options.AuthKeys = builder.Configuration[ApiKeys]?.Split(","));
 }
 
 builder.Services.AddTransient<IProjectionCalculator, ProjectionCalculator>();

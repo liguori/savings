@@ -111,7 +111,7 @@ namespace Savings.API.Services
                 var recurrentItems = await context.RecurrentMoneyItems
                                                     .Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category)
                                                     .Where(x => (x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null) ||
-                                                                (x.Adjustements.Count() > 0 && x.Adjustements.First().RecurrencyNewDate.HasValue && x.Adjustements.First().RecurrencyNewDate.Value >= periodStart && x.Adjustements.First().RecurrencyNewDate.Value <= periodEnd))
+                                                                (x.Adjustements.Count() > 0 && x.Adjustements.First().RecurrencyNewDate.HasValue && x.Adjustements.First().RecurrencyNewDate!.Value >= periodStart && x.Adjustements.First().RecurrencyNewDate!.Value <= periodEnd))
                                                     .AsNoTracking().ToListAsync();
 
                 if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
@@ -131,14 +131,14 @@ namespace Savings.API.Services
                     {
                         Date = fixedItem.Date,
                         CategoryID = fixedItem?.Category?.ID,
-                        Amount = fixedItem.Amount ?? 0,
+                        Amount = fixedItem?.Amount ?? 0,
                         EndPeriod = false,
-                        Note = fixedItem.Note,
+                        Note = fixedItem?.Note,
                         Type = MoneyType.Others,
-                        TimelineWeight = fixedItem.TimelineWeight,
+                        TimelineWeight = fixedItem?.TimelineWeight ?? 0,
                         IsRecurrent = false,
-                        FixedMoneyItemID = fixedItem.ID,
-                        Cash = fixedItem.Cash
+                        FixedMoneyItemID = fixedItem?.ID,
+                        Cash = fixedItem?.Cash ?? false
                     });
                 }
 
@@ -169,13 +169,13 @@ namespace Savings.API.Services
                     foreach (var installment in installments)
                     {
                         //Check the adjustements
-                        var currentAdjustment = recurrentItem.Adjustements?.Where(x => x.RecurrencyDate == installment.currentDate || x.RecurrencyNewDate.HasValue && x.RecurrencyNewDate == installment.currentDate).FirstOrDefault();
+                        var currentAdjustment = recurrentItem?.Adjustements?.Where(x => x.RecurrencyDate == installment.currentDate || x.RecurrencyNewDate.HasValue && x.RecurrencyNewDate == installment.currentDate).FirstOrDefault();
                         var currentInstallmentDate = currentAdjustment?.RecurrencyNewDate ?? installment.original;
-                        var currentInstallmentAmount = currentAdjustment?.RecurrencyNewAmount ?? recurrentItem.Amount;
-                        var currentInstallmentNote = recurrentItem.Note;
+                        var currentInstallmentAmount = currentAdjustment?.RecurrencyNewAmount ?? recurrentItem!.Amount;
+                        var currentInstallmentNote = recurrentItem?.Note;
 
                         //Check if is a budget for subtract the accumulated
-                        if (recurrentItem.Type == MoneyType.PeriodicBudget)
+                        if (recurrentItem!.Type == MoneyType.PeriodicBudget)
                         {
                             decimal accumulatorToSubtract = accumulatedForBudgetLeft < currentInstallmentAmount ? currentInstallmentAmount : accumulatedForBudgetLeft;
                             accumulatedForBudgetLeft -= accumulatorToSubtract;
@@ -216,10 +216,10 @@ namespace Savings.API.Services
                             Amount = currentInstallmentAmount,
                             EndPeriod = false,
                             Note = currentInstallmentNote,
-                            Type = recurrentItem.Type,
-                            TimelineWeight = recurrentItem.TimelineWeight,
+                            Type = recurrentItem?.Type ?? MoneyType.Others,
+                            TimelineWeight = recurrentItem?.TimelineWeight ?? 0,
                             IsRecurrent = true,
-                            RecurrentMoneyItemID = recurrentItem.ID,
+                            RecurrentMoneyItemID = recurrentItem?.ID,
                             Subitems = lstSubItemsRecurrent
                         });
                     }
@@ -232,7 +232,7 @@ namespace Savings.API.Services
                 periodStart = periodEnd.AddDays(1);
             }
             //Calculate the projection
-            var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).ThenByDescending(x => x.EndPeriod).AsNoTracking().FirstOrDefault().Projection;
+            var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).ThenByDescending(x => x.EndPeriod).AsNoTracking().FirstOrDefault()!.Projection;
             res = res.OrderBy(x => x.Date).ThenByDescending(x => x.TimelineWeight).ToList();
             foreach (var resItem in res)
             {
@@ -266,7 +266,7 @@ namespace Savings.API.Services
             DateTime currentInstallmentDate;
             var adjustment = item.Adjustements?.Where(x => x.RecurrencyDate == currentInstallmentOriginal && x.RecurrencyNewDate.HasValue).FirstOrDefault();
             if (adjustment != null)
-                currentInstallmentDate = adjustment.RecurrencyNewDate.Value;
+                currentInstallmentDate = adjustment.RecurrencyNewDate!.Value;
             else
                 currentInstallmentDate = currentInstallmentOriginal;
             return currentInstallmentDate;

@@ -8,13 +8,13 @@ namespace Savings.SPA.Pages
     public partial class RecurrencyAdjustment : ComponentBase
     {
         [Inject]
-        public ISavingsApi savingsAPI { get; set; }
+        public ISavingsApi savingsAPI { get; set; } = default!;
 
         [Inject]
-        DialogService dialogService { get; set; }
+        DialogService dialogService { get; set; } = default!;
 
         [Parameter]
-        public MaterializedMoneyItem materializedItem { get; set; }
+        public MaterializedMoneyItem materializedItem { get; set; } = default!;
 
         [Parameter]
         public RecurrencyAdjustement adjustement { get; set; } = new RecurrencyAdjustement();
@@ -25,7 +25,7 @@ namespace Savings.SPA.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var existentAdjustment = await this.savingsAPI.GetRecurrencyAdjustementByIDRecurrencyAndDate(materializedItem.RecurrentMoneyItemID.Value, materializedItem.Date.Date);
+            var existentAdjustment = await this.savingsAPI.GetRecurrencyAdjustementByIDRecurrencyAndDate(materializedItem.RecurrentMoneyItemID!.Value, materializedItem.Date.Date);
             if (existentAdjustment != null)
             {
                 this.adjustement = existentAdjustment;

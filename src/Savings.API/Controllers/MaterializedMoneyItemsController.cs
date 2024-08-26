@@ -20,11 +20,18 @@ namespace Savings.API.Controllers
         public async Task<ActionResult> PostLastMaterializedMoneyItemPeriod(DateTime date, decimal amount)
         {
             var res = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
-            res.Date = date;
-            res.Amount = amount;
-            res.Projection = amount;
-            await _context.SaveChangesAsync();
-            return Ok();
+            if (res != null)
+            {
+                res.Date = date;
+                res.Amount = amount;
+                res.Projection = amount;
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
 
@@ -33,7 +40,14 @@ namespace Savings.API.Controllers
         public async Task<ActionResult<MaterializedMoneyItem>> GetLastMaterializedMoneyItemPeriod()
         {
             var res = await _context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
-            return res;
+            if(res == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return res;
+            }
         }
 
         // GET: api/MaterializedMoneyItems

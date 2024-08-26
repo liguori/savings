@@ -8,7 +8,7 @@ namespace Savings.SPA.Pages
     {
 
         [Inject]
-        public ISavingsApi savingsAPI { get; set; }
+        public ISavingsApi savingsAPI { get; set; } = default!;
 
         [Parameter]
         public DateTime FilterDateFrom { get; set; }
@@ -20,12 +20,12 @@ namespace Savings.SPA.Pages
         public long? category { get; set; } = null;
 
         [Parameter]
-        public string periodPattern { get; set; } = null;
+        public string? periodPattern { get; set; } = string.Empty;
 
         [Parameter]
-        public string period { get; set; } = null;
+        public string? period { get; set; } = string.Empty;
 
-        public ReportDetail[]  ReportCategoryDetails { get; set; }
+        public ReportDetail[]? ReportCategoryDetails { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -34,7 +34,7 @@ namespace Savings.SPA.Pages
 
         async Task InitializeList()
         {
-            ReportCategoryDetails = await savingsAPI.GetCategoryResumeDetail(periodPattern, FilterDateFrom, FilterDateTo, category, period);
+            ReportCategoryDetails = await savingsAPI.GetCategoryResumeDetail(periodPattern!, FilterDateFrom, FilterDateTo, category, period!);
         }
 
     }

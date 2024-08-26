@@ -76,7 +76,7 @@ else
                         <td data-title="Date">@item.Date.ToString("dd/MM/yyyy")</td>
                         <td data-title="Amount" class="text-end">@((item.Amount ?? 0).ToString("N2"))</td>
                         <td data-title="Category">@item?.Category?.Icon?.ToString() @item?.Category?.Description?.ToString()</td>
-                        <td data-title="Note">@item.Note</td>
+                        <td data-title="Note">@item?.Note</td>
                     </tr>
                 }
             </tbody>

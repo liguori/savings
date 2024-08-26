@@ -27,13 +27,13 @@ if (configuredAuthentication == AuthenticationToUse.AzureAD)
         options.ProviderOptions.Cache.CacheLocation = "localStorage";
         options.ProviderOptions.LoginMode = "redirect";
         builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-        options.ProviderOptions.DefaultAccessTokenScopes.Add(builder.Configuration["AzureAd:DefaultScope"]);
+        options.ProviderOptions.DefaultAccessTokenScopes.Add(builder.Configuration["AzureAd:DefaultScope"]!);
     });
 }
 
 var httpClientBuilder = builder.Services.AddRefitClient<ISavingsApi>().ConfigureHttpClient((sp, c) =>
 {
-    c.BaseAddress = new Uri(builder.Configuration["SavingsApiServiceUrl"]);
+    c.BaseAddress = new Uri(builder.Configuration["SavingsApiServiceUrl"]!);
     if (configuredAuthentication == AuthenticationToUse.ApiKey)
     {
         c.DefaultRequestHeaders.Add("X-API-Key", builder.Configuration["ApiKey"]);

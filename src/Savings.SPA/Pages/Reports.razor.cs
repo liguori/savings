@@ -10,16 +10,16 @@ namespace Savings.SPA.Pages
     {
 
         [Inject]
-        private ISavingsApi savingsAPI { get; set; }
+        private ISavingsApi savingsAPI { get; set; } = default!;
 
         [Inject]
-        public DialogService dialogService { get; set; }
+        public DialogService dialogService { get; set; } = default!;
 
-        private RecurrentMoneyItem[] RecurrentItems { get; set; }
+        private RecurrentMoneyItem[] RecurrentItems { get; set; } = default!;
 
-        private MaterializedMoneyItem[] Installments { get; set; }
+        private MaterializedMoneyItem[] Installments { get; set; } = default!;
 
-        private MaterializedMoneyItem[] EndPeriods { get; set; }
+        private MaterializedMoneyItem[] EndPeriods { get; set; } = default!;
 
         public string FilterCategoryGroupByPeriod { get; set; } = "yy/MM";
 
@@ -27,7 +27,7 @@ namespace Savings.SPA.Pages
 
         public DateTime FilterDateTo { get; set; }
 
-        ReportCategory[] statistics;
+        ReportCategory[] statistics = default!;
 
         async void DateTimeDateChanged(DateTime? value, string name)
         {
@@ -38,8 +38,8 @@ namespace Savings.SPA.Pages
 
         async Task FilterGroupByCategoryPeriodChanged(ChangeEventArgs e)
         {
-            var selectedString = e.Value.ToString();
-            FilterCategoryGroupByPeriod = string.IsNullOrWhiteSpace(selectedString) ? null : selectedString;
+            var selectedString = e.Value?.ToString();
+            FilterCategoryGroupByPeriod = string.IsNullOrWhiteSpace(selectedString) ? string.Empty : selectedString;
 
             await InitializeCategoryResume();
             StateHasChanged();
@@ -63,7 +63,7 @@ namespace Savings.SPA.Pages
             DateTime endDate = DateTime.Now.AddMonths(1);
             if (RecurrentItems.Any())
             {
-                endDate = RecurrentItems.Max(x => x.EndDate.Value);
+                endDate = RecurrentItems.Max(x => x.EndDate!.Value);
             }
             var projections = await savingsAPI.GetSavings(null, endDate, true);
             Installments = projections.Where(x => x.RecurrentMoneyItemID.HasValue && x.Amount != 0 && x.Date >= DateTime.Now).ToArray();
@@ -91,7 +91,7 @@ namespace Savings.SPA.Pages
                            new Dictionary<string, object>() {
                                { "FilterDateFrom", FilterDateFrom },
                                { "FilterDateTo", FilterDateTo },
-                               { "category", (long?)category },
+                               { "category", category! },
                                { "periodPattern", FilterCategoryGroupByPeriod },
                                { "period", period }
                            },
@@ -140,7 +140,7 @@ namespace Savings.SPA.Pages
             return ((double)value).ToString("N2");
         }
 
-        string FormatAsMonth(object value)
+        string? FormatAsMonth(object value)
         {
             return value?.ToString();
         }

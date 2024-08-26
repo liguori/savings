@@ -38,11 +38,11 @@ namespace Savings.API.Controllers
         public async Task<ActionResult> GetBackup()
         {
             byte[] fileContent;
-            using (var fs = new FileStream(configuration["DatabasePath"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var fs = new FileStream(configuration["DatabasePath"]!, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (var ms = new MemoryStream())
                 {
-                    fs.CopyTo(ms);
+                    await fs.CopyToAsync(ms);
                     fileContent = ms.ToArray();
                 }
             }
