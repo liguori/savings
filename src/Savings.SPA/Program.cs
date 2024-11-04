@@ -28,8 +28,6 @@ if (configuredAuthentication == AuthenticationToUse.AzureAD)
         options.ProviderOptions.Cache.CacheLocation = "localStorage";
         options.ProviderOptions.LoginMode = "redirect";
         builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-        options.ProviderOptions.DefaultAccessTokenScopes.Add("https://graph.microsoft.com/User.Read");
-        options.ProviderOptions.DefaultAccessTokenScopes.Add(builder.Configuration["AzureAd:DefaultScope"]!);
     });
 }
 
