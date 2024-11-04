@@ -48,7 +48,7 @@ jobs:
           AzureAd.Authority: ${{ vars.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
           AzureAd.ClientId: ${{ vars.APPSERVICE_FE_CONFIG_CLIENT_ID }}
           AzureAd.ValidateAuthority: true
-          AzureAd.DefaultScope: ${{ vars.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
+          AzureAd.DefaultAccessTokenScopes: ${{ vars.APPSERVICE_FE_CONFIG_DEFAULT_SCOPE }}
 
       - name: Manifest AppName Substitution
         uses: microsoft/variable-substitution@v1
