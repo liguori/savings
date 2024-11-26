@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Savings.API.Authentication;
 using Savings.API.Infrastructure;
+using Savings.API.OpenApi;
 using Savings.API.Services;
 using Savings.API.Services.Abstract;
 using Savings.Model;
@@ -48,71 +49,17 @@ else if (authenticationToUse == AuthenticationToUse.ApiKey)
 
 builder.Services.AddTransient<IProjectionCalculator, ProjectionCalculator>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddOpenApi(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Savings", Version = "v1" });
-
-    if (authenticationToUse == AuthenticationToUse.AzureAD)
-    {
-        c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please insert JWT with Bearer into field",
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-                   {
-                     new OpenApiSecurityScheme
-                     {
-                       Reference = new OpenApiReference
-                       {
-                         Type = ReferenceType.SecurityScheme,
-                         Id = "Bearer"
-                       }
-                      },
-                      new string[] { }
-                    }
-                  });
-    }
-    else if (authenticationToUse == AuthenticationToUse.ApiKey)
-    {
-        //Add API Key Informations
-        c.AddSecurityDefinition(ApiKeyAuthOptions.ApiKeySchemaName, new OpenApiSecurityScheme
-        {
-            Description = "Api key needed to access the endpoints. " + ApiKeyAuthOptions.HeaderName + ": My_API_Key",
-            In = ParameterLocation.Header,
-            Name = ApiKeyAuthOptions.HeaderName,
-            Type = SecuritySchemeType.ApiKey
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                     {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Name = ApiKeyAuthOptions.HeaderName,
-                            Type = SecuritySchemeType.ApiKey,
-                            In = ParameterLocation.Header,
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = ApiKeyAuthOptions.ApiKeySchemaName
-                            },
-                         },
-                         new string[] {}
-                     }
-                });
-    }
+    options.AddDocumentTransformer<DocumentSecuritySchemeTransformer>();
+    options.AddOperationTransformer<OperationSecurityTransformer>();
 });
 
-builder.Services.AddDbContext<SavingsContext>(
-               options => options.UseSqlite($"Data Source={builder.Configuration["DatabasePath"]}", sqlOpt =>
+builder.Services.AddDbContext<SavingsContext>(options => options.UseSqlite($"Data Source={builder.Configuration["DatabasePath"]}", sqlOpt =>
                {
                    sqlOpt.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
                })
-              );
+);
 
 builder.Services.AddCors(options =>
 {
@@ -125,8 +72,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/openapi/v1.json", "Savings API"));
     app.UseDeveloperExceptionPage();
 }
 
