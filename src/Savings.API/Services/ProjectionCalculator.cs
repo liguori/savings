@@ -87,34 +87,50 @@ namespace Savings.API.Services
             return cashLeftToSpend;
         }
 
-        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? from, DateTime? to, DateTime? stopToDate, bool onlyInstallment = false, bool includeLastEndPeriod = true)
+        public async Task<IEnumerable<MaterializedMoneyItem>> CalculateAsync(DateTime? fromInput, DateTime? toInput, DateTime? stopToDate, bool onlyInstallment = false, bool includeLastEndPeriod = true)
         {
-            if (to == null) to = new DateTime(9999, 12, 31);
+            if (toInput == null) toInput = new DateTime(9999, 12, 31);
             var res = new List<MaterializedMoneyItem>();
-            var lastEndPeriod = context.MaterializedMoneyItems.Where(x => x.EndPeriod).OrderByDescending(x => x.Date).FirstOrDefault();
+            var lastEndPeriod = await context.MaterializedMoneyItems
+                .Where(x => x.EndPeriod)
+                .OrderByDescending(x => x.Date)
+                .FirstOrDefaultAsync();
             if (lastEndPeriod != null && includeLastEndPeriod) res.Add(lastEndPeriod);
             var fromDate = lastEndPeriod?.Date ?? throw new Exception("Unable to define the starting time");
             var periodStart = fromDate.AddDays(1);
-            var config = context.Configuration.FirstOrDefault() ?? throw new Exception("Unable to find the configuration");
+            var config = await context.Configuration.FirstOrDefaultAsync() ?? throw new Exception("Unable to find the configuration");
             DateTime periodEnd;
             bool endPeriodCashCarryUsed = false;
-            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= to || periodStart < to)
+
+            // Fetch all required data in bulk
+            var fixedItems = await context.FixedMoneyItems
+                .Include(x => x.Category)
+                .Where(x => x.Date >= fromDate && x.Date <= toInput)
+                .AsNoTracking()
+                .ToListAsync();
+            var recurrentItems = await context.RecurrentMoneyItems
+                .Include(x => x.Adjustements)
+                .Include(x => x.AssociatedItems)
+                .Include(x => x.Category)
+                .Where(x => (x.StartDate <= toInput && (fromDate <= x.EndDate || !x.EndDate.HasValue)) || x.Adjustements.Any(y => y.RecurrencyNewDate >= fromDate && y.RecurrencyNewDate <= toInput))
+                .AsNoTracking()
+                .ToListAsync();
+
+            while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= toInput || periodStart < toInput)
             {
                 int accumulatorStartingIndex = res.Count;
-                var fixedItemsNotAccumulate = await context.FixedMoneyItems
-                                                    .Include(x => x.Category)
-                                                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget)
-                                                    .AsNoTracking().ToListAsync();
-                var fixedItemsAccumulate = await context.FixedMoneyItems
-                                                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget)
-                                                    .AsNoTracking().ToListAsync();
-                var recurrentItems = await context.RecurrentMoneyItems
-                                                    .Include(x => x.Adjustements).Include(x => x.AssociatedItems).Include(x => x.Category)
-                                                    .Where(x => (x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null) ||
-                                                                (x.Adjustements.Count() > 0 && x.Adjustements.First().RecurrencyNewDate.HasValue && x.Adjustements.First().RecurrencyNewDate!.Value >= periodStart && x.Adjustements.First().RecurrencyNewDate!.Value <= periodEnd))
-                                                    .AsNoTracking().ToListAsync();
+                var fixedItemsNotAccumulate = fixedItems
+                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget)
+                    .ToList();
+                var fixedItemsAccumulate = fixedItems
+                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget)
+                    .ToList();
+                var periodRecurrentItems = recurrentItems
+                    .Where(x => (x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null) ||
+                                (x.Adjustements.Any(a => a.RecurrencyNewDate.HasValue && a.RecurrencyNewDate.Value >= periodStart && a.RecurrencyNewDate.Value <= periodEnd)))
+                    .ToList();
 
-                if (onlyInstallment) recurrentItems = recurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
+                if (onlyInstallment) periodRecurrentItems = periodRecurrentItems.Where(x => x.Type == MoneyType.InstallmentPayment).ToList();
 
                 decimal additionalCash = 0;
                 if (!endPeriodCashCarryUsed)
@@ -124,57 +140,56 @@ namespace Savings.API.Services
                 }
                 var cashLeftToSpend = CalculateCash(fixedItemsAccumulate, fixedItemsNotAccumulate, config, additionalCash, periodStart);
 
-                //********************************  Calculation 1: Fixed items to not accumulate
-                foreach (var fixedItem in fixedItemsNotAccumulate)
+                // Process fixed items not accumulate
+                res.AddRange(fixedItemsNotAccumulate.Select(fixedItem => new MaterializedMoneyItem
                 {
-                    res.Add(new MaterializedMoneyItem
+                    Date = fixedItem.Date,
+                    CategoryID = fixedItem?.Category?.ID,
+                    Amount = fixedItem?.Amount ?? 0,
+                    EndPeriod = false,
+                    Note = fixedItem?.Note,
+                    Type = MoneyType.Others,
+                    TimelineWeight = fixedItem?.TimelineWeight ?? 0,
+                    IsRecurrent = false,
+                    FixedMoneyItemID = fixedItem?.ID,
+                    Cash = fixedItem?.Cash ?? false
+                }));
+
+                // Process fixed items to accumulate for budget
+                var accumulateMaterializedItem = new MaterializedMoneyItem
+                {
+                    Date = periodStart,
+                    Note = "🧾 Accumulator",
+                    TimelineWeight = 5,
+                    IsRecurrent = false,
+                    Subitems = fixedItemsAccumulate.Select(accumulateItem => new MaterializedMoneySubitems
                     {
-                        Date = fixedItem.Date,
-                        CategoryID = fixedItem?.Category?.ID,
-                        Amount = fixedItem?.Amount ?? 0,
-                        EndPeriod = false,
-                        Note = fixedItem?.Note,
-                        Type = MoneyType.Others,
-                        TimelineWeight = fixedItem?.TimelineWeight ?? 0,
-                        IsRecurrent = false,
-                        FixedMoneyItemID = fixedItem?.ID,
-                        Cash = fixedItem?.Cash ?? false
-                    });
-                }
-
-                //********************************  Calculation 2: Fixed items to accumulate for budget
-                List<MaterializedMoneySubitems> lstSubItemsFixed = new();
-                var accumulateMaterializedItem = new MaterializedMoneyItem { Date = periodStart, Note = "🧾 Accumulator", TimelineWeight = 5, IsRecurrent = false, Subitems = lstSubItemsFixed };
-                foreach (var accumulateItem in fixedItemsAccumulate)
-                {
-                    accumulateMaterializedItem.Category = null;
-                    accumulateMaterializedItem.Amount += accumulateItem.Amount ?? 0;
-                    accumulateMaterializedItem.EndPeriod = false;
-                    accumulateMaterializedItem.Type = MoneyType.Others;
-
-                    lstSubItemsFixed.Add(new MaterializedMoneySubitems { Date = accumulateItem.Date, Amount = accumulateItem.Amount ?? 0, CategoryID = accumulateItem.CategoryID, Note = accumulateItem.Note });
-                }
+                        Date = accumulateItem.Date,
+                        Amount = accumulateItem.Amount ?? 0,
+                        CategoryID = accumulateItem.CategoryID,
+                        Note = accumulateItem.Note
+                    }).ToList()
+                };
+                accumulateMaterializedItem.Amount = accumulateMaterializedItem.Subitems.Sum(x => x.Amount);
                 if (fixedItemsAccumulate.Count > 0)
                 {
                     accumulateMaterializedItem.Note += ": " + string.Join(',', fixedItemsAccumulate.Select(x => x.Note).ToArray());
                 }
                 res.Add(accumulateMaterializedItem);
 
-                //********************************  Calculation 3: Recurrent items 
+                // Process recurrent items
                 var accumulatedForBudgetLeft = accumulateMaterializedItem.Amount;
-                foreach (var recurrentItem in recurrentItems)
+                foreach (var recurrentItem in periodRecurrentItems)
                 {
                     var installments = CalculateInstallmentInPeriod(recurrentItem, periodStart, periodEnd);
 
                     foreach (var installment in installments)
                     {
-                        //Check the adjustements
-                        var currentAdjustment = recurrentItem?.Adjustements?.Where(x => x.RecurrencyDate == installment.currentDate || x.RecurrencyNewDate.HasValue && x.RecurrencyNewDate == installment.currentDate).FirstOrDefault();
+                        var currentAdjustment = recurrentItem?.Adjustements?.FirstOrDefault(x => x.RecurrencyDate == installment.currentDate || x.RecurrencyNewDate.HasValue && x.RecurrencyNewDate == installment.currentDate);
                         var currentInstallmentDate = currentAdjustment?.RecurrencyNewDate ?? installment.original;
                         var currentInstallmentAmount = currentAdjustment?.RecurrencyNewAmount ?? recurrentItem!.Amount;
                         var currentInstallmentNote = recurrentItem?.Note;
 
-                        //Check if is a budget for subtract the accumulated
                         if (recurrentItem!.Type == MoneyType.PeriodicBudget)
                         {
                             decimal accumulatorToSubtract = accumulatedForBudgetLeft < currentInstallmentAmount ? currentInstallmentAmount : accumulatedForBudgetLeft;
@@ -206,7 +221,6 @@ namespace Savings.API.Services
                             {
                                 currentInstallmentNote += ": " + string.Join(',', lstNoteAssociatedItems.ToArray());
                             }
-
                         }
 
                         res.Add(new MaterializedMoneyItem
@@ -225,23 +239,38 @@ namespace Savings.API.Services
                     }
                 }
 
-                //********************************  Calculation 4: Cash item
-                res.Add(new MaterializedMoneyItem { Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount), Note = $"💵 Cash: {cashLeftToSpend:N2}", Date = periodEnd, EndPeriod = true, IsRecurrent = false, EndPeriodCashCarry = cashLeftToSpend });
+                // Process cash item
+                res.Add(new MaterializedMoneyItem
+                {
+                    Amount = res.GetRange(accumulatorStartingIndex, res.Count - accumulatorStartingIndex).Sum(x => x.Amount),
+                    Note = $"💵 Cash: {cashLeftToSpend:N2}",
+                    Date = periodEnd,
+                    EndPeriod = true,
+                    IsRecurrent = false,
+                    EndPeriodCashCarry = cashLeftToSpend
+                });
 
                 if (periodEnd == stopToDate) break;
                 periodStart = periodEnd.AddDays(1);
             }
-            //Calculate the projection
-            var lastProjectionValue = context.MaterializedMoneyItems.Where(x => x.Date <= fromDate).OrderByDescending(x => x.Date).ThenByDescending(x => x.EndPeriod).AsNoTracking().FirstOrDefault()!.Projection;
+
+            // Calculate the projection
+            var lastProjectionValue = await context.MaterializedMoneyItems
+                .Where(x => x.Date <= fromDate)
+                .OrderByDescending(x => x.Date)
+                .ThenByDescending(x => x.EndPeriod)
+                .Select(x => x.Projection)
+                .FirstOrDefaultAsync();
             res = res.OrderBy(x => x.Date).ThenByDescending(x => x.TimelineWeight).ToList();
             foreach (var resItem in res)
             {
                 resItem.Projection = lastProjectionValue + (resItem.EndPeriod ? 0 : resItem.Amount);
                 lastProjectionValue = resItem.Projection;
             }
-            if (from.HasValue) res.RemoveAll(x => x.Date <= from);
+            if (fromInput.HasValue) res.RemoveAll(x => x.Date <= fromInput);
             return res;
         }
+
 
         IEnumerable<(DateTime original, DateTime currentDate)> CalculateInstallmentInPeriod(RecurrentMoneyItem item, DateTime periodStart, DateTime periodEnd)
         {
