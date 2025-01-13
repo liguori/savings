@@ -10,7 +10,13 @@ namespace Savings.SPA.Authorization
             : base(provider, navigationManager)
         {
             ConfigureHandler(
-                authorizedUrls: new[] { configuration["SavingsApiServiceUrl"] ?? throw new ArgumentNullException("SavingsApiServiceUrl") });
+                authorizedUrls: new[] { configuration["SavingsApiServiceUrl"] ?? throw new ArgumentNullException("SavingsApiServiceUrl") },
+                onAccessTokenNotAvailable: HandleTokenRenewal);
+        }
+
+        private async Task HandleTokenRenewal(AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
         }
     }
 }

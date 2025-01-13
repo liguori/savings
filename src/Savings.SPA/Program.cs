@@ -1,6 +1,5 @@
-
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Radzen;
 using Refit;
 using Savings.Model;
@@ -29,6 +28,7 @@ if (configuredAuthentication == AuthenticationToUse.AzureAD)
         options.ProviderOptions.LoginMode = "redirect";
         builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
         options.ProviderOptions.DefaultAccessTokenScopes.Add(builder.Configuration["AccessTokenScope"]!);
+        options.ProviderOptions.TokenRenewalHandler = TokenRenewalHandler;
     });
 }
 
@@ -47,3 +47,8 @@ if (configuredAuthentication == AuthenticationToUse.AzureAD)
 }
 
 await builder.Build().RunAsync();
+
+async Task TokenRenewalHandler(AccessTokenNotAvailableException ex)
+{
+    ex.Redirect();
+}
