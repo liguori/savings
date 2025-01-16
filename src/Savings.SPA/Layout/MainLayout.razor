@@ -9,20 +9,7 @@
     </div>
     <main>
         <article class="content px-4">
-            <ErrorBoundary>
-                <ChildContent>
-                    @Body
-                </ChildContent>
-                <ErrorContent Context="ex">
-                    @{
-                        //Capture when the access token can't be retrieved (i.e. refresh token is expired after 1d) and perform an interactive redirect
-                        if (ex is AccessTokenNotAvailableException)
-                        {
-                            ((AccessTokenNotAvailableException)ex).Redirect();
-                        }
-                    }
-                </ErrorContent>
-            </ErrorBoundary>
+            @Body
         </article>
     </main>
 </div>
