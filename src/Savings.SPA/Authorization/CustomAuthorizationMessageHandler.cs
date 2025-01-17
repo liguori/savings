@@ -24,6 +24,7 @@ namespace Savings.SPA.Authorization
             catch (AccessTokenNotAvailableException ex)
             {
                 ex.Redirect();
+                await Task.Delay(3000);//Wait the redirect to complete before to throw the exception
                 throw;
             }
         }
