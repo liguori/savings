@@ -24,7 +24,7 @@ namespace Savings.SPA.Authorization
             catch (AccessTokenNotAvailableException ex)
             {
                 ex.Redirect();
-                throw new Exception("Authentication has expired. Redirecting to login...");
+                throw;
             }
         }
 
