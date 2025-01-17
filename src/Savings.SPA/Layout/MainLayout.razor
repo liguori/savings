@@ -9,19 +9,7 @@
     </div>
     <main>
         <article class="content px-4">
-            <ErrorBoundary>
-                <ChildContent>
-                    @Body
-                </ChildContent>
-                <ErrorContent Context="ex">
-                    @{
-                        if (ex is AccessTokenNotAvailableException)
-                        {
-                            ((AccessTokenNotAvailableException)ex).Redirect();
-                        }
-                    }
-                </ErrorContent>
-            </ErrorBoundary>
+            @Body
         </article>
     </main>
 </div>
