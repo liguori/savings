@@ -15,16 +15,14 @@ namespace Savings.SPA.Authorization
                 authorizedUrls: new[] { configuration["SavingsApiServiceUrl"] ?? throw new ArgumentNullException("SavingsApiServiceUrl") });
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("Invoking the request...");
-                return base.SendAsync(request, cancellationToken);
+                return await base.SendAsync(request, cancellationToken);
             }
             catch (AccessTokenNotAvailableException ex)
             {
-                _logger.LogInformation("Access token not available. Redirecting to login...");
                 ex.Redirect();
                 throw new Exception("Authentication has expired. Redirecting to login...");
             }
