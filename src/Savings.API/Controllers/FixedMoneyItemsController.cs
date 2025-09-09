@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Savings.API.Infrastructure;
 using Savings.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Savings.API.Controllers
 {
@@ -23,7 +18,7 @@ namespace Savings.API.Controllers
 
         // GET: api/FixedMoneyItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal, long? filterCategory)
+        public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal, long? filterCategory, bool? showToVerifyOnly)
         {
             var withdrawalID = _context.Configuration.FirstOrDefault()?.CashWithdrawalCategoryID;
             var result = _context.FixedMoneyItems.Include(x => x.Category).AsQueryable();
@@ -31,7 +26,20 @@ namespace Savings.API.Controllers
             if (to.HasValue) result = result.Where(x => x.Date <= to);
             if (filterCategory.HasValue) result = result.Where(x => x.CategoryID == filterCategory);
             if (excludeWithdrawal) result = result.Where(x => x.CategoryID != withdrawalID);
+            if (showToVerifyOnly == true) result = result.Where(x => x.ToVerify);
             return await result.OrderByDescending(x => x.Date).ToListAsync();
+        }
+
+        // GET: api/FixedMoneyItems/ToVerify
+        [HttpGet("ToVerify")]
+        public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItemsToVerify()
+        {
+            var items = await _context.FixedMoneyItems
+                .Include(x => x.Category)
+                .Where(x => x.ToVerify)
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
+            return items;
         }
 
         // GET: api/FixedMoneyItems/5

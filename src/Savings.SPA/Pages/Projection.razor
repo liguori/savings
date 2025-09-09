@@ -8,7 +8,6 @@
 else
 {
     <div class="row">
-     
         <div class="col-md-2 col-5">
             <span>To:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
@@ -28,6 +27,12 @@ else
             </button>
         </div>
     </div>
+    @if (fixedMoneyItemsToVerify.Length > 0)
+    {
+        <div class="row">
+            <a href="fixed-items?toverify=1">@fixedMoneyItemsToVerify.Length items to review</a>
+        </div>
+    }
     <div class="table-responsive-sm">
         <table id="projections" class="table table-sm table-striped table-hover">
             <thead class="table-dark">
@@ -45,7 +50,7 @@ else
             <tbody>
                 @foreach (var item in materializedMoneyItems)
                 {
-                    <tr class="@(item.EndPeriod ? "end-period" : "") item-action" @onclick="@(()=>  item.IsRecurrent ? AdjustRecurrency(item) : AdjustFixedItem(item))">
+                    <tr class="@(item.EndPeriod ? "end-period" : "") item-action" @onclick="@(() => item.IsRecurrent ? AdjustRecurrency(item) : AdjustFixedItem(item))">
                         <td class="text-center">
                             @if (item.Date <= DateTime.Now.Date)
                             {
@@ -132,7 +137,7 @@ else
                             {
                                 if (item.ID == 0)
                                 {
-                                    <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="()=>SaveMaterializedHistory(item.Date)"></span>
+                                    <span class="oi oi-lock-locked text-success materialize-history" aria-hidden="true" title="Save materialized history" @onclick="() => SaveMaterializedHistory(item.Date)"></span>
                                 }
                             }
                         </td>

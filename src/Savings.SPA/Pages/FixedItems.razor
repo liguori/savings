@@ -18,24 +18,34 @@ else
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
         </div>
         <div class="col-md-8 col">
-             <label>Category:</label>
-        <select class="form-control" @onchange="FilterCategoryChanged">
-            <option value=""></option>
-            @{
-                if (Categories != null)
-                {
-                    foreach (var value in Categories)
+            <label>Category:</label>
+            <select class="form-control" @onchange="FilterCategoryChanged">
+                <option value=""></option>
+                @{
+                    if (Categories != null)
                     {
-                        <option value="@value.ID" selected="@(value.ID == FilterCategory)">@value.Icon @value.Description</option>
+                        foreach (var value in Categories)
+                        {
+                            <option value="@value.ID" selected="@(value.ID == FilterCategory)">@value.Icon @value.Description</option>
+                        }
                     }
                 }
-            }
-        </select>
+            </select>
         </div>
     </div>
-    <button class="btn btn-success" @onclick="AddNew">
-        <span class="oi oi-plus" aria-hidden="true"></span>ADD
-    </button>
+    <div class="row">
+        <div class="col-md-6 col-6">
+            <br />
+            <button class="btn btn-success" @onclick="AddNew">
+                <span class="oi oi-plus" aria-hidden="true"></span>ADD
+            </button>
+        </div>
+        <div class="col-md-6 col-6">
+            <label>To Verify</label><br>
+            <RadzenSwitch @bind-Value="@ShowToVerifyOnly" Change="ToVerifyOnly_Changed" />
+        </div>
+    </div>
+   
     <div class="table-responsive-sm">
         <table class="table table-sm table-striped table-hover mobile-resume">
             <thead class="table-dark">
@@ -57,6 +67,10 @@ else
                             @if (item.Date <= DateTime.Now.Date)
                             {
                                 <span class="oi oi-check done-item" aria-hidden="true"></span>
+                            }
+                            else
+                            {
+                                <span class="oi oi-x undone-item" aria-hidden="true"></span>
                             }
                         </td>
                         <td data-title="Type">

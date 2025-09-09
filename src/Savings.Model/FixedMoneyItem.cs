@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Savings.Model
 {
@@ -16,5 +13,6 @@ namespace Savings.Model
         public bool Cash { get; set; }
         public int TimelineWeight { get; set; }
         public long? CategoryID { get; set; }
+        public bool ToVerify { get; set; } = false;
     }
 }

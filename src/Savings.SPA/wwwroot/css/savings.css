@@ -18,6 +18,10 @@
     color: #35aa17;
 }
 
+.undone-item{
+    color: #b82e2e;
+}
+
 .done-projection {
     font-weight: bold;
 }

@@ -11,7 +11,10 @@ namespace Savings.SPA.Services
         Task<MaterializedMoneyItem[]> GetSavings(DateTime? from, DateTime? to, bool onlyInstallment = false);
 
         [Get("/api/FixedMoneyItems")]
-        Task<FixedMoneyItem[]> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal, long? filterCategory);
+        Task<FixedMoneyItem[]> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal, long? filterCategory, bool? showToVerifyOnly);
+
+        [Get("/api/FixedMoneyItems/ToVerify")]
+        Task<FixedMoneyItem[]> GetFixedMoneyItemsToVerify();
 
         [Delete("/api/FixedMoneyItems/{id}")]
         Task<FixedMoneyItem> DeleteFixedMoneyItem(long id);

@@ -7,6 +7,8 @@ namespace Savings.SPA.Pages
 {
     public partial class FixedItems : ComponentBase
     {
+        [Inject]
+        public NavigationManager NavigationManager { get; set; } = default!;
 
         [Inject]
         public ISavingsApi savingsAPI { get; set; } = default!;
@@ -26,8 +28,11 @@ namespace Savings.SPA.Pages
 
         public MoneyCategory[] Categories { get; set; } = default!;
 
+        public bool ShowToVerifyOnly { get; set; } = false;
+
         protected override async Task OnInitializedAsync()
         {
+            ShowToVerifyOnly = (System.Web.HttpUtility.ParseQueryString(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)["toverify"] != null);
             FilterDateFrom = DateTime.Now.Date.AddMonths(-2);
             FilterDateTo = DateTime.Now.Date.AddDays(15);
             Categories = await savingsAPI.GetMoneyCategories();
@@ -53,7 +58,7 @@ namespace Savings.SPA.Pages
 
         async Task InitializeList()
         {
-            fixedMoneyItems = await savingsAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo, false, FilterCategory);
+            fixedMoneyItems = await savingsAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo, false, FilterCategory, ShowToVerifyOnly);
         }
 
         async Task AddNew()
@@ -79,6 +84,12 @@ namespace Savings.SPA.Pages
                 await InitializeList();
                 StateHasChanged();
             }
+        }
+
+        async void ToVerifyOnly_Changed()
+        {
+            await InitializeList();
+            StateHasChanged();
         }
     }
 }

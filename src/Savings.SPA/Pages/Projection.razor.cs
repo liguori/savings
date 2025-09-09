@@ -12,6 +12,8 @@ namespace Savings.SPA.Pages
 
         private MaterializedMoneyItem[] materializedMoneyItems = default!;
 
+        private FixedMoneyItem[] fixedMoneyItemsToVerify = default!;
+
         [Inject]
         public DialogService dialogService { get; set; } = default!;
 
@@ -26,7 +28,12 @@ namespace Savings.SPA.Pages
         protected override async Task OnInitializedAsync()
         {
             FilterDateTo = DateTime.Now.Date.AddYears(1);
-            await InitializeList();
+
+            await Task.WhenAll(
+                InitializeList(), 
+                InitializeFixedMoneyItemsToVerify()
+                );
+
             CurrentConfiguration = (await savingsAPI.GetConfigurations()).First();
         }
 
@@ -49,6 +56,10 @@ namespace Savings.SPA.Pages
             StateHasChanged();
         }
 
+        async Task InitializeFixedMoneyItemsToVerify()
+        {
+            fixedMoneyItemsToVerify = await savingsAPI.GetFixedMoneyItemsToVerify();
+        }
 
         async Task InitializeList()
         {

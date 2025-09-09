@@ -111,6 +111,7 @@ namespace Savings.SPA.Pages
                 {
                     fixedItemToEdit.Amount = -Math.Abs(fixedItemToEdit.Amount!.Value);
                 }
+                fixedItemToEdit.ToVerify = false;
                 if (isNew)
                 {
                     if (Credit)
