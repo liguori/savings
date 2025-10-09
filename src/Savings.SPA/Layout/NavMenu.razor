@@ -10,10 +10,13 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="">Savings</a>
         <div class="d-flex align-items-center">
-            <button class="theme-toggle me-2" @onclick="ToggleTheme" title="Toggle theme">
-                <span class="theme-icon">@(ThemeService.IsDarkMode ? "☀️" : "🌙")</span>
-                <span>@(ThemeService.IsDarkMode ? "Light" : "Dark")</span>
-            </button>
+            <RadzenButton class="me-2" 
+                         Variant="Variant.Outlined" 
+                         Size="ButtonSize.Small" 
+                         Click="ToggleTheme" 
+                         Text="@(ThemeService.IsDarkMode ? "Light" : "Dark")" 
+                         Icon="@(ThemeService.IsDarkMode ? "light_mode" : "dark_mode")"
+                         title="Toggle theme" />
             <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>

@@ -20,7 +20,7 @@ public class SavingsThemeService : ISavingsThemeService
         try
         {
             // Check localStorage for saved theme preference
-            var savedTheme = await _jsRuntime.InvokeAsync<string?>("themeUtils.getSavedTheme");
+            var savedTheme = await _jsRuntime.InvokeAsync<string?>("localStorage.getItem", "theme-preference");
             
             if (!string.IsNullOrEmpty(savedTheme))
             {
@@ -29,7 +29,7 @@ public class SavingsThemeService : ISavingsThemeService
             else
             {
                 // Check system preference
-                _isDarkMode = await _jsRuntime.InvokeAsync<bool>("themeUtils.prefersDarkMode");
+                _isDarkMode = await _jsRuntime.InvokeAsync<bool>("window.matchMedia('(prefers-color-scheme: dark)').matches");
             }
 
             await ApplyThemeAsync();
@@ -54,7 +54,21 @@ public class SavingsThemeService : ISavingsThemeService
     {
         try
         {
-            await _jsRuntime.InvokeVoidAsync("themeUtils.applyTheme", _isDarkMode);
+            var themeName = _isDarkMode ? "standard-dark" : "default-base";
+            var themeUrl = $"_content/Radzen.Blazor/css/{themeName}.css";
+            
+            // Switch the Radzen theme CSS file
+            await _jsRuntime.InvokeVoidAsync("eval", $@"
+                const themeLink = document.getElementById('theme-link');
+                if (themeLink) {{
+                    themeLink.href = '{themeUrl}';
+                }}
+            ");
+
+            // Also set a data attribute on the body for custom CSS targeting
+            await _jsRuntime.InvokeVoidAsync("eval", $@"
+                document.body.setAttribute('data-theme', '{(_isDarkMode ? "dark" : "light")}');
+            ");
         }
         catch
         {
@@ -67,7 +81,7 @@ public class SavingsThemeService : ISavingsThemeService
         try
         {
             var theme = _isDarkMode ? "dark" : "light";
-            await _jsRuntime.InvokeVoidAsync("themeUtils.saveTheme", theme);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "theme-preference", theme);
         }
         catch
         {

@@ -2,10 +2,29 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
 main {
     flex: 1;
+}
+
+/* Light theme main content (default) */
+main {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Dark theme main content */
+[data-theme="dark"] main {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+/* Ensure article content inherits the background */
+[data-theme="dark"] main .content {
+    background-color: inherit;
+    color: inherit;
 }
 
 /* Default light theme sidebar */
@@ -19,12 +38,18 @@ main {
 }
 
 .top-row {
-    background-color: var(--bg-navbar);
-    border-bottom: 1px solid var(--border-sidebar);
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
     justify-content: flex-end;
     height: 3.5rem;
     display: flex;
     align-items: center;
+}
+
+/* Dark theme top row */
+[data-theme="dark"] .top-row {
+    background-color: #2d2d2d;
+    border-bottom: 1px solid #404040;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {

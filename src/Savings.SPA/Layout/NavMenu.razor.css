@@ -7,6 +7,11 @@
     background-color: rgba(0,0,0,0.4);
 }
 
+/* Dark theme top row in nav */
+[data-theme="dark"] .top-row {
+    background-color: rgba(0,0,0,0.8);
+}
+
 .navbar-brand {
     font-size: 1.1rem;
     color: white !important;

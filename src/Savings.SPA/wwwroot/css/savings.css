@@ -41,11 +41,11 @@
 
 /*Projection*/
 #history tbody > tr > :nth-child(4), thead > tr > :nth-child(4) {
-    border-right: 1px solid var(--border-color);
+    border-right: 1px solid #dee2e6;
 }
 
 #projections tbody > tr > :nth-child(5), thead > tr > :nth-child(5) {
-    border-right: 1px solid var(--border-color);
+    border-right: 1px solid #dee2e6;
 }
 
 .materialize-history {
@@ -87,18 +87,18 @@
 
 /* Row selection and sum popup styles */
 tr.selected-row {
-    background-color: var(--selection-bg) !important;
-    border-left: 3px solid var(--selection-border);
+    background-color: #f0e6f7 !important;
+    border-left: 3px solid #60368e;
 }
 
 .selection-sum-popup {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: var(--popup-bg);
-    border: 2px solid var(--selection-border);
+    background: #ffffff;
+    border: 2px solid #60368e;
     border-radius: 8px;
-    box-shadow: 0 4px 12px var(--popup-shadow);
+    box-shadow: 0 4px 12px rgba(96, 54, 142, 0.25);
     padding: 0;
     min-width: 280px;
     opacity: 0;
@@ -119,7 +119,7 @@ tr.selected-row {
 }
 
 .selection-sum-popup .popup-header {
-    background: var(--selection-border);
+    background: #60368e;
     color: white;
     padding: 10px 15px;
     border-radius: 6px 6px 0 0;
@@ -154,9 +154,243 @@ tr.selected-row {
 }
 
 .selection-sum-popup .sum-value {
-    color: var(--selection-border);
+    color: #60368e;
     font-weight: bold;
     font-size: 18px;
+}
+
+/* Dark theme support for custom components */
+[data-theme="dark"] tr.selected-row {
+    background-color: #2a1f35 !important;
+}
+
+[data-theme="dark"] .selection-sum-popup {
+    background: #2d2d2d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .selection-sum-popup .popup-body {
+    color: #ffffff;
+}
+
+/* General dark theme support for content */
+[data-theme="dark"] body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+[data-theme="dark"] h1, 
+[data-theme="dark"] h2, 
+[data-theme="dark"] h3, 
+[data-theme="dark"] h4, 
+[data-theme="dark"] h5, 
+[data-theme="dark"] h6 {
+    color: #ffffff;
+}
+
+/* Dark theme for tables */
+[data-theme="dark"] .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #ffffff;
+    --bs-table-border-color: #404040;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05);
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.075);
+}
+
+[data-theme="dark"] .table thead th {
+    border-bottom-color: #404040;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .table tbody td {
+    border-top-color: #404040;
+    color: #ffffff;
+}
+
+/* Dark theme for buttons and links */
+[data-theme="dark"] .btn-success {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+[data-theme="dark"] .btn-sm {
+    color: #ffffff;
+}
+
+[data-theme="dark"] a {
+    color: #66b3ff;
+}
+
+[data-theme="dark"] a:hover {
+    color: #4da6ff;
+}
+
+/* Dark theme for special table rows */
+[data-theme="dark"] .end-period {
+    background-color: #60368e !important;
+    color: white !important;
+}
+
+/* Dark theme for loading states */
+[data-theme="dark"] p em {
+    color: #cccccc;
+}
+
+/* Dark theme for form elements */
+[data-theme="dark"] label {
+    color: #ffffff;
+}
+
+[data-theme="dark"] span {
+    color: inherit;
+}
+
+/* Bootstrap form controls dark theme */
+[data-theme="dark"] .form-control {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .form-control:focus {
+    background-color: #2d2d2d;
+    border-color: #66b3ff;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.1rem rgba(102, 179, 255, 0.25);
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: #999999;
+}
+
+[data-theme="dark"] .form-control:disabled {
+    background-color: #1a1a1a;
+    border-color: #404040;
+    color: #666666;
+}
+
+/* Select dropdown options dark theme */
+[data-theme="dark"] .form-control option {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+/* Input validation states for dark theme */
+[data-theme="dark"] .form-control.valid {
+    border-color: #198754;
+}
+
+[data-theme="dark"] .form-control.invalid {
+    border-color: #dc3545;
+}
+
+/* Validation messages dark theme */
+[data-theme="dark"] .validation-message {
+    color: #ff6b6b;
+}
+
+/* Form labels and text */
+[data-theme="dark"] .form-label,
+[data-theme="dark"] label {
+    color: #ffffff;
+}
+
+/* Button styling for dark theme */
+[data-theme="dark"] .btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000000;
+}
+
+[data-theme="dark"] .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #ffffff;
+}
+
+/* Additional form input types dark theme */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="date"],
+[data-theme="dark"] input[type="datetime-local"],
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+}
+
+[data-theme="dark"] input[type="text"]:focus,
+[data-theme="dark"] input[type="number"]:focus,
+[data-theme="dark"] input[type="email"]:focus,
+[data-theme="dark"] input[type="password"]:focus,
+[data-theme="dark"] input[type="date"]:focus,
+[data-theme="dark"] input[type="datetime-local"]:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+    background-color: #2d2d2d;
+    border-color: #66b3ff;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.1rem rgba(102, 179, 255, 0.25);
+}
+
+/* Override any remaining white backgrounds on inputs */
+[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]) {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+[data-theme="dark"] select {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+/* Ensure Radzen components respect the dark theme when they have custom styling */
+[data-theme="dark"] .rz-textbox,
+[data-theme="dark"] .rz-dropdown,
+[data-theme="dark"] .rz-datepicker,
+[data-theme="dark"] .rz-numeric {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+/* Catch-all rule for any remaining input elements */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #999999 !important;
+}
+
+/* Override any specific input types that might still be light */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] input[type="url"],
+[data-theme="dark"] input[type="tel"] {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+/* Ensure dropdown options are dark */
+[data-theme="dark"] option {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
 }
 
 @media only screen and (max-width: 800px) {

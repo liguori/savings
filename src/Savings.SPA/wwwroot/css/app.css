@@ -97,5 +97,63 @@ a, .btn-link {
 }
 
     .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
+            content: var(--blazor-load-percentage-text, "Loading");
+        }
+
+    /* Dark theme support */
+    [data-theme="dark"] html, 
+    [data-theme="dark"] body {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+    [data-theme="dark"] .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    [data-theme="dark"] .btn:focus, 
+    [data-theme="dark"] .btn:active:focus, 
+    [data-theme="dark"] .btn-link.nav-link:focus, 
+    [data-theme="dark"] .form-control:focus, 
+    [data-theme="dark"] .form-check-input:focus {
+        box-shadow: 0 0 0 0.1rem rgba(13, 110, 253, 0.5), 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    [data-theme="dark"] a, 
+    [data-theme="dark"] .btn-link {
+        color: #66b3ff;
+    }
+
+    [data-theme="dark"] .validation-message {
+        color: #ff6b6b;
+    }
+
+    [data-theme="dark"] #blazor-error-ui {
+        background: #2d1b1b;
+        color: #ffcccc;
+    }
+
+    /* Additional dark theme form styling */
+    [data-theme="dark"] .form-control,
+    [data-theme="dark"] .form-select {
+        background-color: #2d2d2d;
+        border-color: #404040;
+        color: #ffffff;
+    }
+
+    [data-theme="dark"] .form-control:focus,
+    [data-theme="dark"] .form-select:focus {
+        background-color: #2d2d2d;
+        border-color: #66b3ff;
+        color: #ffffff;
+        box-shadow: 0 0 0 0.1rem rgba(102, 179, 255, 0.25);
+    }
+
+    [data-theme="dark"] .valid.modified:not([type=checkbox]) {
+        outline: 1px solid #26b050;
+    }
+
+    [data-theme="dark"] .invalid {
+        outline: 1px solid #ff6b6b;
     }
