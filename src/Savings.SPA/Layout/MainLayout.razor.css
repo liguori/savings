@@ -2,14 +2,39 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
 main {
     flex: 1;
 }
 
+/* Light theme main content (default) */
+main {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Dark theme main content */
+[data-theme="dark"] main {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+/* Ensure article content inherits the background */
+[data-theme="dark"] main .content {
+    background-color: inherit;
+    color: inherit;
+}
+
+/* Default light theme sidebar */
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%) !important;
+}
+
+/* Dark theme sidebar with modern darker gradient colors */
+[data-theme="dark"] .sidebar {
+    background-image: linear-gradient(180deg, #0c0c0c 0%, #2a2a2a 70%) !important;
 }
 
 .top-row {
@@ -19,6 +44,12 @@ main {
     height: 3.5rem;
     display: flex;
     align-items: center;
+}
+
+/* Dark theme top row */
+[data-theme="dark"] .top-row {
+    background-color: #2d2d2d;
+    border-bottom: 1px solid #404040;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {

@@ -8,6 +8,7 @@ using Savings.SPA;
 using Savings.SPA.Authorization;
 using Savings.SPA.Services;
 
+
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.RootComponents.Add<App>("#app");
@@ -17,6 +18,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
+builder.Services.AddScoped<ISavingsThemeService, SavingsThemeService>();
 builder.Services.AddRadzenComponents();
 
 var configuredAuthentication = builder.Configuration["AuthenticationToUse"];

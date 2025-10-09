@@ -7,8 +7,14 @@
     background-color: rgba(0,0,0,0.4);
 }
 
+/* Dark theme top row in nav */
+[data-theme="dark"] .top-row {
+    background-color: rgba(0,0,0,0.8);
+}
+
 .navbar-brand {
     font-size: 1.1rem;
+    color: white !important;
 }
 
 .oi {
@@ -32,7 +38,7 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
+        color: #d7d7d7 !important;
         border-radius: 4px;
         height: 3rem;
         display: flex;
@@ -41,13 +47,26 @@
     }
 
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.25);
-    color: white;
+    background-color: rgba(255,255,255,0.25) !important;
+    color: white !important;
 }
 
 .nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
+    background-color: rgba(255,255,255,0.1) !important;
+    color: white !important;
+}
+
+/* Additional enforcement for NavMenu text */
+.nav-item ::deep .nav-link {
+    color: #d7d7d7 !important;
+}
+
+.nav-item ::deep .nav-link.active {
+    color: white !important;
+}
+
+.nav-item ::deep .nav-link:hover {
+    color: white !important;
 }
 
 @media (min-width: 641px) {
