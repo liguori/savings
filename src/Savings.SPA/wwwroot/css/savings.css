@@ -85,6 +85,80 @@
     cursor: pointer;
 }
 
+/* Row selection and sum popup styles */
+tr.selected-row {
+    background-color: #f0e6f7 !important;
+    border-left: 3px solid #60368e;
+}
+
+.selection-sum-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border: 2px solid #60368e;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(96, 54, 142, 0.25);
+    padding: 0;
+    min-width: 280px;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+}
+
+.selection-sum-popup.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.selection-sum-popup .popup-content {
+    padding: 0;
+}
+
+.selection-sum-popup .popup-header {
+    background: #60368e;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.selection-sum-popup .close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.selection-sum-popup .close-btn:hover {
+    opacity: 0.8;
+}
+
+.selection-sum-popup .popup-body {
+    padding: 15px;
+    font-size: 16px;
+}
+
+.selection-sum-popup .sum-value {
+    color: #60368e;
+    font-weight: bold;
+    font-size: 18px;
+}
+
 @media only screen and (max-width: 800px) {
     /* Force table to not be like tables anymore */
     .mobile-resume table, .mobile-resume thead, .mobile-resume tbody, .mobile-resume th, .mobile-resume td, .mobile-resume tr {

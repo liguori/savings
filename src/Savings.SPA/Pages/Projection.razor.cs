@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Radzen;
 using Savings.Model;
 using Savings.SPA.Services;
@@ -9,6 +10,9 @@ namespace Savings.SPA.Pages
     {
         [Inject]
         public ISavingsApi savingsAPI { get; set; } = default!;
+
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; } = default!;
 
         private MaterializedMoneyItem[] materializedMoneyItems = default!;
 
@@ -42,18 +46,21 @@ namespace Savings.SPA.Pages
         {
             await InitializeList();
             StateHasChanged();
+            await InitializeRowSelection();
         }
 
         async void Zero_Changed()
         {
             await InitializeList();
             StateHasChanged();
+            await InitializeRowSelection();
         }
 
         async void Change(DateTime? value, string name)
         {
             await InitializeList();
             StateHasChanged();
+            await InitializeRowSelection();
         }
 
         async Task InitializeFixedMoneyItemsToVerify()
@@ -83,6 +90,24 @@ namespace Savings.SPA.Pages
 
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+            await InitializeRowSelection();
+        }
+
+        private async Task InitializeRowSelection()
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("projectionsRowSelection.initialize");
+            }
+            catch (Exception)
+            {
+                // Ignore errors if JavaScript is not ready yet
+            }
+        }
+
         async Task AdjustRecurrency(MaterializedMoneyItem item)
         {
             if (item.EndPeriod) return;
@@ -91,6 +116,7 @@ namespace Savings.SPA.Pages
                             new DialogOptions() { Width = "600px", Height = "300px" });
             await InitializeList();
             StateHasChanged();
+            await InitializeRowSelection();
         }
 
         async Task AdjustFixedItem(MaterializedMoneyItem item)
@@ -105,6 +131,7 @@ namespace Savings.SPA.Pages
             {
                 await InitializeList();
                 StateHasChanged();
+                await InitializeRowSelection();
             }
         }
 
@@ -115,6 +142,7 @@ namespace Savings.SPA.Pages
             {
                 await savingsAPI.PostSavingsToHistory(date);
                 await InitializeList();
+                await InitializeRowSelection();
             }
         }
 
@@ -127,6 +155,7 @@ namespace Savings.SPA.Pages
             {
                 await InitializeList();
                 StateHasChanged();
+                await InitializeRowSelection();
             }
         }
     }
