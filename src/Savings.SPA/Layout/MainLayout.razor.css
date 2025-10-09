@@ -8,13 +8,19 @@ main {
     flex: 1;
 }
 
+/* Default light theme sidebar */
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%) !important;
+}
+
+/* Dark theme sidebar with modern darker gradient colors */
+[data-theme="dark"] .sidebar {
+    background-image: linear-gradient(180deg, #0c0c0c 0%, #2a2a2a 70%) !important;
 }
 
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
+    background-color: var(--bg-navbar);
+    border-bottom: 1px solid var(--border-sidebar);
     justify-content: flex-end;
     height: 3.5rem;
     display: flex;

@@ -10,6 +10,37 @@
     URL.revokeObjectURL(url);
 }
 
+// Theme utilities
+window.themeUtils = {
+    // Check if user prefers dark mode based on system settings
+    prefersDarkMode: function() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    },
+    
+    // Apply theme class to document
+    applyTheme: function(isDark) {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    },
+    
+    // Get saved theme preference from localStorage
+    getSavedTheme: function() {
+        try {
+            return localStorage.getItem('theme-preference');
+        } catch {
+            return null;
+        }
+    },
+    
+    // Save theme preference to localStorage
+    saveTheme: function(theme) {
+        try {
+            localStorage.setItem('theme-preference', theme);
+        } catch {
+            // Ignore storage errors
+        }
+    }
+};
+
 // Row selection and sum calculation for projections table
 window.projectionsRowSelection = {
     selectedRows: new Set(),

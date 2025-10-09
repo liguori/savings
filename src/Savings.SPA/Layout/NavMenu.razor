@@ -3,13 +3,21 @@
 @inject IConfiguration Configuration
 @inject IJSRuntime JS
 @inject ISavingsApi _api;
+@inject ISavingsThemeService ThemeService
+@implements IDisposable
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Savings</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="d-flex align-items-center">
+            <button class="theme-toggle me-2" @onclick="ToggleTheme" title="Toggle theme">
+                <span class="theme-icon">@(ThemeService.IsDarkMode ? "☀️" : "🌙")</span>
+                <span>@(ThemeService.IsDarkMode ? "Light" : "Dark")</span>
+            </button>
+            <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -64,9 +72,25 @@
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : string.Empty;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await ThemeService.InitializeAsync();
+        ThemeService.ThemeChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ThemeService.ThemeChanged -= StateHasChanged;
+    }
+
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task ToggleTheme()
+    {
+        await ThemeService.ToggleThemeAsync();
     }
 
     private async Task DownloadFileFromStream()

@@ -1,0 +1,702 @@
+/* Theme Variables */
+:root {
+    /* Light theme colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-sidebar: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    --bg-navbar: #f7f7f7;
+    --bg-content: #ffffff;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #868e96;
+    --text-navbar: #d7d7d7;
+    --border-color: #dee2e6;
+    --border-sidebar: #d6d5d5;
+    --link-color: #0071c1;
+    --btn-primary-bg: #1b6ec2;
+    --btn-primary-border: #1861ac;
+    --table-stripe-bg: #f8f9fa;
+    --table-hover-bg: #f5f5f5;
+    --navbar-brand-color: #ffffff;
+    --selection-bg: #f0e6f7;
+    --selection-border: #60368e;
+    --popup-bg: #ffffff;
+    --popup-shadow: rgba(96, 54, 142, 0.25);
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --blazor-error-bg: lightyellow;
+}
+
+/* Dark theme colors */
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-sidebar: linear-gradient(180deg, #0c0c0c 0%, #2a2a2a 70%);
+    --bg-navbar: #2d2d2d;
+    --bg-content: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #999999;
+    --text-navbar: #d7d7d7;
+    --border-color: #404040;
+    --border-sidebar: #404040;
+    --link-color: #4dabf7;
+    --btn-primary-bg: #4dabf7;
+    --btn-primary-border: #339af0;
+    --table-stripe-bg: #2d2d2d;
+    --table-hover-bg: #404040;
+    --navbar-brand-color: #ffffff;
+    --selection-bg: #2a1f35;
+    --selection-border: #7c5295;
+    --popup-bg: #2d2d2d;
+    --popup-shadow: rgba(0, 0, 0, 0.5);
+    --input-bg: #404040;
+    --input-border: #666666;
+    --blazor-error-bg: #3d2914;
+}
+
+/* Apply theme variables to existing elements */
+body, html {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.content {
+    background-color: var(--bg-content);
+    color: var(--text-primary);
+}
+
+/* Links */
+a, .btn-link {
+    color: var(--link-color) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-border);
+}
+
+/* Button and icon hover/focus consistency for both themes */
+.btn:focus, 
+.btn:active:focus, 
+.btn-link.nav-link:focus, 
+.form-control:focus, 
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Ensure dark theme buttons don't get light blue hover on icons */
+[data-theme="dark"] .btn:focus,
+[data-theme="dark"] .btn:active:focus,
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] .btn-primary:focus,
+[data-theme="dark"] .btn-primary:active:focus,
+[data-theme="dark"] .btn-primary:hover {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ensure icon colors remain consistent on hover for both themes */
+.btn .oi,
+.btn-primary .oi,
+button .oi {
+    color: inherit !important;
+}
+
+[data-theme="dark"] .btn .oi,
+[data-theme="dark"] .btn-primary .oi,
+[data-theme="dark"] button .oi {
+    color: inherit !important;
+}
+
+/* Prevent color changes on button hover for dark theme */
+[data-theme="dark"] .btn:hover .oi,
+[data-theme="dark"] .btn:focus .oi,
+[data-theme="dark"] .btn-primary:hover .oi,
+[data-theme="dark"] .btn-primary:focus .oi,
+[data-theme="dark"] button:hover .oi,
+[data-theme="dark"] button:focus .oi {
+    color: inherit !important;
+}
+
+/* Forms */
+.form-control {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+.form-control:focus {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+}
+
+/* Tables */
+.table {
+    color: var(--text-primary);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td,
+.table-striped > tbody > tr:nth-of-type(odd) > th {
+    background-color: var(--table-stripe-bg);
+}
+
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+    background-color: var(--table-hover-bg);
+}
+
+.table th,
+.table td {
+    border-color: var(--border-color);
+}
+
+/* Ensure table text is always white in dark mode */
+[data-theme="dark"] .table,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td,
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > th,
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > td,
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > th {
+    color: #ffffff !important;
+}
+
+/* Keep hover state readable */
+[data-theme="dark"] .table-hover > tbody > tr:hover > td,
+[data-theme="dark"] .table-hover > tbody > tr:hover > th {
+    color: #ffffff !important;
+    background-color: var(--table-hover-bg);
+}
+
+/* Cards */
+.card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.card-header {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Modals */
+.modal-content {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.modal-header {
+    border-color: var(--border-color);
+}
+
+.modal-footer {
+    border-color: var(--border-color);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--table-hover-bg);
+    color: var(--text-primary);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background: transparent;
+    border: 1px solid var(--text-navbar);
+    color: var(--text-navbar);
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: white;
+}
+
+.theme-toggle:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+.theme-toggle .theme-icon {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+    transform: scale(1.1);
+}
+
+@media (max-width: 640px) {
+    .theme-toggle span:not(.theme-icon) {
+        display: none;
+    }
+    
+    .theme-toggle {
+        padding: 0.375rem;
+        min-width: 2.5rem;
+        justify-content: center;
+    }
+}
+
+/* Update existing styles to use variables */
+tr.selected-row {
+    background-color: var(--selection-bg) !important;
+    border-left: 3px solid var(--selection-border);
+}
+
+.selection-sum-popup {
+    background: var(--popup-bg);
+    border: 2px solid var(--selection-border);
+    box-shadow: 0 4px 12px var(--popup-shadow);
+    color: var(--text-primary);
+}
+
+.selection-sum-popup .popup-header {
+    background: var(--selection-border);
+}
+
+.selection-sum-popup .sum-value {
+    color: var(--selection-border);
+}
+
+/* Blazor error UI */
+#blazor-error-ui {
+    background: var(--blazor-error-bg);
+}
+
+/* Update border colors */
+#history tbody > tr > :nth-child(4), thead > tr > :nth-child(4) {
+    border-right: 1px solid var(--border-color);
+}
+
+#projections tbody > tr > :nth-child(5), thead > tr > :nth-child(5) {
+    border-right: 1px solid var(--border-color);
+}
+
+/* Radzen components dark theme support */
+[data-theme="dark"] .rz-grid {
+    background-color: var(--bg-primary);
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-grid-table {
+    background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .rz-grid-table th {
+    background-color: var(--bg-secondary);
+    color: #ffffff !important;
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .rz-grid-table td {
+    border-color: var(--border-color);
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-grid-table tbody tr:nth-child(odd) td {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-grid-table tbody tr:nth-child(even) td {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-grid-table tbody tr:hover td {
+    color: #ffffff !important;
+    background-color: var(--table-hover-bg);
+}
+
+[data-theme="dark"] .rz-button {
+    border-color: var(--btn-primary-border);
+    color: white;
+}
+
+[data-theme="dark"] .rz-button:hover,
+[data-theme="dark"] .rz-button:focus,
+[data-theme="dark"] .rz-button:active {
+    border-color: var(--btn-primary-border) !important;
+    color: white !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Prevent date picker trigger button from being influenced by hover styles */
+[data-theme="dark"] .rz-datepicker-trigger.rz-button.rz-button-icon-only,
+[data-theme="dark"] .rz-datepicker-trigger.rz-button-icon-only {
+    border-color: var(--btn-primary-border) !important;
+    color: white !important;
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .rz-datepicker-trigger.rz-button.rz-button-icon-only:hover,
+[data-theme="dark"] .rz-datepicker-trigger.rz-button.rz-button-icon-only:focus,
+[data-theme="dark"] .rz-datepicker-trigger.rz-button.rz-button-icon-only:active,
+[data-theme="dark"] .rz-datepicker-trigger.rz-button-icon-only:hover,
+[data-theme="dark"] .rz-datepicker-trigger.rz-button-icon-only:focus,
+[data-theme="dark"] .rz-datepicker-trigger.rz-button-icon-only:active {
+    border-color: var(--btn-primary-border) !important;
+    color: white !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] .rz-textbox,
+[data-theme="dark"] .rz-dropdown,
+[data-theme="dark"] .rz-numeric,
+[data-theme="dark"] .rz-inputtext {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-textbox:hover,
+[data-theme="dark"] .rz-textbox:focus,
+[data-theme="dark"] .rz-dropdown:hover,
+[data-theme="dark"] .rz-dropdown:focus,
+[data-theme="dark"] .rz-numeric:hover,
+[data-theme="dark"] .rz-numeric:focus,
+[data-theme="dark"] .rz-inputtext:hover,
+[data-theme="dark"] .rz-inputtext:focus {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-primary) !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] .rz-dropdown-items {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .rz-dropdown-item {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-dropdown-item:hover {
+    background-color: var(--table-hover-bg);
+}
+
+[data-theme="dark"] .rz-dialog .rz-dialog-content {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-dialog .rz-dialog-titlebar {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-dialog .rz-dialog-title {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .rz-dialog {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-notification {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .rz-paginator {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-calendar {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .rz-calendar .rz-calendar-header {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-calendar-view-container {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-day,
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-month,
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-year {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-day:hover,
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-month:hover,
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-year:hover {
+    background-color: var(--table-hover-bg);
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-day.rz-calendar-selected,
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-month.rz-calendar-selected,
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-year.rz-calendar-selected {
+    background-color: var(--btn-primary-bg);
+    color: white !important;
+}
+
+[data-theme="dark"] .rz-calendar-view-container .rz-calendar-day.rz-calendar-today {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary) !important;
+    border-color: var(--btn-primary-bg);
+}
+
+[data-theme="dark"] .rz-calendar-view td .rz-state-default {
+    color: white !important;
+}
+
+/* Fix calendar/date picker icons in dark theme */
+[data-theme="dark"] .rz-datepicker,
+[data-theme="dark"] .rz-calendar {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Fix calendar button icons specifically - keep same behavior as light theme */
+[data-theme="dark"] .rz-datepicker .rz-button .rz-icon,
+[data-theme="dark"] .rz-calendar .rz-button .rz-icon,
+[data-theme="dark"] .rz-datepicker-trigger .rz-icon,
+[data-theme="dark"] .rz-calendar-trigger .rz-icon,
+[data-theme="dark"] .rz-datepicker .rz-button i,
+[data-theme="dark"] .rz-calendar .rz-button i,
+[data-theme="dark"] .rz-datepicker-trigger i,
+[data-theme="dark"] .rz-calendar-trigger i {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: inherit !important;
+}
+
+[data-theme="dark"] .rz-datepicker .rz-button:hover .rz-icon,
+[data-theme="dark"] .rz-calendar .rz-button:hover .rz-icon,
+[data-theme="dark"] .rz-datepicker-trigger:hover .rz-icon,
+[data-theme="dark"] .rz-calendar-trigger:hover .rz-icon,
+[data-theme="dark"] .rz-datepicker .rz-button:hover i,
+[data-theme="dark"] .rz-calendar .rz-button:hover i,
+[data-theme="dark"] .rz-datepicker-trigger:hover i,
+[data-theme="dark"] .rz-calendar-trigger:hover i {
+    color: inherit !important;
+}
+
+[data-theme="dark"] .rz-datepicker .rz-button:focus .rz-icon,
+[data-theme="dark"] .rz-calendar .rz-button:focus .rz-icon,
+[data-theme="dark"] .rz-datepicker-trigger:focus .rz-icon,
+[data-theme="dark"] .rz-calendar-trigger:focus .rz-icon,
+[data-theme="dark"] .rz-datepicker .rz-button:focus i,
+[data-theme="dark"] .rz-calendar .rz-button:focus i,
+[data-theme="dark"] .rz-datepicker-trigger:focus i,
+[data-theme="dark"] .rz-calendar-trigger:focus i {
+    color: inherit !important;
+}
+
+/* Ensure custom table styles work with dark theme */
+[data-theme="dark"] tbody td,
+[data-theme="dark"] thead th,
+[data-theme="dark"] #history tbody > tr > td,
+[data-theme="dark"] #history thead > tr > th,
+[data-theme="dark"] #projections tbody > tr > td,
+[data-theme="dark"] #projections thead > tr > th,
+[data-theme="dark"] .table tbody td.ellipses {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .table tbody td.ellipses:hover {
+    color: #ffffff !important;
+}
+
+/* Ensure end-period styling works in both themes */
+.end-period {
+    font-weight: bold;
+    background-color: #60368e !important;
+    color: white !important;
+}
+
+[data-theme="dark"] .end-period,
+[data-theme="dark"] .end-period td,
+[data-theme="light"] .end-period,
+[data-theme="light"] .end-period td {
+    background-color: #60368e !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+/* Ensure done/undone items are visible in dark mode */
+[data-theme="dark"] .done-item {
+    color: #4ade80 !important; /* Brighter green for dark mode */
+}
+
+[data-theme="dark"] .undone-item {
+    color: #f87171 !important; /* Brighter red for dark mode */
+}
+
+[data-theme="dark"] .text-none {
+    color: #60a5fa !important; /* Brighter blue for dark mode */
+}
+
+/* Navigation menu text should always remain white for both themes */
+/* Use higher specificity to override theme variables */
+.sidebar .nav-item ::deep a,
+.sidebar .nav-item ::deep a:visited,
+.sidebar .nav-item ::deep a:link,
+.sidebar .navbar-brand,
+.top-row .navbar-brand {
+    color: #d7d7d7 !important;
+}
+
+.sidebar .nav-item ::deep a.active,
+.sidebar .nav-item ::deep a:hover,
+.sidebar .nav-item ::deep a:focus {
+    color: white !important;
+    background-color: rgba(255,255,255,0.25) !important;
+}
+
+.sidebar .nav-item ::deep a:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Navbar brand should always be white */
+.top-row .navbar-brand,
+.navbar-brand {
+    color: white !important;
+}
+
+/* Ensure theme toggle button text stays white */
+.theme-toggle {
+    color: #d7d7d7 !important;
+    border-color: #d7d7d7 !important;
+}
+
+.theme-toggle:hover {
+    color: white !important;
+    border-color: white !important;
+}
+
+/* Force navigation sidebar to maintain original styling regardless of theme */
+[data-theme="light"] .sidebar {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%) !important;
+}
+
+[data-theme="dark"] .sidebar {
+    background-image: linear-gradient(180deg, #0c0c0c 0%, #2a2a2a 70%) !important;
+}
+
+/* Additional high-specificity rules to ensure dark theme gradient shows */
+html[data-theme="dark"] .page .sidebar,
+body[data-theme="dark"] .page .sidebar,
+[data-theme="dark"] .page .sidebar {
+    background-image: linear-gradient(180deg, #0c0c0c 0%, #2a2a2a 70%) !important;
+    background-color: transparent !important;
+}
+
+[data-theme="light"] .sidebar .top-row {
+    background-color: rgba(0,0,0,0.4) !important;
+}
+
+[data-theme="dark"] .sidebar .top-row {
+    background-color: rgba(0,0,0,0.8) !important;
+}
+
+[data-theme="light"] .sidebar .nav-item ::deep a,
+[data-theme="dark"] .sidebar .nav-item ::deep a {
+    color: #d7d7d7 !important;
+}
+
+[data-theme="light"] .sidebar .nav-item ::deep a.active,
+[data-theme="dark"] .sidebar .nav-item ::deep a.active {
+    background-color: rgba(255,255,255,0.25) !important;
+    color: white !important;
+}
+
+[data-theme="light"] .sidebar .nav-item ::deep a:hover,
+[data-theme="dark"] .sidebar .nav-item ::deep a:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+    color: white !important;
+}
+
+[data-theme="light"] .sidebar .navbar-brand,
+[data-theme="dark"] .sidebar .navbar-brand {
+    color: white !important;
+}
+
+/* Additional sidebar text enforcement - maximum specificity */
+.page .sidebar .nav-item ::deep a,
+.page .sidebar .nav-item ::deep a:visited,
+.page .sidebar .nav-item ::deep a:link,
+.page .sidebar .nav-item ::deep .nav-link,
+.sidebar .nav-scrollable .nav-item ::deep a,
+.sidebar .nav-scrollable .nav-item ::deep .nav-link {
+    color: #d7d7d7 !important;
+}
+
+.page .sidebar .nav-item ::deep a.active,
+.page .sidebar .nav-item ::deep a:hover,
+.page .sidebar .nav-item ::deep a:focus,
+.page .sidebar .nav-item ::deep .nav-link.active,
+.page .sidebar .nav-item ::deep .nav-link:hover,
+.sidebar .nav-scrollable .nav-item ::deep a.active,
+.sidebar .nav-scrollable .nav-item ::deep a:hover,
+.sidebar .nav-scrollable .nav-item ::deep .nav-link.active,
+.sidebar .nav-scrollable .nav-item ::deep .nav-link:hover {
+    color: white !important;
+    background-color: rgba(255,255,255,0.25) !important;
+}
+
+.page .sidebar .nav-item ::deep a:hover,
+.page .sidebar .nav-item ::deep .nav-link:hover,
+.sidebar .nav-scrollable .nav-item ::deep a:hover,
+.sidebar .nav-scrollable .nav-item ::deep .nav-link:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Ensure all possible sidebar text elements stay white */
+.sidebar *,
+.sidebar .top-row *,
+.sidebar .nav-scrollable *,
+.sidebar .nav-item *,
+html[data-theme="light"] .sidebar *,
+html[data-theme="dark"] .sidebar *,
+body[data-theme="light"] .sidebar *,
+body[data-theme="dark"] .sidebar * {
+    color: inherit !important;
+}
+
+/* Override any potential global text color changes for sidebar */
+.sidebar,
+.sidebar .top-row,
+.sidebar .nav-scrollable,
+html[data-theme="light"] .sidebar,
+html[data-theme="dark"] .sidebar,
+body[data-theme="light"] .sidebar,
+body[data-theme="dark"] .sidebar {
+    color: #d7d7d7 !important;
+}

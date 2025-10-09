@@ -41,11 +41,11 @@
 
 /*Projection*/
 #history tbody > tr > :nth-child(4), thead > tr > :nth-child(4) {
-    border-right: 1px solid #b2b2b2;
+    border-right: 1px solid var(--border-color);
 }
 
 #projections tbody > tr > :nth-child(5), thead > tr > :nth-child(5) {
-    border-right: 1px solid #b2b2b2;
+    border-right: 1px solid var(--border-color);
 }
 
 .materialize-history {
@@ -87,18 +87,18 @@
 
 /* Row selection and sum popup styles */
 tr.selected-row {
-    background-color: #f0e6f7 !important;
-    border-left: 3px solid #60368e;
+    background-color: var(--selection-bg) !important;
+    border-left: 3px solid var(--selection-border);
 }
 
 .selection-sum-popup {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: white;
-    border: 2px solid #60368e;
+    background: var(--popup-bg);
+    border: 2px solid var(--selection-border);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(96, 54, 142, 0.25);
+    box-shadow: 0 4px 12px var(--popup-shadow);
     padding: 0;
     min-width: 280px;
     opacity: 0;
@@ -119,7 +119,7 @@ tr.selected-row {
 }
 
 .selection-sum-popup .popup-header {
-    background: #60368e;
+    background: var(--selection-border);
     color: white;
     padding: 10px 15px;
     border-radius: 6px 6px 0 0;
@@ -154,7 +154,7 @@ tr.selected-row {
 }
 
 .selection-sum-popup .sum-value {
-    color: #60368e;
+    color: var(--selection-border);
     font-weight: bold;
     font-size: 18px;
 }
