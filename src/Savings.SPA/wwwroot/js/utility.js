@@ -186,9 +186,8 @@ window.projectionsRowSelection = {
         if (!amountCell) return 0;
         
         const amountText = amountCell.textContent.trim();
-        // Parse the number - format uses . as decimal separator (e.g., 1234.56)
-        // Remove any thousand separators (commas) and parse as float
-        const amount = parseFloat(amountText.replace(/,/g, ''));
+       
+        const amount = parseFloat(amountText);
         return isNaN(amount) ? 0 : amount;
     },
     
@@ -232,7 +231,7 @@ window.projectionsRowSelection = {
         popup.innerHTML = `
             <div class="popup-content">
                 <div class="popup-header">
-                    <span class="row-count">0</span> row(s) selected
+                    <span><span class="row-count">0</span> row(s) selected</span>
                     <button class="close-btn" onclick="projectionsRowSelection.clearSelection()">×</button>
                 </div>
                 <div class="popup-body">
