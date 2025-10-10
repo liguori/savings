@@ -198,6 +198,10 @@ tr.selected-row {
     --bs-table-hover-bg: rgba(255, 255, 255, 0.075);
 }
 
+[data-theme="dark"] .table tr {
+    border-bottom: 1px solid #404040;
+}
+
 [data-theme="dark"] .table thead th {
     border-bottom-color: #404040;
     color: #ffffff;
