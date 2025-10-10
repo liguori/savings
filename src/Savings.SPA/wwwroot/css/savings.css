@@ -208,6 +208,22 @@ tr.selected-row {
     color: #ffffff;
 }
 
+[data-theme="dark"] .table tfoot th,
+[data-theme="dark"] .table tfoot td {
+    border-top-color: #404040;
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .table tfoot th[scope="row"] {
+    font-weight: bold;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .table tfoot b {
+    color: #ffffff !important;
+}
+
 /* Dark theme for buttons and links */
 [data-theme="dark"] .btn-success {
     background-color: #198754;
@@ -230,6 +246,11 @@ tr.selected-row {
 [data-theme="dark"] .end-period {
     background-color: #60368e !important;
     color: white !important;
+}
+
+/* Ensure done-item stays green in dark theme */
+[data-theme="dark"] .done-item {
+    color: #35aa17 !important;
 }
 
 /* Dark theme for loading states */
