@@ -418,6 +418,11 @@ tr.selected-row {
     color: #ffffff !important;
 }
 
+/* Dark theme for mobile responsive table borders */
+[data-theme="dark"] .mobile-resume td {
+    border-bottom: 1px solid #2d2d2d;
+}
+
 @media only screen and (max-width: 800px) {
     /* Force table to not be like tables anymore */
     .mobile-resume table, .mobile-resume thead, .mobile-resume tbody, .mobile-resume th, .mobile-resume td, .mobile-resume tr {
