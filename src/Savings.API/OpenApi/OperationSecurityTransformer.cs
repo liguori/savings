@@ -13,10 +13,6 @@ namespace Savings.API.OpenApi
 
             if (authenticationToUse == AuthenticationToUse.AzureAD)
             {
-
-
-
-
                 operation.Security = [
                      new OpenApiSecurityRequirement
                         {
@@ -29,8 +25,6 @@ namespace Savings.API.OpenApi
             }
             else if (authenticationToUse == AuthenticationToUse.ApiKey)
             {
-
-
                 operation.Security = [
                      new OpenApiSecurityRequirement
                         {
@@ -40,9 +34,6 @@ namespace Savings.API.OpenApi
                             }
                         }
                  ];
-
-
-                
             }
             return Task.CompletedTask;
         }
