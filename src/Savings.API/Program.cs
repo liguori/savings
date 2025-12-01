@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Savings.API.Authentication;
 using Savings.API.Infrastructure;
 using Savings.API.OpenApi;

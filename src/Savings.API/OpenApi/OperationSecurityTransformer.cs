@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Savings.API.Authentication;
 using Savings.Model;
 
@@ -13,38 +13,36 @@ namespace Savings.API.OpenApi
 
             if (authenticationToUse == AuthenticationToUse.AzureAD)
             {
-                operation.Security = [new OpenApiSecurityRequirement {
-                    {
-                        new OpenApiSecurityScheme
-                         {
-                           Reference = new OpenApiReference
-                           {
-                             Type = ReferenceType.SecurityScheme,
-                             Id = "Bearer"
-                           }
-                          },
-                         new string[] {}
-                     }
-                }];
+
+
+
+
+                operation.Security = [
+                     new OpenApiSecurityRequirement
+                        {
+                            {
+                                new OpenApiSecuritySchemeReference("Bearer",context.Document),
+                                [ ]
+                            }
+                        }
+                 ];
             }
             else if (authenticationToUse == AuthenticationToUse.ApiKey)
             {
-                operation.Security = [new OpenApiSecurityRequirement {
-                    {
-                        new OpenApiSecurityScheme
+
+
+                operation.Security = [
+                     new OpenApiSecurityRequirement
                         {
-                            Name = ApiKeyAuthOptions.HeaderName,
-                            Type = SecuritySchemeType.ApiKey,
-                            In = ParameterLocation.Header,
-                            Reference = new OpenApiReference
                             {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = ApiKeyAuthOptions.ApiKeySchemaName
-                            },
-                         },
-                         new string[] {}
-                     }
-                }];
+                                new OpenApiSecuritySchemeReference(ApiKeyAuthOptions.ApiKeySchemaName,context.Document),
+                                [ ]
+                            }
+                        }
+                 ];
+
+
+                
             }
             return Task.CompletedTask;
         }
