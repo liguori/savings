@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.x
+        dotnet-version: 10.x
     - name: Build .NET Frontend
     
       run: dotnet publish Savings.SPA.csproj -o "output" -c "Release"
