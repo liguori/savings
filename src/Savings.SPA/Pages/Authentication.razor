@@ -1,7 +1,39 @@
 ﻿@page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-<RemoteAuthenticatorView Action="@Action" />
+
+@if (Action == "login")
+{
+    <RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="@OnLogInSucceeded">
+        <LoggingIn>
+            @{
+                var options = new InteractiveRequestOptions
+                {
+                    Interaction = InteractionType.SignIn,
+                    ReturnUrl = ReturnUrl ?? Navigation.BaseUri
+                };
+                options.TryAddAdditionalParameter("prompt", "select_account");
+                Navigation.NavigateToLogin("authentication/login-callback", options);
+            }
+        </LoggingIn>
+    </RemoteAuthenticatorView>
+}
+else
+{
+    <RemoteAuthenticatorView Action="@Action" />
+}
 
 @code {
     [Parameter] public string? Action { get; set; }
+    
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    [Inject]
+    public NavigationManager Navigation { get; set; } = default!;
+
+    private void OnLogInSucceeded()
+    {
+        Navigation.NavigateTo(ReturnUrl ?? Navigation.BaseUri);
+    }
 }
