@@ -3,15 +3,15 @@ name: Deploy Frontend on Azure
 on:
   workflow_dispatch:
    inputs:
-       environment_name:
-          description: "Environment Name"
-          required: true
-          default: ""
+     environment:
+       description: 'Environment to deploy to (dev, staging, prod)'
+       required: true
+       type: environment
 
 jobs:
   Deploy-Frontend:
     environment:
-        name: ${{ github.event.inputs.environment_name }}
+        name: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
 
     steps:
@@ -21,8 +21,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
           
-
-
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
@@ -55,8 +53,8 @@ jobs:
         with:
           files: 'deploy/wwwroot/manifest.json'
         env:
-          name: "Savings ${{ github.event.inputs.environment_name }}"
-          short_name: "Savings ${{ github.event.inputs.environment_name }}"
+          name: "Savings ${{ github.event.inputs.environment }}"
+          short_name: "Savings ${{ github.event.inputs.environment }}"
 
       - name: Recalculate SHA integrity
         run: script/recalculate-integrity.sh
