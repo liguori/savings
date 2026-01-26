@@ -17,6 +17,8 @@ window.projectionsRowSelection = {
     longPressThreshold: 500, // milliseconds
     touchStartPos: null,
     moveThreshold: 10, // pixels
+    isScrolling: false,
+    longPressTriggered: false,
     
     initialize: function() {
         const table = document.getElementById('projections');
@@ -61,7 +63,15 @@ window.projectionsRowSelection = {
         
         if (!target || target.tagName !== 'TR') return;
         
-        // Check if Ctrl key is pressed for multi-selection
+        // On touch devices, ignore click events for row selection (use long press instead)
+        // Check if this is a touch-generated click event
+        if (event.pointerType === 'touch' || 
+            (event.sourceCapabilities && event.sourceCapabilities.firesTouchEvents)) {
+            // Only handle Ctrl+click on non-touch devices, so let touch clicks pass through for editing
+            return;
+        }
+        
+        // Check if Ctrl key is pressed for multi-selection (desktop only)
         if (event.ctrlKey || event.metaKey) {
             event.stopPropagation();
             event.preventDefault();
@@ -96,10 +106,15 @@ window.projectionsRowSelection = {
         // Store touch start position to detect movement
         const touch = event.touches[0];
         this.touchStartPos = { x: touch.clientX, y: touch.clientY };
+        this.isScrolling = false;
+        this.longPressTriggered = false;
         
         // Start long press timer
         this.longPressTimer = setTimeout(() => {
-            this.handleLongPress(target);
+            if (!this.isScrolling) {
+                this.longPressTriggered = true;
+                this.handleLongPress(target, event);
+            }
         }, this.longPressThreshold);
     },
     
@@ -110,23 +125,42 @@ window.projectionsRowSelection = {
         const deltaX = Math.abs(touch.clientX - this.touchStartPos.x);
         const deltaY = Math.abs(touch.clientY - this.touchStartPos.y);
         
-        // If moved too much, cancel long press
+        // If moved too much, cancel long press and mark as scrolling
         if (deltaX > this.moveThreshold || deltaY > this.moveThreshold) {
+            this.isScrolling = true;
             this.cancelLongPress();
         }
     },
     
     handleTouchEnd: function(event) {
+        // If long press was triggered, prevent the click event from firing
+        if (this.longPressTriggered) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
         this.cancelLongPress();
         this.touchStartPos = null;
+        this.isScrolling = false;
+        
+        // Reset the flag after a short delay to handle event propagation
+        setTimeout(() => {
+            this.longPressTriggered = false;
+        }, 100);
     },
     
     handleTouchCancel: function(event) {
         this.cancelLongPress();
         this.touchStartPos = null;
+        this.isScrolling = false;
     },
     
-    handleLongPress: function(target) {
+    handleLongPress: function(target, event) {
+        // Prevent the default touch behavior (including triggering click events)
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        }
+        
         // Provide haptic feedback if available
         if (navigator.vibrate) {
             navigator.vibrate(50);
@@ -257,6 +291,8 @@ window.projectionsRowSelection = {
         this.cancelLongPress();
         this.selectedRows.clear();
         this.touchStartPos = null;
+        this.isScrolling = false;
+        this.longPressTriggered = false;
         
         // Remove document event listeners
         document.removeEventListener('click', this.handleDocumentClick.bind(this), true);
