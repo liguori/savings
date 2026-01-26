@@ -50,7 +50,7 @@ else
             <tbody>
                 @foreach (var item in materializedMoneyItems)
                 {
-                    <tr class="@(item.EndPeriod ? "end-period" : "")" data-item-recurrent="@item.IsRecurrent" data-item-id="@item.ID" data-fixed-item-id="@item.FixedMoneyItemID">
+                    <tr class="@(item.EndPeriod ? "end-period" : "") item-action" @onclick="@(() => item.IsRecurrent ? AdjustRecurrency(item) : AdjustFixedItem(item))">
                         <td class="text-center">
                             @if (item.Date <= DateTime.Now.Date)
                             {
@@ -126,11 +126,11 @@ else
                             {
                                 if (item.IsRecurrent)
                                 {
-                                    <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent" @onclick="@(() => AdjustRecurrency(item))" @onclick:stopPropagation="true"></span>
+                                    <span class="oi oi-pulse edit-adjustment" aria-hidden="true" title="Recurrent"></span>
                                 }
                                 else
                                 {
-                                    <span class="oi oi-pin edit-adjustment" aria-hidden="true" title="Fixed" @onclick="@(() => AdjustFixedItem(item))" @onclick:stopPropagation="true"></span>
+                                    <span class="oi oi-pin edit-adjustment" aria-hidden="true" title="Fixed"></span>
                                 }
                             }
                             else
