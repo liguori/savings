@@ -39,6 +39,9 @@ window.projectionsRowSelection = {
         tbody.addEventListener('touchend', this.handleTouchEnd.bind(this), true);
         tbody.addEventListener('touchcancel', this.handleTouchCancel.bind(this), true);
         
+        // Prevent context menu on long press
+        tbody.addEventListener('contextmenu', this.handleContextMenu.bind(this), true);
+        
         // Add document click listener to deselect when clicking outside
         document.addEventListener('click', this.handleDocumentClick.bind(this), true);
         document.addEventListener('touchend', this.handleDocumentTouch.bind(this), true);
@@ -187,6 +190,20 @@ window.projectionsRowSelection = {
         if (this.longPressTimer) {
             clearTimeout(this.longPressTimer);
             this.longPressTimer = null;
+        }
+    },
+    
+    handleContextMenu: function(event) {
+        // Prevent context menu from appearing on table rows
+        // This prevents the native context menu that can appear on long press
+        let target = event.target;
+        while (target && target.tagName !== 'TR') {
+            target = target.parentElement;
+        }
+        
+        if (target && target.tagName === 'TR') {
+            event.preventDefault();
+            return false;
         }
     },
     

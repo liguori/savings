@@ -48,6 +48,15 @@
     border-right: 1px solid #dee2e6;
 }
 
+/* Prevent text selection and context menu on projection rows */
+#projections tbody tr {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none; /* iOS specific: prevents callout menu */
+}
+
 .materialize-history {
     cursor: pointer;
 }
