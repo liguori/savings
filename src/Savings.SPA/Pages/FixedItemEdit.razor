@@ -49,7 +49,7 @@
     }
     <div>
         <label>Note:</label>
-        <InputText @bind-Value="@fixedItemToEdit.Note" class="form-control" />
+        <InputTextArea @bind-Value="@fixedItemToEdit.Note" class="form-control" rows="3" />
         <ValidationMessage For="@(() => fixedItemToEdit.Note)" />
     </div>
     <div>
