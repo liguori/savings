@@ -246,11 +246,39 @@ window.projectionsRowSelection = {
         const amountCell = row.cells[2];
         if (!amountCell) return 0;
         
-        const amountText = amountCell.textContent.trim();
-        // Remove thousand separators (commas) before parsing
-        // This handles formats like "2,400.00" or "-1,668.22"
-        const cleanedAmount = amountText.replace(/,/g, '');
-        const amount = parseFloat(cleanedAmount);
+        let amountText = amountCell.textContent.trim();
+        
+        // Handle different locale formats:
+        // US: 1,234.56  EU: 1.234,56  Other: 1 234,56
+        // Strategy: Remove all separators except the last one (decimal separator),
+        // then normalize the decimal separator to a dot for parseFloat
+        
+        // Find the last occurrence of common separators (. , or space)
+        const lastDot = amountText.lastIndexOf('.');
+        const lastComma = amountText.lastIndexOf(',');
+        const lastSpace = amountText.lastIndexOf(' ');
+        
+        // Determine which is the decimal separator (the rightmost one)
+        const decimalSepPosition = Math.max(lastDot, lastComma, lastSpace);
+        
+        if (decimalSepPosition > 0) {
+            // Split into integer and decimal parts
+            const integerPart = amountText.substring(0, decimalSepPosition);
+            const decimalPart = amountText.substring(decimalSepPosition + 1);
+            
+            // Remove all separators from integer part, keep only digits and minus sign
+            const cleanInteger = integerPart.replace(/[^\d-]/g, '');
+            // Keep only digits in decimal part
+            const cleanDecimal = decimalPart.replace(/\D/g, '');
+            
+            // Reconstruct with standard dot decimal separator
+            amountText = cleanDecimal.length > 0 ? cleanInteger + '.' + cleanDecimal : cleanInteger;
+        } else {
+            // No decimal separator, just remove all non-numeric characters except minus
+            amountText = amountText.replace(/[^\d-]/g, '');
+        }
+        
+        const amount = parseFloat(amountText);
         return isNaN(amount) ? 0 : amount;
     },
     
