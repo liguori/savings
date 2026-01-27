@@ -246,8 +246,43 @@ window.projectionsRowSelection = {
         const amountCell = row.cells[2];
         if (!amountCell) return 0;
         
-        const amountText = amountCell.textContent.trim();
-       
+        let amountText = amountCell.textContent.trim();
+        
+        // Handle different locale formats:
+        // US: 1,234.56  EU: 1.234,56  Other: 1 234,56
+        // Strategy: Remove all separators except the last one (decimal separator),
+        // then normalize the decimal separator to a dot for parseFloat
+        
+        // Find the last occurrence of common separators (. , or space)
+        const lastDot = amountText.lastIndexOf('.');
+        const lastComma = amountText.lastIndexOf(',');
+        const lastSpace = amountText.lastIndexOf(' ');
+        
+        // Determine which is the decimal separator (the rightmost one)
+        // Filter out -1 values (not found) and take the maximum position
+        const positions = [lastDot, lastComma, lastSpace].filter(pos => pos >= 0);
+        const decimalSepPosition = positions.length > 0 ? Math.max(...positions) : -1;
+        
+        if (decimalSepPosition >= 0) {
+            // Split into integer and decimal parts
+            const integerPart = amountText.substring(0, decimalSepPosition);
+            const decimalPart = amountText.substring(decimalSepPosition + 1);
+            
+            // Remove all separators from integer part, keep only digits and minus sign
+            // Preserve minus sign only if it's at the beginning
+            const cleanInteger = integerPart.replace(/[^\d-]/g, '').replace(/(?!^)-/g, '');
+            // Keep only digits in decimal part (no minus signs allowed)
+            const cleanDecimal = decimalPart.replace(/\D/g, '');
+            
+            // Reconstruct with standard dot decimal separator
+            amountText = cleanDecimal.length > 0 ? cleanInteger + '.' + cleanDecimal : cleanInteger;
+        } else {
+            // No decimal separator, just remove all non-numeric characters except minus at start
+            const cleaned = amountText.replace(/[^\d-]/g, '');
+            // Keep minus only if it's at the beginning
+            amountText = cleaned.replace(/(?!^)-/g, '');
+        }
+        
         const amount = parseFloat(amountText);
         return isNaN(amount) ? 0 : amount;
     },
