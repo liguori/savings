@@ -137,6 +137,13 @@ window.projectionsRowSelection = {
         if (this.longPressTriggered) {
             event.preventDefault();
             event.stopPropagation();
+            
+            // Provide haptic feedback only when long press completes successfully
+            // This ensures vibration happens only after the user lifts their finger
+            // and not during scrolling
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
         }
         
         this.cancelLongPress();
@@ -161,10 +168,7 @@ window.projectionsRowSelection = {
             event.preventDefault();
         }
         
-        // Provide haptic feedback if available
-        if (navigator.vibrate) {
-            navigator.vibrate(50);
-        }
+        // Note: Haptic feedback is now triggered in handleTouchEnd when long press completes
         
         const rowId = this.getRowId(target);
         
