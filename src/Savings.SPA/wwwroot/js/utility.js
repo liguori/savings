@@ -247,8 +247,10 @@ window.projectionsRowSelection = {
         if (!amountCell) return 0;
         
         const amountText = amountCell.textContent.trim();
-       
-        const amount = parseFloat(amountText);
+        // Remove thousand separators (commas) before parsing
+        // This handles formats like "2,400.00" or "-1,668.22"
+        const cleanedAmount = amountText.replace(/,/g, '');
+        const amount = parseFloat(cleanedAmount);
         return isNaN(amount) ? 0 : amount;
     },
     
