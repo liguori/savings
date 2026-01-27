@@ -259,9 +259,11 @@ window.projectionsRowSelection = {
         const lastSpace = amountText.lastIndexOf(' ');
         
         // Determine which is the decimal separator (the rightmost one)
-        const decimalSepPosition = Math.max(lastDot, lastComma, lastSpace);
+        // Filter out -1 values (not found) and take the maximum position
+        const positions = [lastDot, lastComma, lastSpace].filter(pos => pos >= 0);
+        const decimalSepPosition = positions.length > 0 ? Math.max(...positions) : -1;
         
-        if (decimalSepPosition > 0) {
+        if (decimalSepPosition >= 0) {
             // Split into integer and decimal parts
             const integerPart = amountText.substring(0, decimalSepPosition);
             const decimalPart = amountText.substring(decimalSepPosition + 1);
