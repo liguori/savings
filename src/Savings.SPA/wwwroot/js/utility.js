@@ -171,7 +171,9 @@ window.projectionsRowSelection = {
             event.preventDefault();
         }
         
-        // Note: Haptic feedback is now triggered in handleTouchEnd when long press completes
+        // Note: Haptic feedback is now triggered in handleTouchEnd when long press completes.
+        // This improves UX by providing feedback only after the user lifts their finger,
+        // ensuring no vibration occurs during scrolling or if the gesture is cancelled.
         
         const rowId = this.getRowId(target);
         
@@ -197,8 +199,12 @@ window.projectionsRowSelection = {
         // Prevent context menu from appearing on table rows
         // This prevents the native context menu that can appear on long press
         let target = event.target;
-        while (target && target.tagName !== 'TR') {
+        let depth = 0;
+        const maxDepth = 10; // Safety limit to prevent infinite loops
+        
+        while (target && target.tagName !== 'TR' && depth < maxDepth) {
             target = target.parentElement;
+            depth++;
         }
         
         if (target && target.tagName === 'TR') {
