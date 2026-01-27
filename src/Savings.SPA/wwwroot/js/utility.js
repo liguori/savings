@@ -269,15 +269,18 @@ window.projectionsRowSelection = {
             const decimalPart = amountText.substring(decimalSepPosition + 1);
             
             // Remove all separators from integer part, keep only digits and minus sign
-            const cleanInteger = integerPart.replace(/[^\d-]/g, '');
-            // Keep only digits in decimal part
+            // Preserve minus sign only if it's at the beginning
+            const cleanInteger = integerPart.replace(/[^\d-]/g, '').replace(/(?!^)-/g, '');
+            // Keep only digits in decimal part (no minus signs allowed)
             const cleanDecimal = decimalPart.replace(/\D/g, '');
             
             // Reconstruct with standard dot decimal separator
             amountText = cleanDecimal.length > 0 ? cleanInteger + '.' + cleanDecimal : cleanInteger;
         } else {
-            // No decimal separator, just remove all non-numeric characters except minus
-            amountText = amountText.replace(/[^\d-]/g, '');
+            // No decimal separator, just remove all non-numeric characters except minus at start
+            const cleaned = amountText.replace(/[^\d-]/g, '');
+            // Keep minus only if it's at the beginning
+            amountText = cleaned.replace(/(?!^)-/g, '');
         }
         
         const amount = parseFloat(amountText);
