@@ -39,6 +39,9 @@ window.projectionsRowSelection = {
         tbody.addEventListener('touchend', this.handleTouchEnd.bind(this), true);
         tbody.addEventListener('touchcancel', this.handleTouchCancel.bind(this), true);
         
+        // Prevent context menu on long press
+        tbody.addEventListener('contextmenu', this.handleContextMenu.bind(this), true);
+        
         // Add document click listener to deselect when clicking outside
         document.addEventListener('click', this.handleDocumentClick.bind(this), true);
         document.addEventListener('touchend', this.handleDocumentTouch.bind(this), true);
@@ -137,6 +140,13 @@ window.projectionsRowSelection = {
         if (this.longPressTriggered) {
             event.preventDefault();
             event.stopPropagation();
+            
+            // Provide haptic feedback only when long press completes successfully
+            // This ensures vibration happens only after the user lifts their finger
+            // and not during scrolling
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
         }
         
         this.cancelLongPress();
@@ -161,10 +171,9 @@ window.projectionsRowSelection = {
             event.preventDefault();
         }
         
-        // Provide haptic feedback if available
-        if (navigator.vibrate) {
-            navigator.vibrate(50);
-        }
+        // Note: Haptic feedback is now triggered in handleTouchEnd when long press completes.
+        // This improves UX by providing feedback only after the user lifts their finger,
+        // ensuring no vibration occurs during scrolling or if the gesture is cancelled.
         
         const rowId = this.getRowId(target);
         
@@ -183,6 +192,24 @@ window.projectionsRowSelection = {
         if (this.longPressTimer) {
             clearTimeout(this.longPressTimer);
             this.longPressTimer = null;
+        }
+    },
+    
+    handleContextMenu: function(event) {
+        // Prevent context menu from appearing on table rows
+        // This prevents the native context menu that can appear on long press
+        let target = event.target;
+        let depth = 0;
+        const maxDepth = 10; // Safety limit to prevent infinite loops
+        
+        while (target && target.tagName !== 'TR' && depth < maxDepth) {
+            target = target.parentElement;
+            depth++;
+        }
+        
+        if (target && target.tagName === 'TR') {
+            event.preventDefault();
+            return false;
         }
     },
     
