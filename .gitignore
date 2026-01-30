@@ -3,3 +3,6 @@
 *.db-shm
 *.db-wal
 /src/Savings.MAUI
+
+# Bicep build artifacts
+infra/bicep/*.json
