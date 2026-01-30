@@ -1,0 +1,122 @@
+name: Deploy Infrastructure on Azure
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to (dev, staging, prod)'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      action:
+        description: 'Deployment action'
+        required: true
+        type: choice
+        options:
+          - deploy
+          - validate
+          - what-if
+        default: 'validate'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
+
+      - name: Create Resource Group if not exists
+        run: |
+          az group create \
+            --name rg-savings-${{ github.event.inputs.environment }} \
+            --location eastus \
+            --tags Environment=${{ github.event.inputs.environment }} Application=Savings
+
+      - name: Validate Bicep template
+        if: github.event.inputs.action == 'validate' || github.event.inputs.action == 'deploy'
+        run: |
+          az deployment group validate \
+            --resource-group rg-savings-${{ github.event.inputs.environment }} \
+            --template-file infra/bicep/main.bicep \
+            --parameters infra/parameters/${{ github.event.inputs.environment }}.parameters.json \
+            --parameters sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
+
+      - name: What-If Deployment
+        if: github.event.inputs.action == 'what-if'
+        run: |
+          az deployment group what-if \
+            --resource-group rg-savings-${{ github.event.inputs.environment }} \
+            --template-file infra/bicep/main.bicep \
+            --parameters infra/parameters/${{ github.event.inputs.environment }}.parameters.json \
+            --parameters sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
+
+      - name: Deploy Infrastructure
+        if: github.event.inputs.action == 'deploy'
+        run: |
+          az deployment group create \
+            --resource-group rg-savings-${{ github.event.inputs.environment }} \
+            --template-file infra/bicep/main.bicep \
+            --parameters infra/parameters/${{ github.event.inputs.environment }}.parameters.json \
+            --parameters sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }} \
+            --mode Incremental
+
+      - name: Get Deployment Outputs
+        if: github.event.inputs.action == 'deploy'
+        id: outputs
+        run: |
+          outputs=$(az deployment group show \
+            --resource-group rg-savings-${{ github.event.inputs.environment }} \
+            --name main \
+            --query properties.outputs)
+          
+          echo "Deployment outputs:"
+          echo "$outputs" | jq '.'
+          
+          # Extract specific outputs
+          apiAppServiceName=$(echo "$outputs" | jq -r '.apiAppServiceName.value')
+          spaAppServiceName=$(echo "$outputs" | jq -r '.spaAppServiceName.value')
+          apiAppServiceUrl=$(echo "$outputs" | jq -r '.apiAppServiceUrl.value')
+          spaAppServiceUrl=$(echo "$outputs" | jq -r '.spaAppServiceUrl.value')
+          
+          echo "API App Service: $apiAppServiceName"
+          echo "API URL: $apiAppServiceUrl"
+          echo "SPA App Service: $spaAppServiceName"
+          echo "SPA URL: $spaAppServiceUrl"
+          
+          # Set outputs for potential use in subsequent jobs
+          echo "apiAppServiceName=$apiAppServiceName" >> $GITHUB_OUTPUT
+          echo "spaAppServiceName=$spaAppServiceName" >> $GITHUB_OUTPUT
+          echo "apiAppServiceUrl=$apiAppServiceUrl" >> $GITHUB_OUTPUT
+          echo "spaAppServiceUrl=$spaAppServiceUrl" >> $GITHUB_OUTPUT
+
+      - name: Summary
+        if: github.event.inputs.action == 'deploy'
+        run: |
+          echo "## Infrastructure Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Environment: ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Deployed Resources:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Resource Group**: rg-savings-${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **API App Service**: ${{ steps.outputs.outputs.apiAppServiceName }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **API URL**: ${{ steps.outputs.outputs.apiAppServiceUrl }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **SPA App Service**: ${{ steps.outputs.outputs.spaAppServiceName }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **SPA URL**: ${{ steps.outputs.outputs.spaAppServiceUrl }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Update GitHub environment variables with the App Service names" >> $GITHUB_STEP_SUMMARY
+          echo "2. Run the backend and frontend deployment workflows" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,5 @@
+# Bicep ignore file
+*.md
+*.sh
+.git/
+.github/
