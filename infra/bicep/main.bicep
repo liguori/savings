@@ -34,7 +34,6 @@ param appServicePlanSku string = 'B1'
 param sqlDatabaseSku string = 'Basic'
 
 @description('SQL Server administrator login')
-@secure()
 param sqlAdminLogin string
 
 @description('SQL Server administrator password')
@@ -167,6 +166,8 @@ resource spaAppService 'Microsoft.Web/sites@2022-09-01' = {
 }
 
 // SQL Server
+// Note: publicNetworkAccess is set to 'Enabled' to allow App Services to connect.
+// For enhanced security in production, consider using Private Link or VNet integration.
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: sqlServerName
   location: location
@@ -215,4 +216,3 @@ output spaAppServiceUrl string = 'https://${spaAppService.properties.defaultHost
 output sqlServerFqdn string = sqlServer.properties.fullyQualifiedDomainName
 output sqlDatabaseName string = sqlDatabase.name
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
-output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey

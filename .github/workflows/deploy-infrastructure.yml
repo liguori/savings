@@ -69,6 +69,7 @@ jobs:
         run: |
           az deployment group create \
             --resource-group rg-savings-${{ github.event.inputs.environment }} \
+            --name savings-infra-deployment \
             --template-file infra/bicep/main.bicep \
             --parameters infra/parameters/${{ github.event.inputs.environment }}.parameters.json \
             --parameters sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }} \
@@ -80,7 +81,7 @@ jobs:
         run: |
           outputs=$(az deployment group show \
             --resource-group rg-savings-${{ github.event.inputs.environment }} \
-            --name main \
+            --name savings-infra-deployment \
             --query properties.outputs)
           
           echo "Deployment outputs:"

@@ -16,14 +16,6 @@
     },
     "sqlAdminLogin": {
       "value": "sqladmin"
-    },
-    "sqlAdminPassword": {
-      "reference": {
-        "keyVault": {
-          "id": "REPLACE_WITH_YOUR_KEYVAULT_ID"
-        },
-        "secretName": "sql-admin-password"
-      }
     }
   }
 }

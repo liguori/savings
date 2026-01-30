@@ -104,7 +104,7 @@ az deployment group create \
 ```bash
 az deployment group show \
   --resource-group rg-savings-dev \
-  --name main \
+  --name savings-infra-deployment \
   --query properties.outputs
 ```
 
@@ -139,9 +139,16 @@ To customize the deployment for your needs, edit the appropriate parameter file 
 }
 ```
 
-### Using Azure Key Vault for Secrets
+### Secrets Management
 
-The parameter files are configured to reference Azure Key Vault for the SQL admin password. To use this:
+The SQL admin password is passed as a parameter during deployment and should be stored securely:
+
+- **For GitHub Actions**: Store the password in GitHub Secrets as `SQL_ADMIN_PASSWORD`
+- **For manual deployment**: Pass it directly via the command line `--parameters sqlAdminPassword='YourSecurePassword123!'`
+
+#### Optional: Using Azure Key Vault for Secrets
+
+For enhanced security, you can configure parameter files to reference Azure Key Vault:
 
 1. Create an Azure Key Vault:
 ```bash
@@ -159,7 +166,7 @@ az keyvault secret set \
   --value 'YourSecurePassword123!'
 ```
 
-3. Update the parameter file with your Key Vault ID:
+3. Update the parameter file with your Key Vault reference:
 ```json
 "sqlAdminPassword": {
   "reference": {

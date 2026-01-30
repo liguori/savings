@@ -73,8 +73,8 @@ if [ ! -f "$TEMPLATE_FILE" ]; then
     exit 1
 fi
 
-# Prompt for SQL admin password if deploying
-if [ "$ACTION" == "deploy" ] || [ "$ACTION" == "what-if" ]; then
+# Prompt for SQL admin password if deploying or validating
+if [ "$ACTION" == "deploy" ] || [ "$ACTION" == "what-if" ] || [ "$ACTION" == "validate" ]; then
     print_warning "You will need to provide the SQL admin password."
     read -sp "Enter SQL admin password: " SQL_ADMIN_PASSWORD
     echo ""
@@ -105,8 +105,10 @@ case $ACTION in
         print_info "Validating Bicep template..."
         az deployment group validate \
             --resource-group "$RESOURCE_GROUP" \
+            --name savings-infra-deployment \
             --template-file "$TEMPLATE_FILE" \
-            --parameters "$PARAMETERS_FILE"
+            --parameters "$PARAMETERS_FILE" \
+            --parameters sqlAdminPassword="$SQL_ADMIN_PASSWORD"
         
         print_info "Validation successful!"
         ;;
@@ -115,6 +117,7 @@ case $ACTION in
         print_info "Running what-if analysis..."
         az deployment group what-if \
             --resource-group "$RESOURCE_GROUP" \
+            --name savings-infra-deployment \
             --template-file "$TEMPLATE_FILE" \
             --parameters "$PARAMETERS_FILE" \
             --parameters sqlAdminPassword="$SQL_ADMIN_PASSWORD"
@@ -124,6 +127,7 @@ case $ACTION in
         print_info "Deploying infrastructure..."
         az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
+            --name savings-infra-deployment \
             --template-file "$TEMPLATE_FILE" \
             --parameters "$PARAMETERS_FILE" \
             --parameters sqlAdminPassword="$SQL_ADMIN_PASSWORD" \
@@ -135,7 +139,7 @@ case $ACTION in
         print_info "Getting deployment outputs..."
         outputs=$(az deployment group show \
             --resource-group "$RESOURCE_GROUP" \
-            --name main \
+            --name savings-infra-deployment \
             --query properties.outputs)
         
         echo ""
