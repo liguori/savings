@@ -42,6 +42,23 @@ Project your income into the future while also taking expenses into account.
 
   
 
+## Azure Deployment
+
+This application can be deployed to Azure using Infrastructure as Code (IaC) with Bicep templates.
+
+### Quick Start
+
+1. **Deploy Infrastructure**: Use the GitHub Actions workflow "Deploy Infrastructure on Azure" or run the deployment script:
+   ```bash
+   ./infra/deploy.sh dev deploy
+   ```
+
+2. **Deploy Applications**: After infrastructure is deployed, run the deployment workflows:
+   - Deploy Backend on Azure
+   - Deploy Frontend on Azure
+
+For detailed instructions, see the [Infrastructure Documentation](infra/README.md).
+
 ## Security
 The application supports the following way to be secured:
 
