@@ -27,9 +27,18 @@ namespace Savings.SPA.Pages
 
         public DateTime FilterDateTo { get; set; }
 
+        public bool FilterWork { get; set; } = false;
+
         ReportCategory[] statistics = default!;
 
         async void DateTimeDateChanged(DateTime? value, string name)
+        {
+            await InitializeCategoryResume();
+            await InitializeEndPeriods();
+            StateHasChanged();
+        }
+
+        async void FilterWorkChanged(bool? value)
         {
             await InitializeCategoryResume();
             await InitializeEndPeriods();
@@ -71,7 +80,7 @@ namespace Savings.SPA.Pages
 
         async Task InitializeCategoryResume()
         {
-            statistics = await savingsAPI.GetCategoryResume(FilterCategoryGroupByPeriod, FilterDateFrom, FilterDateTo);
+            statistics = await savingsAPI.GetCategoryResume(FilterCategoryGroupByPeriod, FilterDateFrom, FilterDateTo, FilterWork);
         }
 
         async Task InitializeEndPeriods()

@@ -83,7 +83,7 @@ namespace Savings.SPA.Services
         Task PutConfiguration(long id, Configuration configuration);
 
         [Get("/api/Report/GetCategoryResume")]
-        Task<ReportCategory[]> GetCategoryResume(string periodPattern, DateTime dateFrom, DateTime dateTo);
+        Task<ReportCategory[]> GetCategoryResume(string periodPattern, DateTime dateFrom, DateTime dateTo, bool? work);
 
         [Get("/api/Report/GetCategoryResumeDetail")]
         Task<ReportDetail[]> GetCategoryResumeDetail(string periodPattern, DateTime dateFrom, DateTime dateTo, long? category, string period);

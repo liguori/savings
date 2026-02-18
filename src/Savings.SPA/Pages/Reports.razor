@@ -17,12 +17,16 @@ else
             <label>To:</label><br />
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => DateTimeDateChanged(args, nameof(FilterDateTo)))" />
         </div>
-        <div class="col-md-6 col">
+        <div class="col-md-3 col">
             <label>Group by:</label>
             <select class="form-control" @onchange="FilterGroupByCategoryPeriodChanged">
                 <option value="yy/MM" selected="@("yy/MM" == FilterCategoryGroupByPeriod)">Month</option>
                 <option value="yyyy" selected="@("yyyy" == FilterCategoryGroupByPeriod)">Year</option>
             </select>
+        </div>
+        <div class="col-md-3 col">
+            <label>💼Work:</label><br />
+            <RadzenSwitch @bind-Value="FilterWork" Change="@(args => FilterWorkChanged(args))" />
         </div>
     </div>
     <div class="table-responsive">
