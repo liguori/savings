@@ -152,7 +152,8 @@ namespace Savings.API.Services
                     TimelineWeight = fixedItem?.TimelineWeight ?? 0,
                     IsRecurrent = false,
                     FixedMoneyItemID = fixedItem?.ID,
-                    Cash = fixedItem?.Cash ?? false
+                    Cash = fixedItem?.Cash ?? false,
+                    Work = fixedItem?.Work ?? false
                 }));
 
                 // Process fixed items to accumulate for budget
@@ -167,7 +168,8 @@ namespace Savings.API.Services
                         Date = accumulateItem.Date,
                         Amount = accumulateItem.Amount ?? 0,
                         CategoryID = accumulateItem.CategoryID,
-                        Note = accumulateItem.Note
+                        Note = accumulateItem.Note,
+                        Work = accumulateItem.Work
                     }).ToList()
                 };
                 accumulateMaterializedItem.Amount = accumulateMaterializedItem.Subitems.Sum(x => x.Amount);
@@ -214,7 +216,7 @@ namespace Savings.API.Services
                                         currentInstallmentAmount += associatedItem.Amount;
                                     }
                                     lstNoteAssociatedItems.Add(associatedItem.Note);
-                                    lstSubItemsRecurrent.Add(new MaterializedMoneySubitems { Date = currentInstallmentDate, Amount = associatedItem.Amount, CategoryID = associatedItem.CategoryID, Note = associatedItem.Note });
+                                    lstSubItemsRecurrent.Add(new MaterializedMoneySubitems { Date = currentInstallmentDate, Amount = associatedItem.Amount, CategoryID = associatedItem.CategoryID, Note = associatedItem.Note, Work = associatedItem.Work });
                                 }
                             }
                             if (lstNoteAssociatedItems.Count > 0)
@@ -234,7 +236,8 @@ namespace Savings.API.Services
                             TimelineWeight = recurrentItem?.TimelineWeight ?? 0,
                             IsRecurrent = true,
                             RecurrentMoneyItemID = recurrentItem?.ID,
-                            Subitems = lstSubItemsRecurrent
+                            Subitems = lstSubItemsRecurrent,
+                            Work = recurrentItem?.Work ?? false
                         });
                     }
                 }
