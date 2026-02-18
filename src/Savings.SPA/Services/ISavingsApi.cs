@@ -86,6 +86,6 @@ namespace Savings.SPA.Services
         Task<ReportCategory[]> GetCategoryResume(string periodPattern, DateTime dateFrom, DateTime dateTo, bool? work);
 
         [Get("/api/Report/GetCategoryResumeDetail")]
-        Task<ReportDetail[]> GetCategoryResumeDetail(string periodPattern, DateTime dateFrom, DateTime dateTo, long? category, string period);
+        Task<ReportDetail[]> GetCategoryResumeDetail(string periodPattern, DateTime dateFrom, DateTime dateTo, long? category, string period, bool? work);
     }
 }

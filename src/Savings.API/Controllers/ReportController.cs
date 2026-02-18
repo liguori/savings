@@ -21,9 +21,9 @@ namespace Savings.API.Controllers
         }
 
         [HttpGet("GetCategoryResumeDetail")]
-        public async Task<ActionResult<ReportDetail[]>> GetCategoryResumeDetail(string periodPattern, DateTime dateFrom, DateTime dateTo, long? category, string period)
+        public async Task<ActionResult<ReportDetail[]>> GetCategoryResumeDetail(string periodPattern, DateTime dateFrom, DateTime dateTo, long? category, string period, bool? work)
         {
-            IEnumerable<ReportFullDetail> details = await GetCategoryDetailsAsync(periodPattern, dateFrom, dateTo, null);
+            IEnumerable<ReportFullDetail> details = await GetCategoryDetailsAsync(periodPattern, dateFrom, dateTo, work);
 
             var res = details
                 .Where(x => x.CategoryID == category && x.Period == period)

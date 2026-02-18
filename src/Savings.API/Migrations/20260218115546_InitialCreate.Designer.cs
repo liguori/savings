@@ -11,8 +11,8 @@ using Savings.API.Infrastructure;
 namespace Savings.API.Migrations
 {
     [DbContext(typeof(SavingsContext))]
-    [Migration("20260218110334_AddWorkFlag")]
-    partial class AddWorkFlag
+    [Migration("20260218115546_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

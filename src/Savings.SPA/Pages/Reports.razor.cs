@@ -102,7 +102,8 @@ namespace Savings.SPA.Pages
                                { "FilterDateTo", FilterDateTo },
                                { "category", category! },
                                { "periodPattern", FilterCategoryGroupByPeriod },
-                               { "period", period }
+                               { "period", period },
+                               { "FilterWork", FilterWork }
                            },
                             new DialogOptions() { Width = "800px", Height = "600px" });
         }
