@@ -20,6 +20,7 @@ namespace Savings.Model
         public long? FixedMoneyItemID { get; set; }
         public bool Cash { get; set; }
         public decimal EndPeriodCashCarry { get; set; }
+        public bool Work { get; set; } = false;
         public IEnumerable<MaterializedMoneySubitems> Subitems { get; set; } = new List<MaterializedMoneySubitems>();
     }
 
@@ -31,5 +32,6 @@ namespace Savings.Model
         public long? CategoryID { get; set; }
         public MoneyCategory Category { get; set; }
         public string Note { get; set; }
+        public bool Work { get; set; } = false;
     }
 }
