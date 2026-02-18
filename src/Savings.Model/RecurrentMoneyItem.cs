@@ -20,6 +20,7 @@ namespace Savings.Model
         public virtual IEnumerable<RecurrencyAdjustement> Adjustements { get; set; }
         public bool DefaultCredit { get; set; }
         public long? RecurrentMoneyItemID { get; set; }
+        public bool Work { get; set; } = false;
     }
 
 

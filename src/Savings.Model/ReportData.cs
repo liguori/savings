@@ -38,6 +38,8 @@ namespace Savings.Model
         public long? CategoryID { get; set; }
 
         public decimal Amount { get; set; }
+
+        public bool Work { get; set; }
     }
 
 

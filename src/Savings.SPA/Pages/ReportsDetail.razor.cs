@@ -25,6 +25,9 @@ namespace Savings.SPA.Pages
         [Parameter]
         public string? period { get; set; } = string.Empty;
 
+        [Parameter]
+        public bool FilterWork { get; set; }
+
         public ReportDetail[]? ReportCategoryDetails { get; set; }
 
         protected override async Task OnInitializedAsync()
@@ -34,7 +37,7 @@ namespace Savings.SPA.Pages
 
         async Task InitializeList()
         {
-            ReportCategoryDetails = await savingsAPI.GetCategoryResumeDetail(periodPattern!, FilterDateFrom, FilterDateTo, category, period!);
+            ReportCategoryDetails = await savingsAPI.GetCategoryResumeDetail(periodPattern!, FilterDateFrom, FilterDateTo, category, period!, FilterWork);
         }
 
     }

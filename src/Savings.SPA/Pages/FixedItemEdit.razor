@@ -39,6 +39,10 @@
                 <label>💰Gain</label><br>
                 <RadzenSwitch @bind-Value="@Incoming" />
             </div>
+            <div class="col-3">
+                <label>💼Work</label><br>
+                <RadzenSwitch @bind-Value="@fixedItemToEdit.Work" />
+            </div>
 
             <div class="col-3">
                 <label>Weight:</label>
@@ -49,7 +53,7 @@
     }
     <div>
         <label>Note:</label>
-        <InputTextArea @bind-Value="@fixedItemToEdit.Note" class="form-control" rows="3" />
+        <InputTextArea @bind-Value="@fixedItemToEdit.Note" class="form-control" rows="2" />
         <ValidationMessage For="@(() => fixedItemToEdit.Note)" />
     </div>
     <div>
