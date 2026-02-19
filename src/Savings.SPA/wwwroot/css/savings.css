@@ -427,6 +427,22 @@ tr.selected-row {
     color: #ffffff !important;
 }
 
+/* Fix for Radzen DatePicker calendar month and year dropdowns in dark theme */
+[data-theme="dark"] .rz-calendar select,
+[data-theme="dark"] .rz-datepicker-calendar select,
+[data-theme="dark"] .rz-calendar-header select {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+[data-theme="dark"] .rz-calendar select option,
+[data-theme="dark"] .rz-datepicker-calendar select option,
+[data-theme="dark"] .rz-calendar-header select option {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+}
+
 /* Dark theme for mobile responsive table borders */
 [data-theme="dark"] .mobile-resume td {
     border-bottom: 1px solid #2d2d2d;
