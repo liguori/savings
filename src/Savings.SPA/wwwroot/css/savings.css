@@ -441,31 +441,71 @@ tr.selected-row {
     color: #ffffff !important;
 }
 
-/* Fix for Radzen DatePicker dropdown panel (month/year selection popup) */
-[data-theme="dark"] .rz-datepicker-view-dropdown,
-[data-theme="dark"] .rz-calendar-dropdown {
-    background-color: #2d2d2d !important;
-    color: #ffffff !important;
-    border: 1px solid #404040 !important;
-}
-
-/* Fix for dropdown items (month/year options) */
-[data-theme="dark"] .rz-datepicker-view-dropdown .rz-dropdown-item,
-[data-theme="dark"] .rz-calendar-dropdown .rz-dropdown-item {
-    background-color: #2d2d2d !important;
+/* Fix for Radzen DatePicker month picker cells (shown when clicking month name) */
+[data-theme="dark"] .rz-monthpicker .rz-state-default,
+[data-theme="dark"] .rz-monthpicker span {
     color: #ffffff !important;
 }
 
-/* Hover state for dropdown items */
-[data-theme="dark"] .rz-datepicker-view-dropdown .rz-dropdown-item:hover,
-[data-theme="dark"] .rz-calendar-dropdown .rz-dropdown-item:hover {
+[data-theme="dark"] .rz-monthpicker .rz-state-default:hover {
     background-color: #404040 !important;
     color: #ffffff !important;
 }
 
-/* Selected/active state for dropdown items */
-[data-theme="dark"] .rz-datepicker-view-dropdown .rz-dropdown-item.rz-state-active,
-[data-theme="dark"] .rz-calendar-dropdown .rz-dropdown-item.rz-state-active {
+[data-theme="dark"] .rz-monthpicker .rz-state-active {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+/* Fix for Radzen DatePicker year picker cells (shown when clicking year) */
+[data-theme="dark"] .rz-yearpicker .rz-state-default,
+[data-theme="dark"] .rz-yearpicker span {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-yearpicker .rz-state-default:hover {
+    background-color: #404040 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-yearpicker .rz-state-active {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+/* Fix for Radzen DatePicker header title links (month/year clickable text) */
+[data-theme="dark"] .rz-datepicker-title,
+[data-theme="dark"] .rz-datepicker-title .rz-link,
+[data-theme="dark"] .rz-datepicker-title a,
+[data-theme="dark"] .rz-calendar-title,
+[data-theme="dark"] .rz-calendar-title .rz-link,
+[data-theme="dark"] .rz-calendar-title a {
+    color: #ffffff !important;
+}
+
+/* Fix for Radzen DatePicker navigation arrows */
+[data-theme="dark"] .rz-datepicker-prev .rzi,
+[data-theme="dark"] .rz-datepicker-next .rzi {
+    color: #ffffff !important;
+}
+
+/* Fix for Radzen dropdown panel used in date picker month/year selection */
+[data-theme="dark"] .rz-dropdown-panel {
+    background-color: #2d2d2d !important;
+    border-color: #404040 !important;
+}
+
+[data-theme="dark"] .rz-dropdown-panel .rz-dropdown-item {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-dropdown-panel .rz-dropdown-item:hover,
+[data-theme="dark"] .rz-dropdown-panel .rz-dropdown-item.rz-state-highlight {
+    background-color: #404040 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .rz-dropdown-panel .rz-dropdown-item.rz-state-active {
     background-color: #0d6efd !important;
     color: #ffffff !important;
 }
