@@ -441,6 +441,35 @@ tr.selected-row {
     color: #ffffff !important;
 }
 
+/* Fix for Radzen DatePicker dropdown panel (month/year selection popup) */
+[data-theme="dark"] .rz-datepicker-view-dropdown,
+[data-theme="dark"] .rz-calendar-dropdown {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 1px solid #404040 !important;
+}
+
+/* Fix for dropdown items (month/year options) */
+[data-theme="dark"] .rz-datepicker-view-dropdown .rz-dropdown-item,
+[data-theme="dark"] .rz-calendar-dropdown .rz-dropdown-item {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+}
+
+/* Hover state for dropdown items */
+[data-theme="dark"] .rz-datepicker-view-dropdown .rz-dropdown-item:hover,
+[data-theme="dark"] .rz-calendar-dropdown .rz-dropdown-item:hover {
+    background-color: #404040 !important;
+    color: #ffffff !important;
+}
+
+/* Selected/active state for dropdown items */
+[data-theme="dark"] .rz-datepicker-view-dropdown .rz-dropdown-item.rz-state-active,
+[data-theme="dark"] .rz-calendar-dropdown .rz-dropdown-item.rz-state-active {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
 /* Dark theme for mobile responsive table borders */
 [data-theme="dark"] .mobile-resume td {
     border-bottom: 1px solid #2d2d2d;
