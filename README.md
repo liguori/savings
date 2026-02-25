@@ -27,20 +27,59 @@ Project your income into the future while also taking expenses into account.
 
 ## Screenshots
 
-  
+### Light Theme
 
 **Savings Projection**
 
-![Full fixed lenght file example](docs/SavingsProjection.png)
+![Savings Projection](docs/SavingsProjection.png)
 
-  
-  
+**Fixed Items**
+
+![Fixed Items](docs/FixedItems.png)
 
 **Recurrent Items**
 
-![Full fixed lenght file example](docs/RecurrentItems.png)
+![Recurrent Items](docs/RecurrentItems.png)
 
-  
+**History**
+
+![History](docs/History.png)
+
+**Reports**
+
+![Reports](docs/Reports.png)
+
+**Configuration**
+
+![Configuration](docs/Configuration.png)
+
+### Dark Theme
+
+**Savings Projection (Dark)**
+
+![Savings Projection Dark](docs/SavingsProjection_dark.png)
+
+**Fixed Items (Dark)**
+
+![Fixed Items Dark](docs/FixedItems_dark.png)
+
+**Recurrent Items (Dark)**
+
+![Recurrent Items Dark](docs/RecurrentItems_dark.png)
+
+**History (Dark)**
+
+![History Dark](docs/History_dark.png)
+
+**Reports (Dark)**
+
+![Reports Dark](docs/Reports_dark.png)
+
+**Configuration (Dark)**
+
+![Configuration Dark](docs/Configuration_dark.png)
+
+
 
 ## Security
 The application supports the following way to be secured:
