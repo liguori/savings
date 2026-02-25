@@ -82,3 +82,40 @@ You need to configure in Azure AAD, two app registrations for SavingsProjection.
 	"DefaultScope": "api://{apiClientID}/SavingProjection.All"
 }
 ```
+
+### Additional Views
+
+<details>
+<summary>Click to see more screenshots showing configuration, fixed items, history, reports, and dark mode views</summary>
+
+#### Configuration
+![Configuration](docs/Configuration.png)
+
+#### Configuration (Dark)
+![Configuration Dark](docs/Configuration_dark.png)
+
+#### Fixed Items
+![Fixed Items](docs/FixedItems.png)
+
+#### Fixed Items (Dark)
+![Fixed Items Dark](docs/FixedItems_dark.png)
+
+#### History
+![History](docs/History.png)
+
+#### History (Dark)
+![History Dark](docs/History_dark.png)
+
+#### Recurrent Items (Dark)
+![Recurrent Items Dark](docs/RecurrentItems_dark.png)
+
+#### Reports
+![Reports](docs/Reports.png)
+
+#### Reports (Dark)
+![Reports Dark](docs/Reports_dark.png)
+
+#### Savings Projection (Dark)
+![Savings Projection Dark](docs/SavingsProjection_dark.png)
+
+</details>
