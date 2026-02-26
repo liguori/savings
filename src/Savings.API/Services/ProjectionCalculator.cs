@@ -290,6 +290,19 @@ namespace Savings.API.Services
                     currentInstallmentDate = CalculateActualInstallmentDate(item, currentInstallmentOriginal);
                 }
             }
+            if (item.Adjustements != null)
+            {
+                foreach (var adjustment in item.Adjustements)
+                {
+                    if (adjustment.RecurrencyNewDate.HasValue &&
+                        adjustment.RecurrencyNewDate.Value >= periodStart &&
+                        adjustment.RecurrencyNewDate.Value <= periodEnd &&
+                        !lstInstallmentsDate.Any(x => x.original == adjustment.RecurrencyDate))
+                    {
+                        lstInstallmentsDate.Add((adjustment.RecurrencyDate, adjustment.RecurrencyNewDate.Value));
+                    }
+                }
+            }
             return lstInstallmentsDate;
         }
 
