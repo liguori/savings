@@ -26,7 +26,7 @@ namespace Savings.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RecurrentMoneyItem>>> GetRecurrentMoneyItems(long? parentItemID, bool onlyActive, DateTime? endDateFrom, DateTime? endDateTo)
         {
-            var res = _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).AsQueryable();
+            var res = _context.RecurrentMoneyItems.Include(x => x.AssociatedItems).AsNoTracking().AsQueryable();
             if (onlyActive) res = res.Where(x => !x.EndDate.HasValue || x.EndDate.Value >= DateTime.Now.Date);
             if (endDateFrom.HasValue) res = res.Where(x => !x.EndDate.HasValue || x.EndDate.Value >= endDateFrom.Value);
             if (endDateTo.HasValue) res = res.Where(x => x.EndDate.HasValue && x.EndDate <= endDateTo.Value);
@@ -102,7 +102,7 @@ namespace Savings.API.Controllers
         [HttpPost("Credit")]
         public async Task<ActionResult<RecurrentMoneyItem>> InsertCreditFixedMoneyItem(FixedMoneyItem fixedItem)
         {
-            var defaultCreditMoneyItem = _context.RecurrentMoneyItems.FirstOrDefault(x => x.DefaultCredit);
+            var defaultCreditMoneyItem = await _context.RecurrentMoneyItems.FirstOrDefaultAsync(x => x.DefaultCredit);
 
             if (defaultCreditMoneyItem == null) return BadRequest("No default credit item");
 

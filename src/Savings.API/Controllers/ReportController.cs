@@ -35,7 +35,7 @@ namespace Savings.API.Controllers
         [HttpGet("GetCategoryResume")]
         public async Task<ActionResult<ReportCategory[]>> GetCategoryResume(string periodPattern, DateTime dateFrom, DateTime dateTo, bool? work)
         {
-            var categories = _context.MoneyCategories.ToList();
+            var categories = await _context.MoneyCategories.AsNoTracking().ToDictionaryAsync(c => c.ID);
             IEnumerable<ReportFullDetail> union = await GetCategoryDetailsAsync(periodPattern, dateFrom, dateTo, work);
 
             var categoryAmounts = union.GroupBy(x => x.CategoryID).Where(x => x.Sum(y => y.Amount) != 0);
@@ -43,7 +43,7 @@ namespace Savings.API.Controllers
             var lstStatistics = new List<ReportCategory>();
             foreach (var category in categoryAmounts)
             {
-                var cat = categories.FirstOrDefault(x => x.ID == category.Key);
+                categories.TryGetValue(category.Key ?? 0, out var cat);
                 lstStatistics.Add(new ReportCategory
                 {
                     CategoryID = category.Key,
@@ -62,26 +62,32 @@ namespace Savings.API.Controllers
         private async Task<IEnumerable<ReportFullDetail>> GetCategoryDetailsAsync(string periodPattern, DateTime dateFrom, DateTime dateTo, bool? work)
         {
             var projectionItems = await calculator.CalculateAsync(null, dateTo, null, false);
-            var withdrawalID = _context.Configuration.FirstOrDefault()?.CashWithdrawalCategoryID;
+            var withdrawalID = (await _context.Configuration.FirstOrDefaultAsync())?.CashWithdrawalCategoryID;
 
 
             Expression<Func<MaterializedMoneyItem, bool>> firstLevelPredicate = (x) => x.Date >= dateFrom && x.Date <= dateTo && x.CategoryID!= withdrawalID && x.Type != MoneyType.PeriodicBudget && !x.EndPeriod && x.Subitems.Count() == 0 && (!work.HasValue || x.Work == work.Value);
             Expression<Func<MaterializedMoneyItem, bool>> secondLevelPredicate = (x) => x.Date >= dateFrom && x.Date <= dateTo && x.CategoryID != withdrawalID && x.Type != MoneyType.PeriodicBudget && !x.EndPeriod && x.Subitems.Count() > 0 && (!work.HasValue || x.Work == work.Value);
             Expression<Func<ReportFullDetail, bool>> subItemPredicate = (x) => x.Date >= dateFrom && x.Date <= dateTo && x.CategoryID != withdrawalID && (!work.HasValue || x.Work == work.Value);
 
+            // Compile once for in-memory filtering of projection items
+            var firstLevelFunc = firstLevelPredicate.Compile();
+            var secondLevelFunc = secondLevelPredicate.Compile();
+            var subItemFunc = subItemPredicate.Compile();
+
             var projectionItemsFirstLevel = projectionItems
-                .Where(firstLevelPredicate.Compile())
+                .Where(firstLevelFunc)
                 .Select(x => new ReportFullDetail { Type = "ProjL1", ID = x.ID, Date = x.Date, Period = x.Date.ToString(periodPattern), Description = x.Note, CategoryID = x.CategoryID, Amount = x.Amount, Work = x.Work })
                 .ToList();
 
             var projectionItemsSecondLevel = projectionItems
-                .Where(secondLevelPredicate.Compile())
+                .Where(secondLevelFunc)
                 .SelectMany(x => x.Subitems, (x, subitem) => new ReportFullDetail { Type = "ProjL2", ID = subitem.ID, Date = subitem.Date, Period = subitem.Date.ToString(periodPattern), Description = subitem.Note, CategoryID = subitem.CategoryID, Amount = subitem.Amount, Work = x.Work || subitem.Work })
-                .Where(subItemPredicate.Compile())
+                .Where(subItemFunc)
                 .ToList();
 
             var materializedItemsFirstLevel = await _context.MaterializedMoneyItems
                 .Include(x => x.Category)
+                .AsNoTracking()
                 .Where(firstLevelPredicate)
                 .OrderByDescending(x => x.ID)
                 .Select(x => new ReportFullDetail { Type = "MaterL1", ID = x.ID, Date = x.Date, Period = x.Date.ToString(periodPattern), Description = x.Note, CategoryID = x.CategoryID, Amount = x.Amount, Work = x.Work })
@@ -89,6 +95,7 @@ namespace Savings.API.Controllers
 
             var materializedItemsSecondLevel = await _context.MaterializedMoneyItems
                 .Include(x => x.Category)
+                .AsNoTracking()
                 .Where(secondLevelPredicate)
                 .SelectMany(x => x.Subitems, (moneyItem, subitem) => new ReportFullDetail { Type = "MaterL2", ID = subitem.ID, Date = subitem.Date, Period = subitem.Date.ToString(periodPattern), Description = subitem.Note, CategoryID = subitem.CategoryID, Amount = subitem.Amount, Work = moneyItem.Work || subitem.Work })
                 .Where(subItemPredicate)

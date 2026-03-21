@@ -42,6 +42,19 @@ namespace Savings.API.Infrastructure
             modelBuilder.Entity<MaterializedMoneyItem>().HasData(
                new MaterializedMoneyItem { ID = 1, Date = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day), Amount = 0, Type = MoneyType.InstallmentPayment, Projection = 0, EndPeriod = true, Cash = false }
             );
+
+            // Performance indexes on frequently queried columns
+            modelBuilder.Entity<FixedMoneyItem>()
+                .HasIndex(x => x.Date);
+
+            modelBuilder.Entity<MaterializedMoneyItem>()
+                .HasIndex(x => x.Date);
+
+            modelBuilder.Entity<MaterializedMoneyItem>()
+                .HasIndex(x => x.EndPeriod);
+
+            modelBuilder.Entity<RecurrentMoneyItem>()
+                .HasIndex(x => x.StartDate);
         }
 
         public DbSet<MaterializedMoneyItem> MaterializedMoneyItems { get; set; }

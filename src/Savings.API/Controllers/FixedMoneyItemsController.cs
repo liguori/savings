@@ -20,8 +20,8 @@ namespace Savings.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FixedMoneyItem>>> GetFixedMoneyItems(DateTime? from, DateTime? to, bool excludeWithdrawal, long? filterCategory, bool? showToVerifyOnly)
         {
-            var withdrawalID = _context.Configuration.FirstOrDefault()?.CashWithdrawalCategoryID;
-            var result = _context.FixedMoneyItems.Include(x => x.Category).AsQueryable();
+            var withdrawalID = (await _context.Configuration.FirstOrDefaultAsync())?.CashWithdrawalCategoryID;
+            var result = _context.FixedMoneyItems.Include(x => x.Category).AsNoTracking().AsQueryable();
             if (from.HasValue) result = result.Where(x => x.Date >= from);
             if (to.HasValue) result = result.Where(x => x.Date <= to);
             if (filterCategory.HasValue) result = result.Where(x => x.CategoryID == filterCategory);
@@ -36,6 +36,7 @@ namespace Savings.API.Controllers
         {
             var items = await _context.FixedMoneyItems
                 .Include(x => x.Category)
+                .AsNoTracking()
                 .Where(x => x.ToVerify)
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
