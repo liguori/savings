@@ -568,11 +568,23 @@ tr.selected-row {
 
 /* Summary toggle button */
 .summary-toggle-btn {
-    border: 1px solid #6c757d;
+    border: none;
     background: transparent;
     padding: 2px 6px;
     line-height: 1;
-    vertical-align: middle;
+    opacity: 0.5;
+    font-size: 0.85rem;
+}
+
+.summary-toggle-btn:hover {
+    opacity: 1;
+}
+
+/* Projection title row with toggle */
+.projection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Balance Trend Mini-Chart */
@@ -588,10 +600,6 @@ tr.selected-row {
 }
 
 /* Income/Expense row subtle color coding */
-tr.income-row:not(.end-period) td {
-    border-left: 3px solid transparent;
-}
-
 tr.income-row:not(.end-period) > td:first-child {
     border-left: 3px solid #27ae60;
 }

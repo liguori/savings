@@ -1,6 +1,11 @@
 @page "/"
 @attribute [Authorize]
-<h1>Projection</h1>
+<div class="projection-header">
+    <h1>Projection</h1>
+    <button class="summary-toggle-btn" @onclick="ToggleSummaryCards" title="@(ShowSummaryCards ? "Hide summary" : "Show summary")">
+        <span class="oi oi-@(ShowSummaryCards ? "collapse-up" : "graph")" aria-hidden="true"></span>
+    </button>
+</div>
 @if (materializedMoneyItems == null)
 {
     <div class="loading-container">
@@ -29,9 +34,6 @@ else
             <br />
             <button class="btn-sm btn-success" @onclick="AddNew">
                 <span class="oi oi-plus" aria-hidden="true"></span>
-            </button>
-            <button class="btn-sm btn-outline-secondary ms-1 summary-toggle-btn" @onclick="ToggleSummaryCards" title="@(ShowSummaryCards ? "Hide summary" : "Show summary")">
-                <span class="oi oi-@(ShowSummaryCards ? "collapse-up" : "graph")" aria-hidden="true"></span>
             </button>
         </div>
     </div>
