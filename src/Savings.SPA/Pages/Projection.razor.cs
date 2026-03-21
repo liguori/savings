@@ -29,6 +29,18 @@ namespace Savings.SPA.Pages
 
         public Configuration CurrentConfiguration { get; set; } = default!;
 
+        public bool ShowSummaryCards { get; set; } = false;
+
+        // Dashboard summary properties
+        public decimal CurrentBalance { get; set; }
+        public decimal NextPeriodEndProjection { get; set; }
+        public decimal PeriodIncome { get; set; }
+        public decimal PeriodExpenses { get; set; }
+        public decimal PeriodGain { get; set; }
+
+        // Balance trend data for mini-chart
+        public List<BalanceTrendDataItem> BalanceTrendData { get; set; } = new();
+
         protected override async Task OnInitializedAsync()
         {
             FilterDateTo = DateTime.Now.Date.AddYears(1);
@@ -88,6 +100,56 @@ namespace Savings.SPA.Pages
                 }
             }
 
+            ComputeDashboardSummary();
+        }
+
+        void ComputeDashboardSummary()
+        {
+            if (materializedMoneyItems == null || materializedMoneyItems.Length == 0)
+            {
+                CurrentBalance = 0;
+                NextPeriodEndProjection = 0;
+                PeriodIncome = 0;
+                PeriodExpenses = 0;
+                PeriodGain = 0;
+                BalanceTrendData = new();
+                return;
+            }
+
+            // Current balance: projection of the last item on or before today
+            var todayOrLast = materializedMoneyItems.LastOrDefault(x => x.Date <= DateTime.Now.Date);
+            CurrentBalance = todayOrLast?.Projection ?? materializedMoneyItems.First().Projection;
+
+            // Next period end: first end-period item after today
+            var nextEndPeriod = materializedMoneyItems.FirstOrDefault(x => x.EndPeriod && x.Date > DateTime.Now.Date);
+            NextPeriodEndProjection = nextEndPeriod?.Projection ?? materializedMoneyItems.Last().Projection;
+
+            // Income/Expenses for items in the visible list (non end-period)
+            var nonEndPeriodItems = materializedMoneyItems.Where(x => !x.EndPeriod).ToArray();
+            PeriodIncome = nonEndPeriodItems.Where(x => x.Amount > 0).Sum(x => x.Amount);
+            PeriodExpenses = nonEndPeriodItems.Where(x => x.Amount < 0).Sum(x => x.Amount);
+            PeriodGain = PeriodIncome + PeriodExpenses;
+
+            // Build balance trend data from end-period items for the sparkline
+            var endPeriodItems = materializedMoneyItems.Where(x => x.EndPeriod).ToList();
+            BalanceTrendData = endPeriodItems.Select(x => new BalanceTrendDataItem
+            {
+                Label = x.Date.ToString("MMM yy"),
+                Value = (double)x.Projection
+            }).ToList();
+        }
+
+        void ToggleSummaryCards()
+        {
+            ShowSummaryCards = !ShowSummaryCards;
+        }
+
+        string GetAmountRowClass(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return "";
+            if (item.Amount > 0) return "income-row";
+            if (item.Amount < 0) return "expense-row";
+            return "";
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -158,5 +220,11 @@ namespace Savings.SPA.Pages
                 await InitializeRowSelection();
             }
         }
+    }
+
+    public class BalanceTrendDataItem
+    {
+        public string Label { get; set; } = "";
+        public double Value { get; set; }
     }
 }

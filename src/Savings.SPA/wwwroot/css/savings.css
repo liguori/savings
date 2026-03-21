@@ -515,6 +515,149 @@ tr.selected-row {
     border-bottom: 1px solid #2d2d2d;
 }
 
+/* Summary Cards */
+.summary-cards .summary-card {
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-cards .summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.summary-card-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
+.summary-card-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.summary-card-balance {
+    background: linear-gradient(135deg, #60368e 0%, #8b5fc7 100%);
+    color: white;
+}
+
+.summary-card-projected {
+    background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+    color: white;
+}
+
+.summary-card-income {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+}
+
+.summary-card-expense {
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+    color: white;
+}
+
+.summary-card-gain {
+    background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+    color: white;
+}
+
+/* Summary toggle button */
+.summary-toggle-btn {
+    border: none;
+    background: transparent;
+    padding: 2px 6px;
+    line-height: 1;
+    opacity: 0.5;
+    font-size: 0.85rem;
+}
+
+.summary-toggle-btn:hover {
+    opacity: 1;
+}
+
+[data-theme="dark"] .summary-toggle-btn {
+    color: #ffffff;
+}
+
+/* Projection title row with toggle */
+.projection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Balance Trend Mini-Chart */
+.balance-trend-container {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+    padding: 4px;
+}
+
+[data-theme="dark"] .balance-trend-container {
+    background: #2d2d2d;
+}
+
+/* Income/Expense row subtle color coding */
+tr.income-row:not(.end-period) > td:first-child {
+    border-left: 3px solid #27ae60;
+}
+
+tr.expense-row:not(.end-period) > td:first-child {
+    border-left: 3px solid #e74c3c;
+}
+
+/* Loading container */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+/* Spending breakdown list */
+.spending-list {
+    padding: 0 5px;
+}
+
+.spending-list-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.spending-list-item:last-child {
+    border-bottom: none;
+}
+
+[data-theme="dark"] .spending-list-item {
+    border-bottom-color: #404040;
+}
+
+.progress {
+    background-color: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .progress {
+    background-color: #404040;
+}
+
+/* Dark theme for summary cards (they use gradients so already look good) */
+[data-theme="dark"] .summary-card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+[data-theme="dark"] .summary-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
 @media only screen and (max-width: 800px) {
     /* Force table to not be like tables anymore */
     .mobile-resume table, .mobile-resume thead, .mobile-resume tbody, .mobile-resume th, .mobile-resume td, .mobile-resume tr {

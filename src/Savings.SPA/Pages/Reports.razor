@@ -3,7 +3,12 @@
 <h1>Reports</h1>
 @if (RecurrentItems == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="loading-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading reports...</p>
+    </div>
 }
 else
 {
@@ -29,7 +34,49 @@ else
             <RadzenSwitch @bind-Value="FilterWork" Change="@(args => FilterWorkChanged(args))" />
         </div>
     </div>
-    <div class="table-responsive">
+
+    @* Spending Breakdown Donut Chart *@
+    @if (SpendingByCategory.Any())
+    {
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h5>Spending by Category</h5>
+                <RadzenChart Style="height: 300px; width: 100%;">
+                    <RadzenDonutSeries Data="@SpendingByCategory" CategoryProperty="Category" ValueProperty="Amount"
+                                        Fills="@SpendingCategoryColors"
+                                        Title="Spending">
+                        <RadzenSeriesDataLabels Visible="false" />
+                    </RadzenDonutSeries>
+                </RadzenChart>
+            </div>
+            <div class="col-md-6">
+                <h5>Top Spending Categories</h5>
+                <div class="spending-list">
+                    @{
+                        var maxSpending = SpendingByCategory.FirstOrDefault()?.Amount ?? 0;
+                        var topCategories = SpendingByCategory.Take(8).ToList();
+                    }
+                    @for (int idx = 0; idx < topCategories.Count; idx++)
+                    {
+                        var item = topCategories[idx];
+                        <div class="spending-list-item">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-semibold">@item.CategoryIcon @item.Category</span>
+                                <span class="fw-bold">@item.Amount.ToString("N2")</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: @(maxSpending > 0 ? (item.Amount / maxSpending * 100).ToString("F0") : "0")%; background-color: @GetCategoryColor(idx)">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="table-responsive mt-3">
         <table class="table table-bordered table-sm table-striped table-hover">
             <thead class="table-dark">
                 <tr>

@@ -47,5 +47,13 @@ namespace Savings.SPA.Pages
                 await InitializeList();
             }
         }
+
+        string GetAmountRowClass(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return "";
+            if (item.Amount > 0) return "income-row";
+            if (item.Amount < 0) return "expense-row";
+            return "";
+        }
     }
 }
