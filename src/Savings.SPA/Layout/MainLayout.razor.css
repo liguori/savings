@@ -79,6 +79,11 @@ main {
     .top-row ::deep a, .top-row ::deep .btn-link {
         margin-left: 0;
     }
+
+    article.content {
+        padding-left: 0.25rem !important;
+        padding-right: 0.25rem !important;
+    }
 }
 
 @media (min-width: 641px) {

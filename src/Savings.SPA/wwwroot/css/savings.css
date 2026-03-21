@@ -580,6 +580,10 @@ tr.selected-row {
     opacity: 1;
 }
 
+[data-theme="dark"] .summary-toggle-btn {
+    color: #ffffff;
+}
+
 /* Projection title row with toggle */
 .projection-header {
     display: flex;
