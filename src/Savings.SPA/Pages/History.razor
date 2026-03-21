@@ -37,7 +37,7 @@ else
             <tbody>
                 @foreach (var item in materializedMoneyItems)
                 {
-                    <tr class="@(item.EndPeriod ? "end-period" : "")">
+                    <tr class="@(item.EndPeriod ? "end-period" : "") @GetAmountRowClass(item)">
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
                         <td class="text-end">@item.Amount.ToString("N2")</td>
                         <td class="text-center">

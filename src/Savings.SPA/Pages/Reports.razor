@@ -43,6 +43,7 @@ else
                 <h5>Spending by Category</h5>
                 <RadzenChart Style="height: 300px; width: 100%;">
                     <RadzenDonutSeries Data="@SpendingByCategory" CategoryProperty="Category" ValueProperty="Amount"
+                                        Fills="@SpendingCategoryColors"
                                         Title="Spending">
                         <RadzenSeriesDataLabels Visible="false" />
                     </RadzenDonutSeries>

@@ -33,6 +33,7 @@ namespace Savings.SPA.Pages
 
         // Spending breakdown data for donut chart
         public List<CategorySpendingSummary> SpendingByCategory { get; set; } = new();
+        public string[] SpendingCategoryColors { get; set; } = Array.Empty<string>();
 
         private static readonly string[] CategoryColors = new[]
         {
@@ -113,6 +114,7 @@ namespace Savings.SPA.Pages
             if (statistics == null)
             {
                 SpendingByCategory = new();
+                SpendingCategoryColors = Array.Empty<string>();
                 return;
             }
 
@@ -127,6 +129,10 @@ namespace Savings.SPA.Pages
                 .Where(x => x.Amount > 0)
                 .OrderByDescending(x => x.Amount)
                 .ToList();
+
+            SpendingCategoryColors = SpendingByCategory
+                .Select((_, idx) => GetCategoryColor(idx))
+                .ToArray();
         }
 
         static string GetCategoryColor(int index)

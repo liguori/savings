@@ -29,11 +29,14 @@ namespace Savings.SPA.Pages
 
         public Configuration CurrentConfiguration { get; set; } = default!;
 
+        public bool ShowSummaryCards { get; set; } = false;
+
         // Dashboard summary properties
         public decimal CurrentBalance { get; set; }
         public decimal NextPeriodEndProjection { get; set; }
         public decimal PeriodIncome { get; set; }
         public decimal PeriodExpenses { get; set; }
+        public decimal PeriodGain { get; set; }
 
         // Balance trend data for mini-chart
         public List<BalanceTrendDataItem> BalanceTrendData { get; set; } = new();
@@ -108,6 +111,7 @@ namespace Savings.SPA.Pages
                 NextPeriodEndProjection = 0;
                 PeriodIncome = 0;
                 PeriodExpenses = 0;
+                PeriodGain = 0;
                 BalanceTrendData = new();
                 return;
             }
@@ -124,6 +128,7 @@ namespace Savings.SPA.Pages
             var nonEndPeriodItems = materializedMoneyItems.Where(x => !x.EndPeriod).ToArray();
             PeriodIncome = nonEndPeriodItems.Where(x => x.Amount > 0).Sum(x => x.Amount);
             PeriodExpenses = nonEndPeriodItems.Where(x => x.Amount < 0).Sum(x => x.Amount);
+            PeriodGain = PeriodIncome + PeriodExpenses;
 
             // Build balance trend data from end-period items for the sparkline
             var endPeriodItems = materializedMoneyItems.Where(x => x.EndPeriod).ToList();
@@ -132,6 +137,11 @@ namespace Savings.SPA.Pages
                 Label = x.Date.ToString("MMM yy"),
                 Value = (double)x.Projection
             }).ToList();
+        }
+
+        void ToggleSummaryCards()
+        {
+            ShowSummaryCards = !ShowSummaryCards;
         }
 
         string GetAmountRowClass(MaterializedMoneyItem item)

@@ -561,6 +561,20 @@ tr.selected-row {
     color: white;
 }
 
+.summary-card-gain {
+    background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+    color: white;
+}
+
+/* Summary toggle button */
+.summary-toggle-btn {
+    border: 1px solid #6c757d;
+    background: transparent;
+    padding: 2px 6px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
 /* Balance Trend Mini-Chart */
 .balance-trend-container {
     border-radius: 8px;
@@ -571,12 +585,6 @@ tr.selected-row {
 
 [data-theme="dark"] .balance-trend-container {
     background: #2d2d2d;
-}
-
-/* Category icon in projection table */
-.category-icon {
-    margin-right: 4px;
-    font-size: 1rem;
 }
 
 /* Income/Expense row subtle color coding */
@@ -627,11 +635,6 @@ tr.expense-row:not(.end-period) > td:first-child {
 
 [data-theme="dark"] .progress {
     background-color: #404040;
-}
-
-/* Alert styling improvements */
-.alert-warning {
-    border-left: 4px solid #ffc107;
 }
 
 /* Dark theme for summary cards (they use gradients so already look good) */
