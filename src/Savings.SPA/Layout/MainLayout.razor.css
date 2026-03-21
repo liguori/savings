@@ -81,9 +81,8 @@ main {
     }
 
     article.content {
-        padding-left: 0.25rem !important;
-        padding-right: 0.25rem !important;
-        overflow-x: hidden;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
     }
 }
 
