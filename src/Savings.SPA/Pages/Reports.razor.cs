@@ -31,10 +31,21 @@ namespace Savings.SPA.Pages
 
         ReportCategory[] statistics = default!;
 
+        // Spending breakdown data for donut chart
+        public List<SpendingCategoryItem> SpendingByCategory { get; set; } = new();
+
+        private static readonly string[] CategoryColors = new[]
+        {
+            "#60368e", "#e74c3c", "#3498db", "#2ecc71", "#f39c12",
+            "#1abc9c", "#9b59b6", "#e67e22", "#34495e", "#16a085",
+            "#c0392b", "#2980b9", "#27ae60", "#d35400", "#8e44ad"
+        };
+
         async void DateTimeDateChanged(DateTime? value, string name)
         {
             await InitializeCategoryResume();
             await InitializeEndPeriods();
+            ComputeSpendingBreakdown();
             StateHasChanged();
         }
 
@@ -42,6 +53,7 @@ namespace Savings.SPA.Pages
         {
             await InitializeCategoryResume();
             await InitializeEndPeriods();
+            ComputeSpendingBreakdown();
             StateHasChanged();
         }
 
@@ -51,6 +63,7 @@ namespace Savings.SPA.Pages
             FilterCategoryGroupByPeriod = string.IsNullOrWhiteSpace(selectedString) ? string.Empty : selectedString;
 
             await InitializeCategoryResume();
+            ComputeSpendingBreakdown();
             StateHasChanged();
         }
 
@@ -63,6 +76,7 @@ namespace Savings.SPA.Pages
             await InitializeCategoryResume();
             await InitializeInstallmentResume();
             await InitializeEndPeriods();
+            ComputeSpendingBreakdown();
         }
 
         async Task InitializeInstallmentResume()
@@ -92,6 +106,32 @@ namespace Savings.SPA.Pages
             projection = projection.Where(x => x.EndPeriod).ToArray();
 
             EndPeriods = past.Union(projection).ToArray();
+        }
+
+        void ComputeSpendingBreakdown()
+        {
+            if (statistics == null)
+            {
+                SpendingByCategory = new();
+                return;
+            }
+
+            SpendingByCategory = statistics
+                .Where(s => s.Data != null)
+                .Select(s => new SpendingCategoryItem
+                {
+                    Category = s.Category ?? "Unknown",
+                    CategoryIcon = s.CategoryIcon ?? "",
+                    Amount = Math.Abs(s.Data.Where(d => d.Amount < 0).Sum(d => d.Amount))
+                })
+                .Where(x => x.Amount > 0)
+                .OrderByDescending(x => x.Amount)
+                .ToList();
+        }
+
+        static string GetCategoryColor(int index)
+        {
+            return CategoryColors[index % CategoryColors.Length];
         }
 
         async Task OpenDetails(long? category, string period)
@@ -156,4 +196,10 @@ namespace Savings.SPA.Pages
         }
     }
 
+    public class SpendingCategoryItem
+    {
+        public string Category { get; set; } = "";
+        public string CategoryIcon { get; set; } = "";
+        public double Amount { get; set; }
+    }
 }

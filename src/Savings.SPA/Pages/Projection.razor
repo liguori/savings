@@ -3,11 +3,16 @@
 <h1>Projection</h1>
 @if (materializedMoneyItems == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="loading-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading projections...</p>
+    </div>
 }
 else
 {
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-md-2 col-5">
             <span>To:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
@@ -27,10 +32,61 @@ else
             </button>
         </div>
     </div>
+
+    @* Dashboard Summary Cards *@
+    <div class="row mb-3 summary-cards">
+        <div class="col-md-3 col-6 mb-2">
+            <div class="summary-card summary-card-balance">
+                <div class="summary-card-label">Current Balance</div>
+                <div class="summary-card-value">@CurrentBalance.ToString("N2")</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <div class="summary-card summary-card-projected">
+                <div class="summary-card-label">Next Period End</div>
+                <div class="summary-card-value">@NextPeriodEndProjection.ToString("N2")</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <div class="summary-card summary-card-income">
+                <div class="summary-card-label">Period Income</div>
+                <div class="summary-card-value">+@PeriodIncome.ToString("N2")</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <div class="summary-card summary-card-expense">
+                <div class="summary-card-label">Period Expenses</div>
+                <div class="summary-card-value">@PeriodExpenses.ToString("N2")</div>
+            </div>
+        </div>
+    </div>
+
+    @* Balance Trend Mini-Chart *@
+    @if (BalanceTrendData.Any())
+    {
+        <div class="balance-trend-container mb-3">
+            <RadzenChart Style="height: 120px; width: 100%;">
+                <RadzenAreaSeries Smooth="true" Data="@BalanceTrendData" CategoryProperty="Label" ValueProperty="Value"
+                                  Stroke="rgba(96, 54, 142, 0.8)" Fill="rgba(96, 54, 142, 0.15)" StrokeWidth="2">
+                    <RadzenMarkers Visible="false" />
+                </RadzenAreaSeries>
+                <RadzenCategoryAxis Visible="false" />
+                <RadzenValueAxis Visible="false">
+                    <RadzenGridLines Visible="false" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    }
+
     @if (fixedMoneyItemsToVerify.Length > 0)
     {
-        <div class="row">
-            <a href="fixed-items?toverify=1">@fixedMoneyItemsToVerify.Length items to review</a>
+        <div class="row mb-2">
+            <div class="col">
+                <div class="alert alert-warning d-flex align-items-center py-2 mb-0" role="alert">
+                    <span class="oi oi-warning me-2" aria-hidden="true"></span>
+                    <a href="fixed-items?toverify=1">@fixedMoneyItemsToVerify.Length items to review</a>
+                </div>
+            </div>
         </div>
     }
     <div class="table-responsive-sm">
@@ -50,7 +106,7 @@ else
             <tbody>
                 @foreach (var item in materializedMoneyItems)
                 {
-                    <tr class="@(item.EndPeriod ? "end-period" : "") item-action" @onclick="@(() => item.IsRecurrent ? AdjustRecurrency(item) : AdjustFixedItem(item))">
+                    <tr class="@(item.EndPeriod ? "end-period" : "") @GetAmountRowClass(item) item-action" @onclick="@(() => item.IsRecurrent ? AdjustRecurrency(item) : AdjustFixedItem(item))">
                         <td class="text-center">
                             @if (item.Date <= DateTime.Now.Date)
                             {
@@ -120,7 +176,13 @@ else
                                 }
                             }
                         </td>
-                        <td class="ellipses">@item.Note</td>
+                        <td class="ellipses">
+                            @if (!item.EndPeriod && !string.IsNullOrEmpty(item.Category?.Icon))
+                            {
+                                <span class="category-icon" title="@item.Category?.Description">@item.Category?.Icon</span>
+                            }
+                            @item.Note
+                        </td>
                         <td>
                             @if (!item.EndPeriod)
                             {
