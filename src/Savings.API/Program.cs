@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Savings.API.Authentication;
 using Savings.API.Infrastructure;
@@ -8,6 +9,7 @@ using Savings.API.OpenApi;
 using Savings.API.Services;
 using Savings.API.Services.Abstract;
 using Savings.Model;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -66,6 +68,15 @@ builder.Services.AddCors(options =>
     builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -81,6 +92,7 @@ using (var scope = app.Services.CreateScope())
 {
     scope.ServiceProvider.GetRequiredService<SavingsContext>()?.Database.EnsureCreated();
 }
+app.UseResponseCompression();
 app.UseCors("AllowAllOrigin");
 
 app.UseHttpsRedirection();

@@ -27,6 +27,7 @@ namespace Savings.API.Services
                             .Where(x => x.CategoryID != config.CashWithdrawalCategoryID && x.Cash)
                             .Union(itemsToAccumulate
                             .Where(x => x.CategoryID != config.CashWithdrawalCategoryID && x.Cash))
+                            .OrderBy(x => x.Date)
                             .ToList();
 
 
@@ -48,7 +49,8 @@ namespace Savings.API.Services
             decimal cashLeftToSpend = 0;
             foreach (var cashWithdrawalItem in cashWithdrawal)
             {
-                var currentCashItems = cashItems.Where(x => x.Date >= cashWithdrawalItem.Date).OrderBy(x => x.Date);
+                // cashItems is pre-sorted by Date, so filter only (no re-sort needed)
+                var currentCashItems = cashItems.Where(x => x.Date >= cashWithdrawalItem.Date);
                 if (currentCashItems.Any()) cashWithdrawalItem.Note += $"(Original amount {cashWithdrawalItem.Amount})";
                 if (carryCashExpenses > 0)
                 {
@@ -119,12 +121,13 @@ namespace Savings.API.Services
             while ((periodEnd = CalculateNextReccurrency(periodStart, config.EndPeriodRecurrencyType, config.EndPeriodRecurrencyInterval).AddDays(-1)) <= toInput || periodStart < toInput)
             {
                 int accumulatorStartingIndex = res.Count;
-                var fixedItemsNotAccumulate = fixedItems
-                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && !x.AccumulateForBudget)
-                    .ToList();
-                var fixedItemsAccumulate = fixedItems
-                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd && x.AccumulateForBudget)
-                    .ToList();
+
+                // Single-pass filtering: partition fixed items by AccumulateForBudget in one iteration
+                var periodFixedItems = fixedItems
+                    .Where(x => x.Date >= periodStart && x.Date <= periodEnd)
+                    .ToLookup(x => x.AccumulateForBudget);
+                var fixedItemsNotAccumulate = periodFixedItems[false].ToList();
+                var fixedItemsAccumulate = periodFixedItems[true].ToList();
                 var periodRecurrentItems = recurrentItems
                     .Where(x => (x.StartDate <= periodEnd && (!x.EndDate.HasValue || periodStart <= x.EndDate) && x.RecurrentMoneyItemID == null) ||
                                 (x.Adjustements.Any(a => a.RecurrencyNewDate.HasValue && a.RecurrencyNewDate.Value >= periodStart && a.RecurrencyNewDate.Value <= periodEnd)))
@@ -175,7 +178,7 @@ namespace Savings.API.Services
                 accumulateMaterializedItem.Amount = accumulateMaterializedItem.Subitems.Sum(x => x.Amount);
                 if (fixedItemsAccumulate.Count > 0)
                 {
-                    accumulateMaterializedItem.Note += ": " + string.Join(',', fixedItemsAccumulate.Select(x => x.Note).ToArray());
+                    accumulateMaterializedItem.Note += ": " + string.Join(',', fixedItemsAccumulate.Select(x => x.Note));
                 }
                 res.Add(accumulateMaterializedItem);
 
@@ -209,7 +212,7 @@ namespace Savings.API.Services
                             foreach (var associatedItem in associatedItemsToCalculate)
                             {
                                 var associatedIteminstallment = CalculateInstallmentInPeriod(associatedItem, installment.original, installment.original);
-                                if (associatedIteminstallment.Count() > 0)
+                                if (associatedIteminstallment.Count > 0)
                                 {
                                     if (currentAdjustment?.RecurrencyNewAmount == null)
                                     {
@@ -221,7 +224,7 @@ namespace Savings.API.Services
                             }
                             if (lstNoteAssociatedItems.Count > 0)
                             {
-                                currentInstallmentNote += ": " + string.Join(',', lstNoteAssociatedItems.ToArray());
+                                currentInstallmentNote += ": " + string.Join(',', lstNoteAssociatedItems);
                             }
                         }
 
@@ -275,7 +278,7 @@ namespace Savings.API.Services
         }
 
 
-        IEnumerable<(DateTime original, DateTime currentDate)> CalculateInstallmentInPeriod(RecurrentMoneyItem item, DateTime periodStart, DateTime periodEnd)
+        List<(DateTime original, DateTime currentDate)> CalculateInstallmentInPeriod(RecurrentMoneyItem item, DateTime periodStart, DateTime periodEnd)
         {
             var lstInstallmentsDate = new List<(DateTime original, DateTime currentDate)>();
             if (item.StartDate <= periodEnd && (!item.EndDate.HasValue || periodStart <= item.EndDate.Value))
@@ -309,7 +312,7 @@ namespace Savings.API.Services
         private static DateTime CalculateActualInstallmentDate(RecurrentMoneyItem item, DateTime currentInstallmentOriginal)
         {
             DateTime currentInstallmentDate;
-            var adjustment = item.Adjustements?.Where(x => x.RecurrencyDate == currentInstallmentOriginal && x.RecurrencyNewDate.HasValue).FirstOrDefault();
+            var adjustment = item.Adjustements?.FirstOrDefault(x => x.RecurrencyDate == currentInstallmentOriginal && x.RecurrencyNewDate.HasValue);
             if (adjustment != null)
                 currentInstallmentDate = adjustment.RecurrencyNewDate!.Value;
             else

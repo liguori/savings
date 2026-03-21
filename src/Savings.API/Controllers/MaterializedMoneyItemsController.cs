@@ -54,7 +54,7 @@ namespace Savings.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MaterializedMoneyItem>>> GetMaterializedMoneyItems(DateTime? from, DateTime? to, bool onlyRecurrent)
         {
-            var res = _context.MaterializedMoneyItems.AsQueryable();
+            var res = _context.MaterializedMoneyItems.AsNoTracking().AsQueryable();
             if (from.HasValue) res = res.Where(x => x.Date >= from);
             if (to.HasValue) res = res.Where(x => x.Date <= to);
             if (onlyRecurrent) res = res.Where(x => x.IsRecurrent);
