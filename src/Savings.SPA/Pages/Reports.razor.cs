@@ -32,7 +32,7 @@ namespace Savings.SPA.Pages
         ReportCategory[] statistics = default!;
 
         // Spending breakdown data for donut chart
-        public List<SpendingCategoryItem> SpendingByCategory { get; set; } = new();
+        public List<CategorySpendingSummary> SpendingByCategory { get; set; } = new();
 
         private static readonly string[] CategoryColors = new[]
         {
@@ -118,7 +118,7 @@ namespace Savings.SPA.Pages
 
             SpendingByCategory = statistics
                 .Where(s => s.Data != null)
-                .Select(s => new SpendingCategoryItem
+                .Select(s => new CategorySpendingSummary
                 {
                     Category = s.Category ?? "Unknown",
                     CategoryIcon = s.CategoryIcon ?? "",
@@ -196,7 +196,7 @@ namespace Savings.SPA.Pages
         }
     }
 
-    public class SpendingCategoryItem
+    public class CategorySpendingSummary
     {
         public string Category { get; set; } = "";
         public string CategoryIcon { get; set; } = "";

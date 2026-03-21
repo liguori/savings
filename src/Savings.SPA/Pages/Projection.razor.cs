@@ -36,7 +36,7 @@ namespace Savings.SPA.Pages
         public decimal PeriodExpenses { get; set; }
 
         // Balance trend data for mini-chart
-        public List<ChartDataItem> BalanceTrendData { get; set; } = new();
+        public List<BalanceTrendDataItem> BalanceTrendData { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -127,7 +127,7 @@ namespace Savings.SPA.Pages
 
             // Build balance trend data from end-period items for the sparkline
             var endPeriodItems = materializedMoneyItems.Where(x => x.EndPeriod).ToList();
-            BalanceTrendData = endPeriodItems.Select(x => new ChartDataItem
+            BalanceTrendData = endPeriodItems.Select(x => new BalanceTrendDataItem
             {
                 Label = x.Date.ToString("MMM yy"),
                 Value = (double)x.Projection
@@ -212,7 +212,7 @@ namespace Savings.SPA.Pages
         }
     }
 
-    public class ChartDataItem
+    public class BalanceTrendDataItem
     {
         public string Label { get; set; } = "";
         public double Value { get; set; }
