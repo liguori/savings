@@ -40,7 +40,7 @@ jobs:
           files: 'deploy/appsettings.json,deploy/appsettings.Development.json,deploy/appsettings.Production.json'
         env:
           ApiKeys: ${{ secrets.APPSERVICE_CONFIG_APIKEY }}
-          DatabasePath: 'Savings.db'
+          DatabasePath: ${{ vars.DATABASE_PATH }}
           AuthenticationToUse: 'AzureAD'
           IdentityProvider.Audience: ${{ vars.APPSERVICE_CONFIG_IDENTITY_AUDIENCE }}
           IdentityProvider.Authority: ${{ vars.APPSERVICE_CONFIG_IDENTITY_AUTHORITY }}
