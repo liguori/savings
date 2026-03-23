@@ -57,7 +57,7 @@
                 <span class="oi oi-document" aria-hidden="true"></span> Reports
             </NavLink>
         </div>
-        @if (FederationService.IsEnabled)
+        @if (hasFederationEndpoints)
         {
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/federated-projection">
@@ -81,6 +81,7 @@
 @code {
 
     private bool collapseNavMenu = true;
+    private bool hasFederationEndpoints = false;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : string.Empty;
 
@@ -88,6 +89,16 @@
     {
         await ThemeService.InitializeAsync();
         ThemeService.ThemeChanged += StateHasChanged;
+
+        try
+        {
+            var endpoints = await FederationService.GetEndpointsAsync();
+            hasFederationEndpoints = endpoints.Length > 0;
+        }
+        catch
+        {
+            hasFederationEndpoints = false;
+        }
     }
 
     public void Dispose()

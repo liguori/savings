@@ -61,4 +61,54 @@ else
         </div>
     </EditForm>
 
+    <hr />
+    <h3>Federation Endpoints</h3>
+    <p class="text-muted">Configure remote Savings installations to merge projection data in a unified read-only view.</p>
+
+    @if (FederationEndpoints == null)
+    {
+        <p><em>Loading endpoints...</em></p>
+    }
+    else
+    {
+        <table class="table table-sm table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Url</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var endpoint in FederationEndpoints)
+                {
+                    <tr>
+                        <td>@endpoint.Name</td>
+                        <td>@endpoint.Url</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteEndpoint(endpoint)">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label>Name:</label>
+                <input @bind="NewEndpointName" class="form-control" placeholder="e.g. Personal" />
+            </div>
+            <div class="col-md-6">
+                <label>Url:</label>
+                <input @bind="NewEndpointUrl" class="form-control" placeholder="e.g. https://savings-personal.example.com/" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success w-100" @onclick="AddEndpoint">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Add
+                </button>
+            </div>
+        </div>
+    }
 }

@@ -18,6 +18,12 @@ namespace Savings.SPA.Pages
 
         public decimal LastMaterializedAmount { get; set; }
 
+        public FederationEndpoint[]? FederationEndpoints { get; set; }
+
+        public string NewEndpointName { get; set; } = string.Empty;
+
+        public string NewEndpointUrl { get; set; } = string.Empty;
+
         bool ValidateData()
         {
 
@@ -31,6 +37,7 @@ namespace Savings.SPA.Pages
             LastMaterializedAmount = lastMaterializedItem.Projection;
             Categories = await savingsAPI.GetMoneyCategories();
             Configuration = (await savingsAPI.GetConfigurations()).First();
+            FederationEndpoints = await savingsAPI.GetFederationEndpoints();
         }
 
         private async void OnValidSubmit()
@@ -46,6 +53,30 @@ namespace Savings.SPA.Pages
                 throw;
             }
 
+        }
+
+        private async Task AddEndpoint()
+        {
+            if (string.IsNullOrWhiteSpace(NewEndpointName) || string.IsNullOrWhiteSpace(NewEndpointUrl)) return;
+
+            var endpoint = new FederationEndpoint
+            {
+                Name = NewEndpointName.Trim(),
+                Url = NewEndpointUrl.Trim()
+            };
+
+            await savingsAPI.InsertFederationEndpoint(endpoint);
+            FederationEndpoints = await savingsAPI.GetFederationEndpoints();
+            NewEndpointName = string.Empty;
+            NewEndpointUrl = string.Empty;
+            StateHasChanged();
+        }
+
+        private async Task DeleteEndpoint(FederationEndpoint endpoint)
+        {
+            await savingsAPI.DeleteFederationEndpoint(endpoint.ID);
+            FederationEndpoints = await savingsAPI.GetFederationEndpoints();
+            StateHasChanged();
         }
 
     }

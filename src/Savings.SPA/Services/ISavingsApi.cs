@@ -87,5 +87,17 @@ namespace Savings.SPA.Services
 
         [Get("/api/Report/GetCategoryResumeDetail")]
         Task<ReportDetail[]> GetCategoryResumeDetail(string periodPattern, DateTime dateFrom, DateTime dateTo, long? category, string period, bool? work);
+
+        [Get("/api/FederationEndpoints")]
+        Task<FederationEndpoint[]> GetFederationEndpoints();
+
+        [Post("/api/FederationEndpoints")]
+        Task<FederationEndpoint> InsertFederationEndpoint(FederationEndpoint endpoint);
+
+        [Put("/api/FederationEndpoints/{id}")]
+        Task PutFederationEndpoint(long id, FederationEndpoint endpoint);
+
+        [Delete("/api/FederationEndpoints/{id}")]
+        Task<FederationEndpoint> DeleteFederationEndpoint(long id);
     }
 }

@@ -4,8 +4,7 @@ namespace Savings.SPA.Services
 {
     public interface IFederationService
     {
-        IReadOnlyList<FederationEndpoint> Endpoints { get; }
-        bool IsEnabled { get; }
+        Task<FederationEndpoint[]> GetEndpointsAsync();
         Task<FederatedProjectionResult[]> GetFederatedProjectionsAsync(DateTime? from, DateTime? to);
     }
 

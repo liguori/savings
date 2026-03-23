@@ -90,7 +90,7 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetRequiredService<SavingsContext>()?.Database.EnsureCreated();
+    scope.ServiceProvider.GetRequiredService<SavingsContext>()?.Database.Migrate();
 }
 app.UseResponseCompression();
 app.UseCors("AllowAllOrigin");
