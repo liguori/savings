@@ -76,6 +76,7 @@ else
                 <tr>
                     <th>Name</th>
                     <th>Url</th>
+                    <th>Api Key</th>
                     <th></th>
                 </tr>
             </thead>
@@ -85,6 +86,7 @@ else
                     <tr>
                         <td>@endpoint.Name</td>
                         <td>@endpoint.Url</td>
+                        <td>@(string.IsNullOrEmpty(endpoint.ApiKey) ? "—" : "••••••••")</td>
                         <td class="text-end">
                             <button class="btn btn-sm btn-danger" @onclick="() => DeleteEndpoint(endpoint)">
                                 <span class="oi oi-trash" aria-hidden="true"></span>
@@ -96,16 +98,76 @@ else
         </table>
 
         <div class="row g-2 align-items-end">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label>Name:</label>
                 <input @bind="NewEndpointName" class="form-control" placeholder="e.g. Personal" />
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label>Url:</label>
                 <input @bind="NewEndpointUrl" class="form-control" placeholder="e.g. https://savings-personal.example.com/" />
             </div>
+            <div class="col-md-3">
+                <label>Api Key:</label>
+                <input @bind="NewEndpointApiKey" type="password" class="form-control" placeholder="optional" />
+            </div>
             <div class="col-md-2">
                 <button class="btn btn-success w-100" @onclick="AddEndpoint">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Add
+                </button>
+            </div>
+        </div>
+    }
+
+    <hr />
+    <h3>Federation API Keys</h3>
+    <p class="text-muted">Generate API keys to allow other Savings installations to read projection data from this instance.</p>
+
+    @if (FederationApiKeys == null)
+    {
+        <p><em>Loading keys...</em></p>
+    }
+    else
+    {
+        <table class="table table-sm table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Description</th>
+                    <th>Key</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var key in FederationApiKeys)
+                {
+                    <tr>
+                        <td>@key.Description</td>
+                        <td><code>@key.Key</code></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteApiKey(key)">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label>Description:</label>
+                <input @bind="NewApiKeyDescription" class="form-control" placeholder="e.g. Access for personal account" />
+            </div>
+            <div class="col-md-5">
+                <label>Key:</label>
+                <div class="input-group">
+                    <input @bind="NewApiKeyValue" class="form-control" readonly />
+                    <button class="btn btn-outline-secondary" type="button" @onclick="GenerateRandomKey" title="Generate random key">
+                        <span class="oi oi-loop-circular" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success w-100" @onclick="AddApiKey">
                     <span class="oi oi-plus" aria-hidden="true"></span> Add
                 </button>
             </div>

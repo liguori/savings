@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Savings.Model;
 using Savings.SPA.Services;
+using System.Security.Cryptography;
 
 namespace Savings.SPA.Pages
 {
@@ -24,6 +25,14 @@ namespace Savings.SPA.Pages
 
         public string NewEndpointUrl { get; set; } = string.Empty;
 
+        public string NewEndpointApiKey { get; set; } = string.Empty;
+
+        public FederationApiKey[]? FederationApiKeys { get; set; }
+
+        public string NewApiKeyDescription { get; set; } = string.Empty;
+
+        public string NewApiKeyValue { get; set; } = string.Empty;
+
         bool ValidateData()
         {
 
@@ -38,6 +47,8 @@ namespace Savings.SPA.Pages
             Categories = await savingsAPI.GetMoneyCategories();
             Configuration = (await savingsAPI.GetConfigurations()).First();
             FederationEndpoints = await savingsAPI.GetFederationEndpoints();
+            FederationApiKeys = await savingsAPI.GetFederationApiKeys();
+            GenerateRandomKey();
         }
 
         private async void OnValidSubmit()
@@ -62,13 +73,15 @@ namespace Savings.SPA.Pages
             var endpoint = new FederationEndpoint
             {
                 Name = NewEndpointName.Trim(),
-                Url = NewEndpointUrl.Trim()
+                Url = NewEndpointUrl.Trim(),
+                ApiKey = string.IsNullOrWhiteSpace(NewEndpointApiKey) ? null : NewEndpointApiKey.Trim()
             };
 
             await savingsAPI.InsertFederationEndpoint(endpoint);
             FederationEndpoints = await savingsAPI.GetFederationEndpoints();
             NewEndpointName = string.Empty;
             NewEndpointUrl = string.Empty;
+            NewEndpointApiKey = string.Empty;
             StateHasChanged();
         }
 
@@ -76,6 +89,36 @@ namespace Savings.SPA.Pages
         {
             await savingsAPI.DeleteFederationEndpoint(endpoint.ID);
             FederationEndpoints = await savingsAPI.GetFederationEndpoints();
+            StateHasChanged();
+        }
+
+        private void GenerateRandomKey()
+        {
+            var bytes = RandomNumberGenerator.GetBytes(32);
+            NewApiKeyValue = Convert.ToHexString(bytes).ToLowerInvariant();
+        }
+
+        private async Task AddApiKey()
+        {
+            if (string.IsNullOrWhiteSpace(NewApiKeyDescription) || string.IsNullOrWhiteSpace(NewApiKeyValue)) return;
+
+            var apiKey = new FederationApiKey
+            {
+                Key = NewApiKeyValue.Trim(),
+                Description = NewApiKeyDescription.Trim()
+            };
+
+            await savingsAPI.InsertFederationApiKey(apiKey);
+            FederationApiKeys = await savingsAPI.GetFederationApiKeys();
+            NewApiKeyDescription = string.Empty;
+            GenerateRandomKey();
+            StateHasChanged();
+        }
+
+        private async Task DeleteApiKey(FederationApiKey apiKey)
+        {
+            await savingsAPI.DeleteFederationApiKey(apiKey.ID);
+            FederationApiKeys = await savingsAPI.GetFederationApiKeys();
             StateHasChanged();
         }
 

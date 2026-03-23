@@ -65,6 +65,7 @@ namespace Savings.API.Infrastructure
         public DbSet<Configuration> Configuration { get; set; }
         public DbSet<RecurrencyAdjustement> RecurrencyAdjustements { get; set; }
         public DbSet<FederationEndpoint> FederationEndpoints { get; set; }
+        public DbSet<FederationApiKey> FederationApiKeys { get; set; }
 
     }
 }

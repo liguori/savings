@@ -5,7 +5,7 @@ namespace Savings.SPA.Services
 {
     public interface IFederationApi
     {
-        [Get("/api/Savings")]
+        [Get("/api/Federation/Savings")]
         Task<MaterializedMoneyItem[]> GetSavings(DateTime? from, DateTime? to);
     }
 }

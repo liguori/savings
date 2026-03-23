@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Savings.API.Infrastructure;
 
@@ -10,9 +11,11 @@ using Savings.API.Infrastructure;
 namespace Savings.API.Migrations
 {
     [DbContext(typeof(SavingsContext))]
-    partial class SavingsContextModelSnapshot : ModelSnapshot
+    [Migration("20260323104741_AddFederationApiKeys")]
+    partial class AddFederationApiKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.3");

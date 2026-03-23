@@ -99,5 +99,14 @@ namespace Savings.SPA.Services
 
         [Delete("/api/FederationEndpoints/{id}")]
         Task<FederationEndpoint> DeleteFederationEndpoint(long id);
+
+        [Get("/api/FederationApiKeys")]
+        Task<FederationApiKey[]> GetFederationApiKeys();
+
+        [Post("/api/FederationApiKeys")]
+        Task<FederationApiKey> InsertFederationApiKey(FederationApiKey apiKey);
+
+        [Delete("/api/FederationApiKeys/{id}")]
+        Task<FederationApiKey> DeleteFederationApiKey(long id);
     }
 }

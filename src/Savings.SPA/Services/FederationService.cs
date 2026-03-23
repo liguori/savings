@@ -28,7 +28,8 @@ namespace Savings.SPA.Services
             {
                 try
                 {
-                    var client = new HttpClient(new CookieIncludeHandler { InnerHandler = new HttpClientHandler() });
+                    var handler = new FederationAuthHandler(endpoint.ApiKey) { InnerHandler = new HttpClientHandler() };
+                    using var client = new HttpClient(handler);
                     client.BaseAddress = new Uri(endpoint.Url);
                     var api = RestService.For<IFederationApi>(client);
                     var items = await api.GetSavings(from, to);
@@ -52,11 +53,24 @@ namespace Savings.SPA.Services
         }
     }
 
-    internal class CookieIncludeHandler : DelegatingHandler
+    internal class FederationAuthHandler : DelegatingHandler
     {
+        private readonly string _apiKey;
+
+        public FederationAuthHandler(string apiKey)
+        {
+            _apiKey = apiKey;
+        }
+
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
+
+            if (!string.IsNullOrEmpty(_apiKey))
+            {
+                request.Headers.Add("X-API-Key", _apiKey);
+            }
+
             return base.SendAsync(request, cancellationToken);
         }
     }
