@@ -19,6 +19,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+BuildHost-net472/
+BuildHost-netcore/
 
 # Binary files safety net
 *.dll
