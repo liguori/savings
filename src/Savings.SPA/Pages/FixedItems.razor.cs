@@ -64,7 +64,7 @@ namespace Savings.SPA.Pages
         async Task AddNew()
         {
             bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Add new",
-                         new Dictionary<string, object>() { { "fixedItemToEdit", new Savings.Model.FixedMoneyItem() }, { "isNew", true } },
+                         new Dictionary<string, object?>() { { "fixedItemToEdit", new Savings.Model.FixedMoneyItem() }, { "isNew", true } },
                          new DialogOptions() { Width = "600px" });
             if (res.HasValue && res.Value)
             {
@@ -77,7 +77,7 @@ namespace Savings.SPA.Pages
         async Task Edit(FixedMoneyItem item)
         {
             bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Edit item",
-                             new Dictionary<string, object>() { { "fixedItemToEdit", item }, { "isNew", false } },
+                             new Dictionary<string, object?>() { { "fixedItemToEdit", item }, { "isNew", false } },
                              new DialogOptions() { Width = "600px" });
             if (res.HasValue && res.Value)
             {

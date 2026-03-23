@@ -174,7 +174,7 @@ namespace Savings.SPA.Pages
         {
             if (item.EndPeriod) return;
             var res = await dialogService.OpenAsync<RecurrencyAdjustment>($"Recurrency Adjustment",
-                            new Dictionary<string, object>() { { "materializedItem", item } },
+                            new Dictionary<string, object?>() { { "materializedItem", item } },
                             new DialogOptions() { Width = "600px", Height = "300px" });
             await InitializeList();
             StateHasChanged();
@@ -187,7 +187,7 @@ namespace Savings.SPA.Pages
             if (!item.FixedMoneyItemID.HasValue) return;
             var itemToEdit = await savingsAPI.GetixedMoneyItem(item.FixedMoneyItemID.Value);
             bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Edit item",
-                             new Dictionary<string, object>() { { "fixedItemToEdit", itemToEdit }, { "isNew", false } },
+                             new Dictionary<string, object?>() { { "fixedItemToEdit", itemToEdit }, { "isNew", false } },
                              new DialogOptions() { Width = "600px" });
             if (res.HasValue && res.Value)
             {
@@ -211,7 +211,7 @@ namespace Savings.SPA.Pages
         async Task AddNew()
         {
             bool? res = await dialogService.OpenAsync<FixedItemEdit>($"Add new",
-                         new Dictionary<string, object>() { { "fixedItemToEdit", new Savings.Model.FixedMoneyItem() }, { "isNew", true } },
+                         new Dictionary<string, object?>() { { "fixedItemToEdit", new Savings.Model.FixedMoneyItem() }, { "isNew", true } },
                          new DialogOptions() { Width = "700px" });
             if (res.HasValue && res.Value)
             {
