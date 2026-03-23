@@ -48,4 +48,20 @@ if (configuredAuthentication == AuthenticationToUse.AzureAD)
     httpClientBuilder.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 }
 
+// Federation: register named HttpClients for each federation endpoint
+var federationEndpoints = new List<Savings.Model.FederationEndpoint>();
+builder.Configuration.GetSection("FederationEndpoints").Bind(federationEndpoints);
+
+builder.Services.AddTransient<CookieAuthenticationMessageHandler>();
+
+foreach (var endpoint in federationEndpoints)
+{
+    builder.Services.AddHttpClient($"Federation_{endpoint.Name}", c =>
+    {
+        c.BaseAddress = new Uri(endpoint.Url);
+    }).AddHttpMessageHandler<CookieAuthenticationMessageHandler>();
+}
+
+builder.Services.AddSingleton<IFederationService, FederationService>();
+
 await builder.Build().RunAsync();

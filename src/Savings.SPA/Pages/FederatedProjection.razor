@@ -1,0 +1,170 @@
+﻿@page "/federated-projection"
+@attribute [Authorize]
+<div class="projection-header">
+    <h1>Federated Projection</h1>
+    <button class="summary-toggle-btn" @onclick="ToggleSummaryCards" title="@(ShowSummaryCards ? "Hide summary" : "Show summary")">
+        <span class="oi oi-@(ShowSummaryCards ? "collapse-up" : "graph")" aria-hidden="true"></span>
+    </button>
+</div>
+@if (loading)
+{
+    <div class="loading-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading federated projections...</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-2 col-5">
+            <span>To:</span><br />
+            <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => OnDateChanged(args))" />
+        </div>
+        <div class="col-md-1 col-2">
+            <label>Past</label><br>
+            <RadzenSwitch @bind-Value="@ShowPastItems" Change="OnFilterChanged" />
+        </div>
+        <div class="col-md-1 col-3">
+            <label>Zero</label><br>
+            <RadzenSwitch @bind-Value="@ShowZero" Change="OnFilterChanged" />
+        </div>
+    </div>
+
+    @if (errors.Any())
+    {
+        <div class="alert alert-warning mt-2" role="alert">
+            <strong>Some endpoints could not be reached:</strong>
+            <ul class="mb-0">
+                @foreach (var error in errors)
+                {
+                    <li><strong>@error.EndpointName:</strong> @error.Error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (ShowSummaryCards)
+    {
+        @* Dashboard Summary Cards *@
+        <div class="row mb-3 mt-2 summary-cards">
+            <div class="col mb-2">
+                <div class="summary-card summary-card-balance">
+                    <div class="summary-card-label">Current Balance</div>
+                    <div class="summary-card-value">@CurrentBalance.ToString("N2")</div>
+                </div>
+            </div>
+            <div class="col mb-2">
+                <div class="summary-card summary-card-income">
+                    <div class="summary-card-label">Period Income</div>
+                    <div class="summary-card-value">+@PeriodIncome.ToString("N2")</div>
+                </div>
+            </div>
+            <div class="col mb-2">
+                <div class="summary-card summary-card-expense">
+                    <div class="summary-card-label">Period Expenses</div>
+                    <div class="summary-card-value">@PeriodExpenses.ToString("N2")</div>
+                </div>
+            </div>
+            <div class="col mb-2">
+                <div class="summary-card summary-card-gain">
+                    <div class="summary-card-label">Gain</div>
+                    <div class="summary-card-value">@PeriodGain.ToString("N2")</div>
+                </div>
+            </div>
+        </div>
+
+        @* Balance Trend Mini-Chart *@
+        @if (BalanceTrendData.Any())
+        {
+            <div class="balance-trend-container mb-3">
+                <RadzenChart Style="height: 120px; width: 100%;">
+                    <RadzenAreaSeries Smooth="true" Data="@BalanceTrendData" CategoryProperty="Label" ValueProperty="Value"
+                                      Title="Balance Trend"
+                                      Stroke="rgba(96, 54, 142, 0.8)" Fill="rgba(96, 54, 142, 0.15)" StrokeWidth="2">
+                        <RadzenMarkers Visible="false" />
+                    </RadzenAreaSeries>
+                    <RadzenCategoryAxis Visible="false" />
+                    <RadzenValueAxis Visible="false">
+                        <RadzenGridLines Visible="false" />
+                    </RadzenValueAxis>
+                </RadzenChart>
+            </div>
+        }
+    }
+
+    <div class="table-responsive-sm">
+        <table id="federated-projections" class="table table-sm table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th></th>
+                    <th>Date</th>
+                    <th class="text-end">Amount</th>
+                    <th></th>
+                    <th class="text-end">Projection</th>
+                    <th>Source</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in mergedItems)
+                {
+                    <tr class="@(item.Item.EndPeriod ? "end-period" : "") @GetAmountRowClass(item.Item)">
+                        <td class="text-center">
+                            @if (item.Item.Date <= DateTime.Now.Date)
+                            {
+                                <span class="oi oi-check done-item" aria-hidden="true"></span>
+                            }
+                        </td>
+                        <td>@item.Item.Date.ToString("dd/MM/yyyy")</td>
+                        <td class="text-end">@item.Item.Amount.ToString("N2")</td>
+                        <td class="text-center">
+                            @{
+                                var iconToUse = "";
+                                var classToUse = "";
+                                if (!item.Item.EndPeriod)
+                                {
+                                    if (item.Item.Amount > 0)
+                                    {
+                                        iconToUse = "arrow-thick-top";
+                                        classToUse = "text-success";
+                                    }
+                                    else if (item.Item.Amount < 0)
+                                    {
+                                        iconToUse = "arrow-thick-bottom";
+                                        classToUse = "text-danger";
+                                    }
+                                    else
+                                    {
+                                        iconToUse = "ellipses";
+                                        classToUse = "text-none";
+                                    }
+                                }
+                                else
+                                {
+                                    if (item.Item.Amount >= 0)
+                                    {
+                                        iconToUse = "circle-check";
+                                        classToUse = "text-success";
+                                    }
+                                    else
+                                    {
+                                        iconToUse = "circle-x";
+                                        classToUse = "text-danger";
+                                    }
+                                }
+                            }
+                            <span class="oi oi-@iconToUse @classToUse" aria-hidden="true"></span>
+                        </td>
+                        <td class="text-end @(item.Item.Date <= DateTime.Now.Date ? " done-projection" : "")">
+                            @item.Item.Projection.ToString("N2")
+                        </td>
+                        <td><span class="badge bg-info">@item.SourceName</span></td>
+                        <td class="ellipses">@item.Item.Note</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
