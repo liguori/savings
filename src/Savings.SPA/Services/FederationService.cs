@@ -36,12 +36,12 @@ namespace Savings.SPA.Services
                         Items = items
                     };
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return new FederatedProjectionResult
                     {
                         EndpointName = endpoint.Name,
-                        Error = ex.Message
+                        Error = $"Unable to reach endpoint '{endpoint.Name}'"
                     };
                 }
             });
