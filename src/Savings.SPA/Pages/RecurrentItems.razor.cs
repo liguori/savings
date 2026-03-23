@@ -56,7 +56,7 @@ namespace Savings.SPA.Pages
         async Task AddNew()
         {
             bool? res = await dialogService!.OpenAsync<RecurrentItemEdit>($"Add new",
-                        new Dictionary<string, object>() { { "recurrentItemToEdit", new Savings.Model.RecurrentMoneyItem() }, { "isNew", true }, { "parentItemID", parentItemID! }, { "parentItem", parentItem! } },
+                        new Dictionary<string, object?>() { { "recurrentItemToEdit", new Savings.Model.RecurrentMoneyItem() }, { "isNew", true }, { "parentItemID", parentItemID! }, { "parentItem", parentItem! } },
                         new DialogOptions() { Width = "600px" });
             if (res.HasValue && res.Value)
             {
@@ -68,7 +68,7 @@ namespace Savings.SPA.Pages
         async Task Edit(RecurrentMoneyItem item)
         {
             bool? res = await dialogService!.OpenAsync<RecurrentItemEdit>($"Edit item",
-                             new Dictionary<string, object>() { { "recurrentItemToEdit", item }, { "isNew", false }, { "parentItemID", parentItemID! } },
+                             new Dictionary<string, object?>() { { "recurrentItemToEdit", item }, { "isNew", false }, { "parentItemID", parentItemID! } },
                              new DialogOptions() { Width = "600px" });
             if (res.HasValue && res.Value)
             {
@@ -81,7 +81,7 @@ namespace Savings.SPA.Pages
         async Task ViewChild(RecurrentMoneyItem item)
         {
             var res = await dialogService!.OpenAsync<RecurrentItems>($"Associated Items - {item.Note}",
-                            new Dictionary<string, object>() { { "parentItemID", item.ID }, { "parentItem", item } },
+                            new Dictionary<string, object?>() { { "parentItemID", item.ID }, { "parentItem", item } },
                              new DialogOptions() { Width = "800px", Height = "600px" });
             await InitializeList();
             StateHasChanged();

@@ -143,7 +143,7 @@ namespace Savings.SPA.Pages
         async Task OpenDetails(long? category, string period)
         {
             var res = await dialogService.OpenAsync<ReportsDetail>($"Report details",
-                           new Dictionary<string, object>() {
+                           new Dictionary<string, object?>() {
                                { "FilterDateFrom", FilterDateFrom },
                                { "FilterDateTo", FilterDateTo },
                                { "category", category! },
