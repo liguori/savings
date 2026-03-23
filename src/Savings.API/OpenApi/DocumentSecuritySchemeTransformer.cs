@@ -29,7 +29,7 @@ namespace Savings.API.OpenApi
                         {
                             AuthorizationUrl = new Uri(conf["IdentityProvider:Authority"] + "/oauth2/v2.0/authorize"),
                             TokenUrl = new Uri(conf["IdentityProvider:Authority"] + "oauth2/v2.0/token"),
-                            Scopes = new Dictionary<string, string> { { conf["IdentityProvider:Audience"]!, "Read access" } }
+                            Scopes = new Dictionary<string, string> { { conf["IdentityProvider:Audience"] ?? throw new InvalidOperationException("Missing required configuration: IdentityProvider:Audience"), "Read access" } }
                         }
                     }
 
