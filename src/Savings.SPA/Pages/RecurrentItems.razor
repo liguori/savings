@@ -30,9 +30,16 @@ else
             <RadzenDatePicker @bind-Value="FilterOnlyActiveDateTo" DateFormat="dd/MM/yyyy" Change="@(args => FilterDateOnlyActiveChange(args, nameof(FilterOnlyActiveDateTo)))" />
         </div>
     </div>
-    <button class="btn btn-success" @onclick="AddNew">
-        <span class="oi oi-plus" aria-hidden="true"></span>ADD
-    </button>
+    <div class="row align-items-end mt-2">
+        <div class="col-auto">
+            <button class="btn btn-success" @onclick="AddNew">
+                <span class="oi oi-plus" aria-hidden="true"></span>ADD
+            </button>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Filter by note..." @bind="FilterNote" @bind:event="oninput" />
+        </div>
+    </div>
     <div class="table-responsive-sm">
         <table class="table table-sm table-striped table-hover mobile-resume">
             <thead class="table-dark">
@@ -52,7 +59,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in recurrentMoneyItems)
+                @foreach (var item in FilteredRecurrentMoneyItems)
                 {
                     <tr class="item-action" @onclick="@(() => Edit(item))" >
                         <td data-title="Start date">@item.StartDate.ToString("dd/MM/yyyy")</td>

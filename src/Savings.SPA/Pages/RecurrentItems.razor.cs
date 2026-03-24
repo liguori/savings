@@ -30,6 +30,15 @@ namespace Savings.SPA.Pages
         public DateTime? FilterOnlyActiveDateFrom { get; set; }
         public DateTime? FilterOnlyActiveDateTo { get; set; }
 
+        public string? FilterNote { get; set; }
+
+        private IEnumerable<RecurrentMoneyItem> FilteredRecurrentMoneyItems =>
+            recurrentMoneyItems == null
+                ? Enumerable.Empty<RecurrentMoneyItem>()
+                : string.IsNullOrWhiteSpace(FilterNote)
+                    ? recurrentMoneyItems
+                    : recurrentMoneyItems.Where(x => x.Note != null && x.Note.Contains(FilterNote, StringComparison.OrdinalIgnoreCase));
+
         async Task ShowOnlyActiveOnChange()
         {
             await InitializeList();

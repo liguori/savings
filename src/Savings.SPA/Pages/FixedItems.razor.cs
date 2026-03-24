@@ -30,6 +30,15 @@ namespace Savings.SPA.Pages
 
         public bool ShowToVerifyOnly { get; set; } = false;
 
+        public string? FilterNote { get; set; }
+
+        private IEnumerable<FixedMoneyItem> FilteredFixedMoneyItems =>
+            fixedMoneyItems == null
+                ? Enumerable.Empty<FixedMoneyItem>()
+                : string.IsNullOrWhiteSpace(FilterNote)
+                    ? fixedMoneyItems
+                    : fixedMoneyItems.Where(x => x.Note != null && x.Note.Contains(FilterNote, StringComparison.OrdinalIgnoreCase));
+
         protected override async Task OnInitializedAsync()
         {
             ShowToVerifyOnly = (System.Web.HttpUtility.ParseQueryString(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)["toverify"] != null);
