@@ -25,9 +25,13 @@ else
             <label>From:</label><br />
             <RadzenDatePicker @bind-Value="FilterOnlyActiveDateFrom" DateFormat="dd/MM/yyyy" Change="@(args => FilterDateOnlyActiveChange(args, nameof(FilterOnlyActiveDateFrom)))" />
         </div>
-        <div class="col-md-8 col-5">
+        <div class="col-md-5 col-5">
             <label>To:</label><br />
             <RadzenDatePicker @bind-Value="FilterOnlyActiveDateTo" DateFormat="dd/MM/yyyy" Change="@(args => FilterDateOnlyActiveChange(args, nameof(FilterOnlyActiveDateTo)))" />
+        </div>
+        <div class="col-md-3 d-none d-md-block">
+            <label>Note:</label>
+            <input type="text" class="form-control" @bind="FilterNote" @bind:event="oninput" />
         </div>
     </div>
     <div class="row align-items-end mt-2">
@@ -36,7 +40,7 @@ else
                 <span class="oi oi-plus" aria-hidden="true"></span>ADD
             </button>
         </div>
-        <div class="col-md-3 ms-auto">
+        <div class="col d-md-none">
             <label>Note:</label>
             <input type="text" class="form-control" @bind="FilterNote" @bind:event="oninput" />
         </div>

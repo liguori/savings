@@ -22,7 +22,7 @@ else
             <span>To:</span><br />
             <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
         </div>
-        <div class="col-md-8 col">
+        <div class="col-md-5 col">
             <label>Category:</label>
             <select class="form-control" @onchange="FilterCategoryChanged">
                 <option value=""></option>
@@ -37,6 +37,10 @@ else
                 }
             </select>
         </div>
+        <div class="col-md-3 d-none d-md-block">
+            <label>Note:</label>
+            <input type="text" class="form-control" @bind="FilterNote" @bind:event="oninput" />
+        </div>
     </div>
     <div class="row align-items-end mt-2">
         <div class="col-auto">
@@ -44,7 +48,7 @@ else
                 <span class="oi oi-plus" aria-hidden="true"></span>ADD
             </button>
         </div>
-        <div class="col-md-3 ms-auto">
+        <div class="col d-md-none">
             <label>Note:</label>
             <input type="text" class="form-control" @bind="FilterNote" @bind:event="oninput" />
         </div>
