@@ -38,14 +38,16 @@ else
             </select>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-6">
-            <br />
+    <div class="row align-items-end mt-2">
+        <div class="col-auto">
             <button class="btn btn-success" @onclick="AddNew">
                 <span class="oi oi-plus" aria-hidden="true"></span>ADD
             </button>
         </div>
-        <div class="col-md-6 col-6">
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Filter by note..." @bind="FilterNote" @bind:event="oninput" />
+        </div>
+        <div class="col-auto">
             <label>To Verify</label><br>
             <RadzenSwitch @bind-Value="@ShowToVerifyOnly" Change="ToVerifyOnly_Changed" />
         </div>
@@ -64,7 +66,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in fixedMoneyItems)
+                @foreach (var item in FilteredFixedMoneyItems)
                 {
                     <tr @onclick="@(() => Edit(item))" class="item-action">
                         <td data-title="Completed">
