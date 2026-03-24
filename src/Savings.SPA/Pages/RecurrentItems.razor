@@ -36,8 +36,9 @@ else
                 <span class="oi oi-plus" aria-hidden="true"></span>ADD
             </button>
         </div>
-        <div class="col">
-            <input type="text" class="form-control" placeholder="Filter by note..." @bind="FilterNote" @bind:event="oninput" />
+        <div class="col-md-3 ms-auto">
+            <label>Note:</label>
+            <input type="text" class="form-control" @bind="FilterNote" @bind:event="oninput" />
         </div>
     </div>
     <div class="table-responsive-sm">
