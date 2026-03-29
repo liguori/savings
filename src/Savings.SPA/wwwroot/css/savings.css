@@ -39,6 +39,15 @@
     margin-top: 15px;
 }
 
+.settings-toggle {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+.settings-toggle.active {
+    color: #0d6efd;
+}
+
 /*Projection*/
 #history tbody > tr > :nth-child(4), thead > tr > :nth-child(4) {
     border-right: 1px solid #dee2e6;
@@ -187,6 +196,14 @@ tr.selected-row {
 [data-theme="dark"] body {
     background-color: #1a1a1a;
     color: #ffffff;
+}
+
+[data-theme="dark"] .settings-toggle {
+    color: #adb5bd;
+}
+
+[data-theme="dark"] .settings-toggle.active {
+    color: #6ea8fe;
 }
 
 [data-theme="dark"] h1, 

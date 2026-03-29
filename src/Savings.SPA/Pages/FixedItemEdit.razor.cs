@@ -30,6 +30,8 @@ namespace Savings.SPA.Pages
 
         public bool OperationRunning { get; set; } = false;
 
+        bool ShowWeight { get; set; } = false;
+
         public MoneyCategory[]? Categories { get; set; }
 
         InputNumber<decimal?>? amountInputNumber;
