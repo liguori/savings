@@ -43,7 +43,7 @@
                 <label class="text-nowrap">💼Work</label><br>
                 <RadzenSwitch @bind-Value="@fixedItemToEdit.Work" />
             </div>
-            <div class="col-1 d-flex align-items-center">
+            <div class="col-1 d-none d-sm-flex align-items-center">
                 <button type="button" class="btn btn-sm btn-link p-0 settings-toggle @(ShowWeight ? "active" : "")" @onclick="@(() => ShowWeight = !ShowWeight)" title="Weight settings">
                     <span class="oi oi-cog" aria-hidden="true"></span>
                 </button>
@@ -80,18 +80,28 @@
         </InputSelectNumber>
         <ValidationMessage For="@(() => fixedItemToEdit.CategoryID)" />
     </div>
-    <div class="text-center cmd-panel">
-        <button type="submit" class="btn btn-success" disabled="@OperationRunning">
-            <span class="oi oi-circle-check" aria-hidden="true"></span>SAVE
-        </button>
-        <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })" disabled="@OperationRunning">
-            <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
-        </button>
-        @if (!isNew)
-        {
-            <button type="button" class="btn btn-danger" @onclick="@(()=>Delete())" disabled="@OperationRunning">
-                <span class="oi oi-trash" aria-hidden="true"></span>
+    <div class="cmd-panel d-flex justify-content-center align-items-center position-relative">
+        <div class="text-center">
+            <button type="submit" class="btn btn-success" disabled="@OperationRunning">
+                <span class="oi oi-circle-check" aria-hidden="true"></span>SAVE
             </button>
+            <button type="button" class="btn btn-warning" @onclick="@(() => { this.dialogService.Close(false); })" disabled="@OperationRunning">
+                <span class="oi oi-reload" aria-hidden="true"></span>CANCEL
+            </button>
+            @if (!isNew)
+            {
+                <button type="button" class="btn btn-danger" @onclick="@(()=>Delete())" disabled="@OperationRunning">
+                    <span class="oi oi-trash" aria-hidden="true"></span>
+                </button>
+            }
+        </div>
+        @if (!Credit)
+        {
+            <div class="d-sm-none position-absolute end-0">
+                <button type="button" class="btn btn-sm btn-link p-0 settings-toggle @(ShowWeight ? "active" : "")" @onclick="@(() => ShowWeight = !ShowWeight)" title="Weight settings">
+                    <span class="oi oi-cog" aria-hidden="true"></span>
+                </button>
+            </div>
         }
     </div>
 </EditForm>
