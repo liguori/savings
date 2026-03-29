@@ -44,12 +44,12 @@
                 <RadzenSwitch @bind-Value="@fixedItemToEdit.Work" />
             </div>
             <div class="col-1 d-flex align-items-center">
-                <button type="button" class="btn btn-sm btn-link p-0 settings-toggle @(showWeight ? "active" : "")" @onclick="@(() => showWeight = !showWeight)" title="Weight settings">
+                <button type="button" class="btn btn-sm btn-link p-0 settings-toggle @(ShowWeight ? "active" : "")" @onclick="@(() => ShowWeight = !ShowWeight)" title="Weight settings">
                     <span class="oi oi-cog" aria-hidden="true"></span>
                 </button>
             </div>
 
-            @if (showWeight)
+            @if (ShowWeight)
             {
                 <div class="col-3">
                     <label>Weight:</label>
