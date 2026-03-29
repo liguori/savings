@@ -18,7 +18,7 @@
         @if (isNew)
         {
             <div class="col-3">
-                <label>💳Credit</label><br>
+                <label class="text-nowrap">💳Credit</label><br>
                 <RadzenSwitch @bind-Value="@Credit" />
             </div>
         }
@@ -39,16 +39,24 @@
                 <label>💰Gain</label><br>
                 <RadzenSwitch @bind-Value="@Incoming" />
             </div>
-            <div class="col-3">
+            <div class="col-2">
                 <label>💼Work</label><br>
                 <RadzenSwitch @bind-Value="@fixedItemToEdit.Work" />
             </div>
-
-            <div class="col-3">
-                <label>Weight:</label>
-                <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control" />
-                <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />
+            <div class="col-1 d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-link p-0 settings-toggle @(showWeight ? "active" : "")" @onclick="@(() => showWeight = !showWeight)" title="Weight settings">
+                    <span class="oi oi-cog" aria-hidden="true"></span>
+                </button>
             </div>
+
+            @if (showWeight)
+            {
+                <div class="col-3">
+                    <label>Weight:</label>
+                    <InputNumber @bind-Value="@fixedItemToEdit.TimelineWeight" class="form-control" />
+                    <ValidationMessage For="@(() => fixedItemToEdit.TimelineWeight)" />
+                </div>
+            }
         </div>
     }
     <div>
