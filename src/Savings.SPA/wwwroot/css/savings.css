@@ -724,4 +724,16 @@ tr.expense-row:not(.end-period) > td:first-child {
         .mobile-resume td:before {
             content: attr(data-title);
         }
+
+    /* Keep tfoot total row on a single line */
+    .mobile-resume tfoot tr {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 8px;
+    }
+
+    .mobile-resume tfoot th:empty {
+        display: none;
+    }
 }
