@@ -731,12 +731,21 @@ tr.expense-row:not(.end-period) > td:first-child {
             content: attr(data-title);
         }
 
+    /* Ensure consistent dark theme td borders in mobile (override Bootstrap table-striped specificity) */
+    [data-theme="dark"] .table.mobile-resume tbody tr td {
+        border-bottom-color: #2d2d2d;
+    }
+
     /* Keep tfoot total row on a single line */
     .mobile-resume tfoot tr {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 4px 8px;
+    }
+
+    .mobile-resume tfoot th {
+        border: none;
     }
 
     .mobile-resume tfoot th:empty {
