@@ -238,11 +238,17 @@ tr.selected-row {
     color: #ffffff;
 }
 
+/* Remove background from table footer (total row) */
+.table tfoot th,
+.table tfoot td {
+    background-color: transparent;
+}
+
 [data-theme="dark"] .table tfoot th,
 [data-theme="dark"] .table tfoot td {
     border-top-color: #404040;
     color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: transparent;
 }
 
 [data-theme="dark"] .table tfoot th[scope="row"] {
@@ -677,7 +683,7 @@ tr.expense-row:not(.end-period) > td:first-child {
 
 @media only screen and (max-width: 800px) {
     /* Force table to not be like tables anymore */
-    .mobile-resume table, .mobile-resume thead, .mobile-resume tbody, .mobile-resume th, .mobile-resume td, .mobile-resume tr {
+    .mobile-resume table, .mobile-resume thead, .mobile-resume tbody, .mobile-resume tfoot, .mobile-resume th, .mobile-resume td, .mobile-resume tr {
         display: block;
     }
 
