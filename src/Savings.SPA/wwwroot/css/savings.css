@@ -731,6 +731,11 @@ tr.expense-row:not(.end-period) > td:first-child {
             content: attr(data-title);
         }
 
+    /* Ensure consistent light theme td borders in mobile (override Bootstrap table-striped specificity) */
+    [data-theme="light"] .table.mobile-resume tbody tr td {
+        border-bottom-color: #eee;
+    }
+
     /* Ensure consistent dark theme td borders in mobile (override Bootstrap table-striped specificity) */
     [data-theme="dark"] .table.mobile-resume tbody tr td {
         border-bottom-color: #2d2d2d;
