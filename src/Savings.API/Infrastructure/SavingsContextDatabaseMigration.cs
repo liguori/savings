@@ -15,7 +15,7 @@ namespace Savings.API.Infrastructure
             context.Database.OpenConnection();
             try
             {
-                if (TableExists(context, "Configurations") && !TableExists(context, "__EFMigrationsHistory"))
+                if (TableExists(context, "Configuration") && !TableExists(context, "__EFMigrationsHistory"))
                 {
                     context.Database.ExecuteSqlRaw("""
                         CREATE TABLE "__EFMigrationsHistory" (

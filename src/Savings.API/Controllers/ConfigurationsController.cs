@@ -24,14 +24,14 @@ namespace Savings.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Configuration>>> GetConfigurations()
         {
-            return await _context.Configurations.ToListAsync();
+            return await _context.Configuration.ToListAsync();
         }
 
         // GET: api/Configurations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Configuration>> GetConfiguration(long id)
         {
-            var configuration = await _context.Configurations.FindAsync(id);
+            var configuration = await _context.Configuration.FindAsync(id);
 
             if (configuration == null)
             {
@@ -79,7 +79,7 @@ namespace Savings.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Configuration>> PostConfiguration(Configuration configuration)
         {
-            _context.Configurations.Add(configuration);
+            _context.Configuration.Add(configuration);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetConfiguration", new { id = configuration.ID }, configuration);
@@ -89,13 +89,13 @@ namespace Savings.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Configuration>> DeleteConfiguration(long id)
         {
-            var configuration = await _context.Configurations.FindAsync(id);
+            var configuration = await _context.Configuration.FindAsync(id);
             if (configuration == null)
             {
                 return NotFound();
             }
 
-            _context.Configurations.Remove(configuration);
+            _context.Configuration.Remove(configuration);
             await _context.SaveChangesAsync();
 
             return configuration;
@@ -103,7 +103,7 @@ namespace Savings.API.Controllers
 
         private bool ConfigurationExists(long id)
         {
-            return _context.Configurations.Any(e => e.ID == id);
+            return _context.Configuration.Any(e => e.ID == id);
         }
     }
 }
