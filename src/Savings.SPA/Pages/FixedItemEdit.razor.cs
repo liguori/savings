@@ -116,7 +116,7 @@ namespace Savings.SPA.Pages
                 fixedItemToEdit.ToVerify = false;
                 if (Credit)
                 {
-                    await savingsAPI.InsertCreditFixedMoneyItem(fixedItemToEdit);
+                    await savingsAPI.InsertCreditFixedMoneyItem(fixedItemToEdit, toVerify: false);
                 }
                 else if (isNew)
                 {
