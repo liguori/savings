@@ -102,9 +102,14 @@ namespace Savings.API.Controllers
         [HttpPost("Credit")]
         public async Task<ActionResult<CreditFixedMoneyItemResult>> InsertCreditFixedMoneyItem(FixedMoneyItem fixedItem, bool toVerify = false)
         {
+            var defaultCreditMoneyItem = await _context.RecurrentMoneyItems.FirstOrDefaultAsync(x => x.DefaultCredit);
+
+            if (defaultCreditMoneyItem == null) return BadRequest("No default credit item");
+
             if (toVerify)
             {
                 fixedItem.ID = 0;
+                fixedItem.Date = CalculateCreditTargetDate(defaultCreditMoneyItem);
                 fixedItem.ToVerify = true;
                 _context.FixedMoneyItems.Add(fixedItem);
                 await _context.SaveChangesAsync();
@@ -112,12 +117,7 @@ namespace Savings.API.Controllers
                 return CreatedAtAction("GetFixedMoneyItem", "FixedMoneyItems", new { id = fixedItem.ID }, new CreditFixedMoneyItemResult { ToVerify = true, FixedMoneyItem = fixedItem });
             }
 
-            var defaultCreditMoneyItem = await _context.RecurrentMoneyItems.FirstOrDefaultAsync(x => x.DefaultCredit);
-
-            if (defaultCreditMoneyItem == null) return BadRequest("No default credit item");
-
-            DateTime targetDate = DateTime.Now.AddMonths(1);
-            targetDate = new DateTime(targetDate.Year, targetDate.Month, defaultCreditMoneyItem.StartDate.Day);
+            DateTime targetDate = fixedItem.ID > 0 ? fixedItem.Date : CalculateCreditTargetDate(defaultCreditMoneyItem);
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -137,6 +137,13 @@ namespace Savings.API.Controllers
             await transaction.CommitAsync();
 
             return CreatedAtAction("GetRecurrentMoneyItem", new { id = recurrentMoneyItem.ID }, new CreditFixedMoneyItemResult { ToVerify = false, RecurrentMoneyItem = recurrentMoneyItem });
+        }
+
+        private static DateTime CalculateCreditTargetDate(RecurrentMoneyItem defaultCreditMoneyItem)
+        {
+            var targetDate = DateTime.Now.AddMonths(1);
+            var targetDay = Math.Min(defaultCreditMoneyItem.StartDate.Day, DateTime.DaysInMonth(targetDate.Year, targetDate.Month));
+            return new DateTime(targetDate.Year, targetDate.Month, targetDay);
         }
 
         // DELETE: api/RecurrentMoneyItems/5
