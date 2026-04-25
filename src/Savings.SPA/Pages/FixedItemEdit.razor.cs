@@ -114,16 +114,17 @@ namespace Savings.SPA.Pages
                     fixedItemToEdit.Amount = -Math.Abs(fixedItemToEdit.Amount!.Value);
                 }
                 fixedItemToEdit.ToVerify = false;
-                if (isNew)
+                if (Credit)
                 {
-                    if (Credit)
+                    await savingsAPI.InsertCreditFixedMoneyItem(fixedItemToEdit);
+                    if (!isNew)
                     {
-                        await savingsAPI.InsertCreditFixedMoneyItem(fixedItemToEdit);
+                        await savingsAPI.DeleteFixedMoneyItem(fixedItemToEdit.ID);
                     }
-                    else
-                    {
-                        await savingsAPI.InsertFixedMoneyItem(fixedItemToEdit);
-                    }
+                }
+                else if (isNew)
+                {
+                    await savingsAPI.InsertFixedMoneyItem(fixedItemToEdit);
                 }
                 else
                 {
