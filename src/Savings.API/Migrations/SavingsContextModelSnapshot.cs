@@ -64,6 +64,9 @@ namespace Savings.API.Migrations
                     b.Property<long?>("CategoryID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Credit")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 

@@ -44,6 +44,7 @@ namespace Savings.SPA.Pages
                 this.fixedItemToEdit.Amount = null;
                 this.fixedItemToEdit.AccumulateForBudget = true;
             }
+            Credit = fixedItemToEdit.Credit;
         }
 
         protected override async void OnAfterRender(bool firstRender)
@@ -114,6 +115,7 @@ namespace Savings.SPA.Pages
                     fixedItemToEdit.Amount = -Math.Abs(fixedItemToEdit.Amount!.Value);
                 }
                 fixedItemToEdit.ToVerify = false;
+                fixedItemToEdit.Credit = Credit;
                 if (Credit)
                 {
                     await savingsAPI.InsertCreditFixedMoneyItem(fixedItemToEdit, toVerify: false);

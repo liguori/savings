@@ -114,6 +114,7 @@ namespace Savings.API.Controllers
                 fixedItem.ID = 0;
                 fixedItem.Date = creditTargetDate!.Value;
                 fixedItem.ToVerify = true;
+                fixedItem.Credit = true;
                 _context.FixedMoneyItems.Add(fixedItem);
                 await _context.SaveChangesAsync();
 
