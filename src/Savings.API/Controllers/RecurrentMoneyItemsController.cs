@@ -142,6 +142,7 @@ namespace Savings.API.Controllers
         private static DateTime CalculateCreditTargetDate(RecurrentMoneyItem defaultCreditMoneyItem)
         {
             var targetDate = DateTime.Now.AddMonths(1);
+            // Handle shorter months when the credit payment day is near the end of the month.
             var targetDay = Math.Min(defaultCreditMoneyItem.StartDate.Day, DateTime.DaysInMonth(targetDate.Year, targetDate.Month));
             return new DateTime(targetDate.Year, targetDate.Month, targetDay);
         }
