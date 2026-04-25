@@ -15,7 +15,7 @@ namespace Savings.API.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
 
             modelBuilder.Entity("Savings.Model.Configuration", b =>
                 {
@@ -86,6 +86,8 @@ namespace Savings.API.Migrations
 
                     b.HasIndex("CategoryID");
 
+                    b.HasIndex("Date");
+
                     b.ToTable("FixedMoneyItems");
                 });
 
@@ -140,6 +142,10 @@ namespace Savings.API.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("CategoryID");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("EndPeriod");
 
                     b.ToTable("MaterializedMoneyItems");
 
@@ -367,6 +373,8 @@ namespace Savings.API.Migrations
                     b.HasIndex("CategoryID");
 
                     b.HasIndex("RecurrentMoneyItemID");
+
+                    b.HasIndex("StartDate");
 
                     b.ToTable("RecurrentMoneyItems");
                 });
