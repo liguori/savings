@@ -155,7 +155,7 @@ namespace Savings.API.Migrations
                             ID = 1L,
                             Amount = 0m,
                             Cash = false,
-                            Date = new DateTime(2026, 1, 31, 0, 0, 0, 0, DateTimeKind.Local),
+                            Date = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day),
                             EndPeriod = true,
                             EndPeriodCashCarry = 0m,
                             IsRecurrent = false,
