@@ -167,7 +167,7 @@ namespace Savings.API.Controllers
         private static DateTime CalculateNextMonthlyCreditTargetDate(DateTime startDate, int recurrencyInterval, DateTime today)
         {
             var monthsSinceStart = (today.Year - startDate.Year) * 12 + today.Month - startDate.Month;
-            var intervalsSinceStart = Math.Max(0, monthsSinceStart / recurrencyInterval);
+            var intervalsSinceStart = monthsSinceStart / recurrencyInterval;
             var monthsToAdd = intervalsSinceStart * recurrencyInterval;
             var targetDate = AddMonthsFromStartDate(startDate, monthsToAdd);
             if (targetDate <= today)
