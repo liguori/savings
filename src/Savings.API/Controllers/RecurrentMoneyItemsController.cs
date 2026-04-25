@@ -151,11 +151,17 @@ namespace Savings.API.Controllers
 
             return defaultCreditMoneyItem.RecurrencyType switch
             {
-                RecurrencyType.Day => startDate.AddDays(((today - startDate).Days / defaultCreditMoneyItem.RecurrencyInterval + 1) * defaultCreditMoneyItem.RecurrencyInterval),
-                RecurrencyType.Week => startDate.AddDays(((today - startDate).Days / (defaultCreditMoneyItem.RecurrencyInterval * 7) + 1) * defaultCreditMoneyItem.RecurrencyInterval * 7),
+                RecurrencyType.Day => CalculateNextDailyCreditTargetDate(startDate, defaultCreditMoneyItem.RecurrencyInterval, today),
+                RecurrencyType.Week => CalculateNextDailyCreditTargetDate(startDate, defaultCreditMoneyItem.RecurrencyInterval * 7, today),
                 RecurrencyType.Month => CalculateNextMonthlyCreditTargetDate(startDate, defaultCreditMoneyItem.RecurrencyInterval, today),
                 _ => null
             };
+        }
+
+        private static DateTime CalculateNextDailyCreditTargetDate(DateTime startDate, int recurrencyDays, DateTime today)
+        {
+            var intervalsSinceStart = (today - startDate).Days / recurrencyDays + 1;
+            return startDate.AddDays(intervalsSinceStart * recurrencyDays);
         }
 
         private static DateTime CalculateNextMonthlyCreditTargetDate(DateTime startDate, int recurrencyInterval, DateTime today)
@@ -164,7 +170,7 @@ namespace Savings.API.Controllers
             var intervalsSinceStart = Math.Max(0, monthsSinceStart / recurrencyInterval);
             var monthsToAdd = intervalsSinceStart * recurrencyInterval;
             var targetDate = AddMonthsFromStartDate(startDate, monthsToAdd);
-            while (targetDate <= today)
+            if (targetDate <= today)
             {
                 monthsToAdd += recurrencyInterval;
                 targetDate = AddMonthsFromStartDate(startDate, monthsToAdd);
