@@ -58,11 +58,10 @@ namespace Savings.API.Infrastructure
         }
 
         public DbSet<MaterializedMoneyItem> MaterializedMoneyItems { get; set; }
-        public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<Configuration> Configuration { get; set; }
         public DbSet<MoneyCategory> MoneyCategories { get; set; }
         public DbSet<RecurrentMoneyItem> RecurrentMoneyItems { get; set; }
         public DbSet<FixedMoneyItem> FixedMoneyItems { get; set; }
-        public DbSet<Configuration> Configuration { get; set; }
         public DbSet<RecurrencyAdjustement> RecurrencyAdjustements { get; set; }
 
     }

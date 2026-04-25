@@ -15,7 +15,7 @@ namespace Savings.API.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
 
             modelBuilder.Entity("Savings.Model.Configuration", b =>
                 {
@@ -64,6 +64,9 @@ namespace Savings.API.Migrations
                     b.Property<long?>("CategoryID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Credit")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
@@ -82,6 +85,8 @@ namespace Savings.API.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("CategoryID");
+
+                    b.HasIndex("Date");
 
                     b.ToTable("FixedMoneyItems");
                 });
@@ -138,6 +143,10 @@ namespace Savings.API.Migrations
 
                     b.HasIndex("CategoryID");
 
+                    b.HasIndex("Date");
+
+                    b.HasIndex("EndPeriod");
+
                     b.ToTable("MaterializedMoneyItems");
 
                     b.HasData(
@@ -146,7 +155,7 @@ namespace Savings.API.Migrations
                             ID = 1L,
                             Amount = 0m,
                             Cash = false,
-                            Date = new DateTime(2026, 1, 31, 0, 0, 0, 0, DateTimeKind.Local),
+                            Date = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day),
                             EndPeriod = true,
                             EndPeriodCashCarry = 0m,
                             IsRecurrent = false,
@@ -364,6 +373,8 @@ namespace Savings.API.Migrations
                     b.HasIndex("CategoryID");
 
                     b.HasIndex("RecurrentMoneyItemID");
+
+                    b.HasIndex("StartDate");
 
                     b.ToTable("RecurrentMoneyItems");
                 });

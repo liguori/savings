@@ -15,7 +15,7 @@
             <InputNumber @bind-Value="@fixedItemToEdit.Amount" @bind-Value:format="F2" class="form-control" @ref="amountInputNumber" />
             <ValidationMessage For="@(() => fixedItemToEdit.Amount)" />
         </div>
-        @if (isNew)
+        @if (isNew || fixedItemToEdit.ToVerify)
         {
             <div class="col-3">
                 <label class="text-nowrap">💳Credit</label><br>

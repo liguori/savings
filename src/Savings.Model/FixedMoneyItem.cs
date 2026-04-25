@@ -14,6 +14,7 @@ namespace Savings.Model
         public int TimelineWeight { get; set; }
         public long? CategoryID { get; set; }
         public bool ToVerify { get; set; } = false;
+        public bool Credit { get; set; } = false;
         public bool Work { get; set; } = false;
     }
 }

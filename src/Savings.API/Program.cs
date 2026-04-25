@@ -57,9 +57,9 @@ builder.Services.AddOpenApi(options =>
 });
 
 builder.Services.AddDbContext<SavingsContext>(options => options.UseSqlite($"Data Source={builder.Configuration["DatabasePath"]}", sqlOpt =>
-               {
-                   sqlOpt.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
-               })
+                {
+                    sqlOpt.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
+                })
 );
 
 builder.Services.AddCors(options =>
@@ -90,7 +90,7 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetRequiredService<SavingsContext>()?.Database.EnsureCreated();
+    scope.ServiceProvider.GetRequiredService<SavingsContext>().MigrateDatabase();
 }
 app.UseResponseCompression();
 app.UseCors("AllowAllOrigin");

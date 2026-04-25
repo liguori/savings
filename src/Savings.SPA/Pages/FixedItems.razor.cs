@@ -67,7 +67,12 @@ namespace Savings.SPA.Pages
 
         async Task InitializeList()
         {
-            fixedMoneyItems = await savingsAPI.GetFixedMoneyItems(FilterDateFrom, FilterDateTo, false, FilterCategory, ShowToVerifyOnly);
+            fixedMoneyItems = await savingsAPI.GetFixedMoneyItems(
+                ShowToVerifyOnly ? null : FilterDateFrom,
+                ShowToVerifyOnly ? null : FilterDateTo,
+                false,
+                FilterCategory,
+                ShowToVerifyOnly);
         }
 
         async Task AddNew()
