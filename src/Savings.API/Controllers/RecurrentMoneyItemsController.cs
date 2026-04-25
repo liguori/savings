@@ -106,10 +106,13 @@ namespace Savings.API.Controllers
 
             if (defaultCreditMoneyItem == null) return BadRequest("No default credit item");
 
+            var creditTargetDate = toVerify || fixedItem.ID == 0 ? CalculateCreditTargetDate(defaultCreditMoneyItem) : (DateTime?)null;
+            if ((toVerify || fixedItem.ID == 0) && !creditTargetDate.HasValue) return BadRequest("Default credit item has no future occurrence");
+
             if (toVerify)
             {
                 fixedItem.ID = 0;
-                fixedItem.Date = CalculateCreditTargetDate(defaultCreditMoneyItem);
+                fixedItem.Date = creditTargetDate!.Value;
                 fixedItem.ToVerify = true;
                 _context.FixedMoneyItems.Add(fixedItem);
                 await _context.SaveChangesAsync();
@@ -117,7 +120,7 @@ namespace Savings.API.Controllers
                 return CreatedAtAction("GetFixedMoneyItem", "FixedMoneyItems", new { id = fixedItem.ID }, new CreditFixedMoneyItemResult { ToVerify = true, FixedMoneyItem = fixedItem });
             }
 
-            DateTime targetDate = fixedItem.ID > 0 ? fixedItem.Date : CalculateCreditTargetDate(defaultCreditMoneyItem);
+            DateTime targetDate = fixedItem.ID > 0 ? fixedItem.Date : creditTargetDate!.Value;
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -139,12 +142,42 @@ namespace Savings.API.Controllers
             return CreatedAtAction("GetRecurrentMoneyItem", new { id = recurrentMoneyItem.ID }, new CreditFixedMoneyItemResult { ToVerify = false, RecurrentMoneyItem = recurrentMoneyItem });
         }
 
-        private static DateTime CalculateCreditTargetDate(RecurrentMoneyItem defaultCreditMoneyItem)
+        private static DateTime? CalculateCreditTargetDate(RecurrentMoneyItem defaultCreditMoneyItem)
         {
-            var targetDate = DateTime.Now.AddMonths(1);
+            var today = DateTime.Now.Date;
+            var startDate = defaultCreditMoneyItem.StartDate.Date;
+            if (startDate > today) return startDate;
+            if (defaultCreditMoneyItem.RecurrencyInterval <= 0) return null;
+
+            return defaultCreditMoneyItem.RecurrencyType switch
+            {
+                RecurrencyType.Day => startDate.AddDays(((today - startDate).Days / defaultCreditMoneyItem.RecurrencyInterval + 1) * defaultCreditMoneyItem.RecurrencyInterval),
+                RecurrencyType.Week => startDate.AddDays(((today - startDate).Days / (defaultCreditMoneyItem.RecurrencyInterval * 7) + 1) * defaultCreditMoneyItem.RecurrencyInterval * 7),
+                RecurrencyType.Month => CalculateNextMonthlyCreditTargetDate(startDate, defaultCreditMoneyItem.RecurrencyInterval, today),
+                _ => null
+            };
+        }
+
+        private static DateTime CalculateNextMonthlyCreditTargetDate(DateTime startDate, int recurrencyInterval, DateTime today)
+        {
+            var monthsSinceStart = (today.Year - startDate.Year) * 12 + today.Month - startDate.Month;
+            var intervalsSinceStart = Math.Max(0, monthsSinceStart / recurrencyInterval);
+            var monthsToAdd = intervalsSinceStart * recurrencyInterval;
+            var targetDate = AddMonthsFromStartDate(startDate, monthsToAdd);
+            while (targetDate <= today)
+            {
+                monthsToAdd += recurrencyInterval;
+                targetDate = AddMonthsFromStartDate(startDate, monthsToAdd);
+            }
+            return targetDate;
+        }
+
+        private static DateTime AddMonthsFromStartDate(DateTime startDate, int monthsToAdd)
+        {
+            var targetMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(monthsToAdd);
             // Handle shorter months when the credit payment day is near the end of the month.
-            var targetDay = Math.Min(defaultCreditMoneyItem.StartDate.Day, DateTime.DaysInMonth(targetDate.Year, targetDate.Month));
-            return new DateTime(targetDate.Year, targetDate.Month, targetDay);
+            var targetDay = Math.Min(startDate.Day, DateTime.DaysInMonth(targetMonth.Year, targetMonth.Month));
+            return new DateTime(targetMonth.Year, targetMonth.Month, targetDay);
         }
 
         // DELETE: api/RecurrentMoneyItems/5
