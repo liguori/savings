@@ -117,10 +117,6 @@ namespace Savings.SPA.Pages
                 if (Credit)
                 {
                     await savingsAPI.InsertCreditFixedMoneyItem(fixedItemToEdit);
-                    if (!isNew)
-                    {
-                        await savingsAPI.DeleteFixedMoneyItem(fixedItemToEdit.ID);
-                    }
                 }
                 else if (isNew)
                 {

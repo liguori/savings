@@ -100,7 +100,7 @@ namespace Savings.API.Controllers
         }
 
         [HttpPost("Credit")]
-        public async Task<ActionResult<object>> InsertCreditFixedMoneyItem(FixedMoneyItem fixedItem, bool toVerify = false)
+        public async Task<ActionResult<CreditFixedMoneyItemResult>> InsertCreditFixedMoneyItem(FixedMoneyItem fixedItem, bool toVerify = false)
         {
             if (toVerify)
             {
@@ -109,7 +109,7 @@ namespace Savings.API.Controllers
                 _context.FixedMoneyItems.Add(fixedItem);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetFixedMoneyItem", "FixedMoneyItems", new { id = fixedItem.ID }, fixedItem);
+                return CreatedAtAction("GetFixedMoneyItem", "FixedMoneyItems", new { id = fixedItem.ID }, new CreditFixedMoneyItemResult { ToVerify = true, FixedMoneyItem = fixedItem });
             }
 
             var defaultCreditMoneyItem = await _context.RecurrentMoneyItems.FirstOrDefaultAsync(x => x.DefaultCredit);
@@ -119,11 +119,24 @@ namespace Savings.API.Controllers
             DateTime targetDate = DateTime.Now.AddMonths(1);
             targetDate = new DateTime(targetDate.Year, targetDate.Month, defaultCreditMoneyItem.StartDate.Day);
 
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
             var recurrentMoneyItem = new RecurrentMoneyItem { CategoryID = fixedItem.CategoryID, Amount = fixedItem.Amount!.Value, Note = fixedItem.Note, RecurrentMoneyItemID = defaultCreditMoneyItem.ID, StartDate = targetDate, EndDate = targetDate };
             _context.RecurrentMoneyItems.Add(recurrentMoneyItem);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRecurrentMoneyItem", new { id = recurrentMoneyItem.ID }, recurrentMoneyItem);
+            if (fixedItem.ID > 0)
+            {
+                var fixedMoneyItem = await _context.FixedMoneyItems.FindAsync(fixedItem.ID);
+                if (fixedMoneyItem != null)
+                {
+                    _context.FixedMoneyItems.Remove(fixedMoneyItem);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return CreatedAtAction("GetRecurrentMoneyItem", new { id = recurrentMoneyItem.ID }, new CreditFixedMoneyItemResult { ToVerify = false, RecurrentMoneyItem = recurrentMoneyItem });
         }
 
         // DELETE: api/RecurrentMoneyItems/5
