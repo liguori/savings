@@ -1,0 +1,19 @@
+.note-clear-btn {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    border: none;
+    background: transparent;
+    color: #aaa;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.note-clear-btn:hover {
+    opacity: 1;
+    color: #888;
+}
