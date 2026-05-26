@@ -34,6 +34,8 @@ namespace Savings.SPA.Pages
 
         public MoneyCategory[]? Categories { get; set; }
 
+        const int NoteFocusDelayMs = 10;
+
         InputNumber<decimal?>? amountInputNumber;
         InputTextArea? noteInputTextArea;
 
@@ -104,7 +106,7 @@ namespace Savings.SPA.Pages
         {
             fixedItemToEdit.Note = string.Empty;
             await InvokeAsync(StateHasChanged);
-            await Task.Delay(10);
+            await Task.Delay(NoteFocusDelayMs);
             if (noteInputTextArea?.Element != null)
             {
                 await noteInputTextArea.Element.Value.FocusAsync();
