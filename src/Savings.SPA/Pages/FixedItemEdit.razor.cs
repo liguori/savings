@@ -34,7 +34,10 @@ namespace Savings.SPA.Pages
 
         public MoneyCategory[]? Categories { get; set; }
 
+        const int NoteFocusDelayMs = 10;
+
         InputNumber<decimal?>? amountInputNumber;
+        InputTextArea? noteInputTextArea;
 
         protected override void OnInitialized()
         {
@@ -96,6 +99,17 @@ namespace Savings.SPA.Pages
             finally
             {
                 OperationRunning = false;
+            }
+        }
+
+        async Task ClearNoteAndFocus()
+        {
+            fixedItemToEdit.Note = string.Empty;
+            await InvokeAsync(StateHasChanged);
+            await Task.Delay(NoteFocusDelayMs);
+            if (noteInputTextArea?.Element != null)
+            {
+                await noteInputTextArea.Element.Value.FocusAsync();
             }
         }
 

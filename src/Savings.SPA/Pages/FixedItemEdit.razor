@@ -62,11 +62,8 @@
     <div>
         <label>Note:</label>
         <div class="position-relative">
-            <InputTextArea @bind-Value="@fixedItemToEdit.Note" class="form-control" rows="2" />
-            @if (!string.IsNullOrEmpty(fixedItemToEdit.Note))
-            {
-                <button type="button" class="note-clear-btn" @onclick="@(() => fixedItemToEdit.Note = string.Empty)" tabindex="-1" title="Clear note">×</button>
-            }
+            <InputTextArea @bind-Value="@fixedItemToEdit.Note" class="form-control" rows="2" @ref="noteInputTextArea" />
+            <button type="button" class="note-clear-btn" @onclick="@ClearNoteAndFocus" tabindex="-1" title="Clear note">×</button>
         </div>
         <ValidationMessage For="@(() => fixedItemToEdit.Note)" />
     </div>
