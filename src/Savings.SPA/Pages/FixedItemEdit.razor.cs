@@ -104,7 +104,7 @@ namespace Savings.SPA.Pages
         {
             fixedItemToEdit.Note = string.Empty;
             await InvokeAsync(StateHasChanged);
-            await Task.Yield();
+            await Task.Delay(10);
             if (noteInputTextArea?.Element != null)
             {
                 await noteInputTextArea.Element.Value.FocusAsync();
