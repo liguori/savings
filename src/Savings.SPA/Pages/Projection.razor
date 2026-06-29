@@ -1,11 +1,5 @@
 @page "/"
 @attribute [Authorize]
-<div class="projection-header">
-    <h1>Projection</h1>
-    <button class="summary-toggle-btn" @onclick="ToggleSummaryCards" title="@(ShowSummaryCards ? "Hide summary" : "Show summary")">
-        <span class="oi oi-@(ShowSummaryCards ? "collapse-up" : "graph")" aria-hidden="true"></span>
-    </button>
-</div>
 @if (materializedMoneyItems == null)
 {
     <div class="loading-container">
@@ -17,67 +11,88 @@
 }
 else
 {
-    <div class="row">
-        <div class="col-md-2 col-5">
-            <span>To:</span><br />
-            <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+    <section class="projection-hero">
+        <div>
+            <span class="hero-eyebrow">Financial command center</span>
+            <h1>Savings Cockpit</h1>
+            <p>One glance for balance, forecast and the next money moves.</p>
         </div>
-        <div class="col-md-1 col-2">
-            <label>Past</label><br>
-            <RadzenSwitch @bind-Value="@ShowPastItems" Change="PastItems_Changed" />
-        </div>
-        <div class="col-md-1 col-3">
-            <label>Zero</label><br>
-            <RadzenSwitch @bind-Value="@ShowZero" Change="Zero_Changed" />
-        </div>
-        <div class="col-md-8 col-2">
-            <br />
-            <button class="btn-sm btn-success" @onclick="AddNew">
+        <div class="hero-actions">
+            <button class="btn btn-light btn-sm" @onclick="ToggleSummaryCards" title="@(ShowSummaryCards ? "Hide insights" : "Show insights")">
+                <span class="oi oi-@(ShowSummaryCards ? "collapse-up" : "graph")" aria-hidden="true"></span>
+                @(ShowSummaryCards ? "Focus" : "Insights")
+            </button>
+            <button class="btn btn-outline-light btn-sm" @onclick="ToggleClassicLedger">
+                <span class="oi oi-list-rich" aria-hidden="true"></span>
+                @(ShowClassicLedger ? "Timeline" : "Ledger")
+            </button>
+            <button class="btn btn-success btn-sm" @onclick="AddNew">
                 <span class="oi oi-plus" aria-hidden="true"></span>
+                Add
             </button>
         </div>
-    </div>
+    </section>
+
+    <section class="cockpit-toolbar">
+        <div class="toolbar-field">
+            <span>Forecast to</span>
+            <RadzenDatePicker @bind-Value="FilterDateTo" DateFormat="dd/MM/yyyy" Change="@(args => Change(args, nameof(FilterDateTo)))" />
+        </div>
+        <label class="toolbar-switch">
+            <span>Past movements</span>
+            <RadzenSwitch @bind-Value="@ShowPastItems" Change="PastItems_Changed" />
+        </label>
+        <label class="toolbar-switch">
+            <span>Zero rows</span>
+            <RadzenSwitch @bind-Value="@ShowZero" Change="Zero_Changed" />
+        </label>
+        <div class="toolbar-status @ForecastHealthClass">
+            <span class="oi oi-pulse" aria-hidden="true"></span>
+            @ForecastHealthLabel
+        </div>
+    </section>
 
     @if (ShowSummaryCards)
     {
-        @* Dashboard Summary Cards *@
-        <div class="row mb-3 mt-2 summary-cards">
-            <div class="col mb-2">
-                <div class="summary-card summary-card-balance">
-                    <div class="summary-card-label">Current Balance</div>
-                    <div class="summary-card-value">@CurrentBalance.ToString("N2")</div>
-                </div>
+        <section class="cockpit-grid">
+            <div class="summary-card summary-card-balance">
+                <div class="summary-card-icon"><span class="oi oi-wallet" aria-hidden="true"></span></div>
+                <div class="summary-card-label">Current Balance</div>
+                <div class="summary-card-value">@CurrentBalance.ToString("N2")</div>
+                <div class="summary-card-hint">Latest known projection</div>
             </div>
-            <div class="col mb-2">
-                <div class="summary-card summary-card-projected">
-                    <div class="summary-card-label">Next Period End</div>
-                    <div class="summary-card-value">@NextPeriodEndProjection.ToString("N2")</div>
-                </div>
+            <div class="summary-card summary-card-projected">
+                <div class="summary-card-icon"><span class="oi oi-target" aria-hidden="true"></span></div>
+                <div class="summary-card-label">Next Period End</div>
+                <div class="summary-card-value">@NextPeriodEndProjection.ToString("N2")</div>
+                <div class="summary-card-hint @ProjectedDeltaClass">@ProjectedDelta.ToString("+0.00;-0.00;0.00") vs now</div>
             </div>
-            <div class="col mb-2">
-                <div class="summary-card summary-card-income">
-                    <div class="summary-card-label">Period Income</div>
-                    <div class="summary-card-value">+@PeriodIncome.ToString("N2")</div>
-                </div>
+            <div class="summary-card summary-card-income">
+                <div class="summary-card-icon"><span class="oi oi-arrow-thick-top" aria-hidden="true"></span></div>
+                <div class="summary-card-label">Period Income</div>
+                <div class="summary-card-value">+@PeriodIncome.ToString("N2")</div>
+                <div class="summary-card-hint">@PositiveItemsCount income items</div>
             </div>
-            <div class="col mb-2">
-                <div class="summary-card summary-card-expense">
-                    <div class="summary-card-label">Period Expenses</div>
-                    <div class="summary-card-value">@PeriodExpenses.ToString("N2")</div>
-                </div>
+            <div class="summary-card summary-card-expense">
+                <div class="summary-card-icon"><span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span></div>
+                <div class="summary-card-label">Period Expenses</div>
+                <div class="summary-card-value">@PeriodExpenses.ToString("N2")</div>
+                <div class="summary-card-hint">@NegativeItemsCount expense items</div>
             </div>
-            <div class="col mb-2">
-                <div class="summary-card summary-card-gain">
-                    <div class="summary-card-label">Gain</div>
-                    <div class="summary-card-value">@PeriodGain.ToString("N2")</div>
-                </div>
+            <div class="summary-card summary-card-gain">
+                <div class="summary-card-icon"><span class="oi oi-flash" aria-hidden="true"></span></div>
+                <div class="summary-card-label">Net Flow</div>
+                <div class="summary-card-value">@PeriodGain.ToString("N2")</div>
+                <div class="summary-card-hint @PeriodGainClass">@PeriodGainLabel</div>
             </div>
-        </div>
 
-        @* Balance Trend Mini-Chart *@
-        @if (BalanceTrendData.Any())
-        {
-            <div class="balance-trend-container mb-3">
+            @if (BalanceTrendData.Any())
+            {
+                <div class="cockpit-panel trend-panel">
+                    <div class="panel-title">
+                        <span>Balance trajectory</span>
+                        <small>@BalanceTrendData.Count milestones</small>
+                    </div>
                 <RadzenChart Style="height: 120px; width: 100%;">
                     <RadzenAreaSeries Smooth="true" Data="@BalanceTrendData" CategoryProperty="Label" ValueProperty="Value"
                                       Title="Balance Trend"
@@ -90,16 +105,98 @@ else
                     </RadzenValueAxis>
                 </RadzenChart>
             </div>
-        }
+            }
+
+            <div class="cockpit-panel insight-panel">
+                <div class="panel-title">
+                    <span>Next moves</span>
+                    <small>@UpcomingItems.Count upcoming</small>
+                </div>
+                @if (UpcomingItems.Any())
+                {
+                    @foreach (var item in UpcomingItems)
+                    {
+                        <button class="next-move @GetAmountRowClass(item)" @onclick="@(() => OpenProjectionItem(item))">
+                            <span class="next-move-date">@FormatSmartDate(item.Date)</span>
+                            <span class="next-move-note">@GetItemTitle(item)</span>
+                            <span class="next-move-amount">@item.Amount.ToString("N2")</span>
+                        </button>
+                    }
+                }
+                else
+                {
+                    <div class="empty-insight">No upcoming movements in this horizon.</div>
+                }
+            </div>
+        </section>
     }
 
     @if (fixedMoneyItemsToVerify.Length > 0)
     {
-        <div class="row">
+        <div class="review-banner">
+            <span class="oi oi-warning" aria-hidden="true"></span>
             <a href="fixed-items?toverify=1">@fixedMoneyItemsToVerify.Length items to review</a>
         </div>
     }
-    <div class="table-responsive-sm">
+
+    @if (!ShowClassicLedger)
+    {
+        <section class="projection-timeline">
+            <div class="section-heading">
+                <div>
+                    <span class="hero-eyebrow">Timeline</span>
+                    <h2>Projected money flow</h2>
+                </div>
+                <span>@materializedMoneyItems.Length movements</span>
+            </div>
+
+            @foreach (var item in materializedMoneyItems)
+            {
+                <article class="timeline-card @GetTimelineCardClass(item)" @onclick="@(() => OpenProjectionItem(item))">
+                    <div class="timeline-date">
+                        <span>@item.Date.ToString("dd")</span>
+                        <small>@item.Date.ToString("MMM yy")</small>
+                    </div>
+                    <div class="timeline-marker">
+                        <span class="oi oi-@GetTimelineIcon(item)" aria-hidden="true"></span>
+                    </div>
+                    <div class="timeline-body">
+                        <div class="timeline-title">
+                            <span>@GetItemTitle(item)</span>
+                            @if (item.IsRecurrent && !item.EndPeriod)
+                            {
+                                <small>Recurring</small>
+                            }
+                            else if (!item.EndPeriod)
+                            {
+                                <small>Fixed</small>
+                            }
+                        </div>
+                        <div class="timeline-meta">@GetTimelineMeta(item)</div>
+                    </div>
+                    <div class="timeline-money">
+                        <strong class="@GetAmountTextClass(item)">@item.Amount.ToString("N2")</strong>
+                        <span>@item.Projection.ToString("N2")</span>
+                    </div>
+                    @if (item.EndPeriod && item.ID == 0)
+                    {
+                        <button class="timeline-save" title="Save materialized history" @onclick="() => SaveMaterializedHistory(item.Date)">
+                            <span class="oi oi-lock-locked" aria-hidden="true"></span>
+                        </button>
+                    }
+                </article>
+            }
+        </section>
+    }
+    else
+    {
+        <div class="section-heading">
+            <div>
+                <span class="hero-eyebrow">Ledger</span>
+                <h2>Classic projection table</h2>
+            </div>
+        </div>
+        <div class="table-responsive-sm ledger-panel">
         <table id="projections" class="table table-sm table-striped table-hover">
             <thead class="table-dark">
                 <tr>
@@ -212,4 +309,5 @@ else
             </tbody>
         </table>
     </div>
+    }
 }

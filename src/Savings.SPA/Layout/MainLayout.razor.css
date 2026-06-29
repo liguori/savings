@@ -11,13 +11,17 @@ main {
 
 /* Light theme main content (default) */
 main {
-    background-color: #ffffff;
+    background:
+        radial-gradient(circle at top right, rgba(13, 110, 253, 0.10), transparent 24rem),
+        linear-gradient(135deg, rgba(246, 244, 251, 0.96), rgba(249, 251, 253, 0.94));
     color: #000000;
 }
 
 /* Dark theme main content */
 [data-theme="dark"] main {
-    background-color: #1a1a1a;
+    background:
+        radial-gradient(circle at top right, rgba(96, 54, 142, 0.20), transparent 25rem),
+        linear-gradient(135deg, #101018, #141b24 55%, #0f1115);
     color: #ffffff;
 }
 
@@ -29,12 +33,17 @@ main {
 
 /* Default light theme sidebar */
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%) !important;
+    background-image:
+        radial-gradient(circle at 30% 0%, rgba(255,255,255,0.18), transparent 12rem),
+        linear-gradient(180deg, #17052f 0%, #32104f 44%, #08142c 100%) !important;
+    box-shadow: 16px 0 50px rgba(16, 24, 40, 0.16);
 }
 
 /* Dark theme sidebar with modern darker gradient colors */
 [data-theme="dark"] .sidebar {
-    background-image: linear-gradient(180deg, #0c0c0c 0%, #2a2a2a 70%) !important;
+    background-image:
+        radial-gradient(circle at 30% 0%, rgba(139, 95, 199, 0.22), transparent 12rem),
+        linear-gradient(180deg, #080812 0%, #171225 54%, #070a12 100%) !important;
 }
 
 .top-row {

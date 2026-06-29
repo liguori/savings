@@ -29,7 +29,9 @@ namespace Savings.SPA.Pages
 
         public Configuration CurrentConfiguration { get; set; } = default!;
 
-        public bool ShowSummaryCards { get; set; } = false;
+        public bool ShowSummaryCards { get; set; } = true;
+
+        public bool ShowClassicLedger { get; set; } = false;
 
         // Dashboard summary properties
         public decimal CurrentBalance { get; set; }
@@ -37,6 +39,24 @@ namespace Savings.SPA.Pages
         public decimal PeriodIncome { get; set; }
         public decimal PeriodExpenses { get; set; }
         public decimal PeriodGain { get; set; }
+
+        public decimal ProjectedDelta { get; set; }
+
+        public int PositiveItemsCount { get; set; }
+
+        public int NegativeItemsCount { get; set; }
+
+        public string ForecastHealthLabel { get; set; } = "";
+
+        public string ForecastHealthClass { get; set; } = "";
+
+        public string PeriodGainLabel { get; set; } = "";
+
+        public string PeriodGainClass { get; set; } = "";
+
+        public string ProjectedDeltaClass { get; set; } = "";
+
+        public List<MaterializedMoneyItem> UpcomingItems { get; set; } = new();
 
         // Balance trend data for mini-chart
         public List<BalanceTrendDataItem> BalanceTrendData { get; set; } = new();
@@ -112,6 +132,15 @@ namespace Savings.SPA.Pages
                 PeriodIncome = 0;
                 PeriodExpenses = 0;
                 PeriodGain = 0;
+                ProjectedDelta = 0;
+                PositiveItemsCount = 0;
+                NegativeItemsCount = 0;
+                ForecastHealthLabel = "No data";
+                ForecastHealthClass = "is-muted";
+                PeriodGainLabel = "No movements";
+                PeriodGainClass = "is-muted";
+                ProjectedDeltaClass = "is-muted";
+                UpcomingItems = new();
                 BalanceTrendData = new();
                 return;
             }
@@ -123,12 +152,33 @@ namespace Savings.SPA.Pages
             // Next period end: first end-period item after today
             var nextEndPeriod = materializedMoneyItems.FirstOrDefault(x => x.EndPeriod && x.Date > DateTime.Now.Date);
             NextPeriodEndProjection = nextEndPeriod?.Projection ?? materializedMoneyItems.Last().Projection;
+            ProjectedDelta = NextPeriodEndProjection - CurrentBalance;
 
             // Income/Expenses for items in the visible list (non end-period)
             var nonEndPeriodItems = materializedMoneyItems.Where(x => !x.EndPeriod).ToArray();
             PeriodIncome = nonEndPeriodItems.Where(x => x.Amount > 0).Sum(x => x.Amount);
             PeriodExpenses = nonEndPeriodItems.Where(x => x.Amount < 0).Sum(x => x.Amount);
             PeriodGain = PeriodIncome + PeriodExpenses;
+            PositiveItemsCount = nonEndPeriodItems.Count(x => x.Amount > 0);
+            NegativeItemsCount = nonEndPeriodItems.Count(x => x.Amount < 0);
+            PeriodGainLabel = PeriodGain > 0 ? "Surplus momentum" : PeriodGain < 0 ? "Burn rate active" : "Balanced period";
+            PeriodGainClass = PeriodGain > 0 ? "is-positive" : PeriodGain < 0 ? "is-negative" : "is-muted";
+            ProjectedDeltaClass = ProjectedDelta > 0 ? "is-positive" : ProjectedDelta < 0 ? "is-negative" : "is-muted";
+            ForecastHealthLabel = NextPeriodEndProjection < 0
+                ? "Attention: below zero"
+                : PeriodGain < 0
+                    ? "Watch spending"
+                    : "Healthy forecast";
+            ForecastHealthClass = NextPeriodEndProjection < 0
+                ? "is-negative"
+                : PeriodGain < 0
+                    ? "is-warning"
+                    : "is-positive";
+            UpcomingItems = nonEndPeriodItems
+                .Where(x => x.Date >= DateTime.Now.Date)
+                .OrderBy(x => x.Date)
+                .Take(5)
+                .ToList();
 
             // Build balance trend data from end-period items for the sparkline
             var endPeriodItems = materializedMoneyItems.Where(x => x.EndPeriod).ToList();
@@ -144,12 +194,87 @@ namespace Savings.SPA.Pages
             ShowSummaryCards = !ShowSummaryCards;
         }
 
+        void ToggleClassicLedger()
+        {
+            ShowClassicLedger = !ShowClassicLedger;
+        }
+
+        async Task OpenProjectionItem(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return;
+
+            if (item.IsRecurrent)
+            {
+                await AdjustRecurrency(item);
+            }
+            else
+            {
+                await AdjustFixedItem(item);
+            }
+        }
+
         string GetAmountRowClass(MaterializedMoneyItem item)
         {
             if (item.EndPeriod) return "";
             if (item.Amount > 0) return "income-row";
             if (item.Amount < 0) return "expense-row";
             return "";
+        }
+
+        string GetTimelineCardClass(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return item.Projection >= 0 ? "period-card is-positive" : "period-card is-negative";
+            if (item.Amount > 0) return "income-row";
+            if (item.Amount < 0) return "expense-row";
+            return "neutral-row";
+        }
+
+        string GetAmountTextClass(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return item.Projection >= 0 ? "is-positive" : "is-negative";
+            if (item.Amount > 0) return "is-positive";
+            if (item.Amount < 0) return "is-negative";
+            return "is-muted";
+        }
+
+        string GetTimelineIcon(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return item.Projection >= 0 ? "circle-check" : "circle-x";
+            if (item.Amount > 0) return "arrow-thick-top";
+            if (item.Amount < 0) return "arrow-thick-bottom";
+            return "ellipses";
+        }
+
+        string GetItemTitle(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return "Period checkpoint";
+
+            var icon = item.Category?.Icon;
+            var category = item.Category?.Description;
+            var note = string.IsNullOrWhiteSpace(item.Note) ? category : item.Note;
+            return string.IsNullOrWhiteSpace(icon) ? note ?? "Movement" : $"{icon} {note}";
+        }
+
+        string GetTimelineMeta(MaterializedMoneyItem item)
+        {
+            if (item.EndPeriod) return $"Projected balance: {item.Projection:N2}";
+
+            var channel = item.Category?.ID == CurrentConfiguration.CashWithdrawalCategoryID
+                ? "Cash withdrawal"
+                : item.Cash
+                    ? "Cash"
+                    : "Card";
+
+            return $"{channel} · Projection after movement: {item.Projection:N2}";
+        }
+
+        string FormatSmartDate(DateTime date)
+        {
+            var days = (date.Date - DateTime.Now.Date).Days;
+            if (days == 0) return "Today";
+            if (days == 1) return "Tomorrow";
+            if (days < 7) return $"In {days} days";
+            return date.ToString("dd MMM");
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
